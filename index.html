@@ -186,6 +186,7 @@
 </footer>
 
 <script src="data/music.js"></script>
+<script src="data/listen2026.js"></script>
 <script>
 const D = window.MUSIC, $ = s => document.querySelector(s), P = D.profile;
 const fmt = n => (n || 0).toLocaleString('en-US');
@@ -203,7 +204,7 @@ $('#m2').textContent = `Updated ${day(D.fetchedAt)}`;
 $('#h-num').textContent = fmt(P.listenSongs);
 const hours = Math.round(D.allTime.reduce((s, x) => s + (x.pc || 0) * x.dt, 0) / 3600);
 $('#stats').innerHTML = [
-  ['Since', day(P.created)], ['Days', fmt(P.createDays)], ['Hours in Top 100', fmt(hours)],
+  ['Since', day(P.created)], ['Days', fmt(P.createDays)], window.LISTEN ? ['Hours listened', fmt(Math.round(LISTEN.total / 3600))] : ['Hours in Top 100', fmt(hours)],
   ['Liked', fmt(D.liked.length)], ['Level', 'Lv.' + P.level]
 ].map(([k, v]) => `<div><span class="g">${k}</span><b class="tnum">${v}</b></div>`).join('');
 $('#wall').innerHTML = D.allTime.slice(0, 36).map((s, i) => `<a data-r="${pad2(i + 1)}" title="${s.n} — ${s.a.join(' / ')}" href="#s1">${art(s.pic, 240)}</a>`).join('');

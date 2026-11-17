@@ -9,97 +9,139 @@
 <style>
 /* 年度报告：黑底。每一章的底色从那一章主角的专辑封面里取。 */
 body { background: #000; color: #fff; }
-:root { --g3: #8A8A8A; --hair: #262626; --line: #fff; }
+:root { --g3: #8A8A8A; --hair: rgba(255,255,255,.16); --line: #fff; }
 ::selection { background: #fff; color: #000; }
 
 .top { position: fixed; inset: 0 0 auto 0; z-index: 30; height: 40px; display: flex; align-items: center; justify-content: space-between; mix-blend-mode: difference; color: #fff; }
 .prog { position: fixed; left: 0; top: 0; height: 2px; background: #fff; z-index: 31; width: 0; mix-blend-mode: difference; }
+.toc { position: fixed; right: var(--pad); top: 50%; transform: translateY(-50%); z-index: 29; display: flex; flex-direction: column; gap: 6px; mix-blend-mode: difference; }
+.toc a { display: block; width: 18px; height: 2px; background: #fff; opacity: .3; transition: opacity .2s, width .2s; }
+.toc a.on { opacity: 1; width: 28px; }
 
-/* 每一章 */
-.ch { position: relative; min-height: 100vh; padding: 96px var(--pad) 80px; transition: background-color .8s ease, color .8s ease; }
-.ch-h { display: flex; justify-content: space-between; border-top: 1px solid currentColor; padding-top: 12px; margin-bottom: 48px; opacity: .9; }
+.ch { position: relative; min-height: 100vh; padding: 96px var(--pad) 88px; }
+.ch-h { display: flex; justify-content: space-between; border-top: 1px solid currentColor; padding-top: 12px; margin-bottom: 48px; }
 .say { font-family: var(--cjk); font-size: clamp(22px, 2.6vw, 36px); font-weight: 600; line-height: 1.4; max-width: 24em; }
 .say .dim { opacity: .5; }
 .small { font-family: var(--cjk); font-size: 13px; opacity: .6; max-width: 40em; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid currentColor; margin-top: 48px; }
+.kpis div { padding: 14px 16px 0 0; }
+.kpis b { display: block; font-size: clamp(44px, 5.4vw, 84px); margin-top: 10px; }
+.kpis small { display: block; font-family: var(--cjk); font-size: 12px; opacity: .55; margin-top: 6px; text-transform: none; letter-spacing: 0; font-weight: 400; }
 
-/* 封面：79 张封面铺满 */
+/* 封面 */
 .cover { position: relative; height: 100vh; min-height: 640px; overflow: hidden; }
 .mosaic { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--cols, 12), 1fr); align-content: start; }
 .mosaic img { opacity: 0; transition: opacity .6s ease; }
-.mosaic img.on { opacity: .55; }
-.cover .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.2) 0%, rgba(0,0,0,.1) 40%, #000 92%); }
+.mosaic img.on { opacity: .5; }
+.cover .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.25) 0%, rgba(0,0,0,.1) 35%, #000 90%); }
 .cover .ttl { position: absolute; left: var(--pad); right: var(--pad); bottom: 28px; }
 .cover h1 { font-size: clamp(180px, 34vw, 560px); margin-left: -.04em; }
 .cover .row { display: flex; justify-content: space-between; align-items: end; border-top: 1px solid #fff; padding-top: 12px; margin-top: 8px; gap: 24px; }
-.wave { min-width: 160px; display: flex; align-items: flex-end; gap: 1px; height: 56px; flex: 1; max-width: 640px; }
-.wave i { flex: 1; background: #fff; opacity: .22; min-height: 2px; }
-.wave i.on { opacity: 1; }
-.wave i.fut { opacity: .08; }
+.wave { display: flex; align-items: flex-end; gap: 1px; height: 56px; flex: 1; max-width: 640px; min-width: 160px; }
+.wave i { flex: 1; background: #fff; opacity: .8; min-height: 1px; }
+.wave i.fut { opacity: .12; }
 
-/* A1 */
-.giant { font-size: clamp(240px, 42vw, 700px); margin-left: -.05em; }
-.trio { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid #fff; margin-top: 40px; }
-.trio div { padding: 14px 16px 0 0; }
-.trio b { display: block; font-size: 72px; margin-top: 10px; }
+/* 01 时长 */
+.giant { font-size: clamp(220px, 38vw, 640px); margin-left: -.05em; }
+.giant { display: flex; align-items: flex-start; gap: .1em; }
+.giant .unit { font-size: .13em; font-stretch: 100%; letter-spacing: 0; line-height: 1.1; padding-top: .55em; }
+.giant .unit .zh { display: block; font-weight: 700; margin-top: .3em; }
+.yrs { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; align-items: end; height: 200px; margin-top: 64px; border-bottom: 1px solid #fff; }
+.yrs div { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
+.yrs i { display: block; background: rgba(255,255,255,.28); }
+.yrs .cur i { background: #fff; }
+.yrs .pk i { background: rgba(255,255,255,.55); }
+.yrs b { font-size: 22px; font-weight: 700; font-stretch: 75%; margin-bottom: 6px; }
+.yrs-x { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; margin-top: 8px; }
 
-/* A2 */
+/* 02 年历 */
+.cal { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 1fr); gap: 3px; margin-top: 56px; }
+.cal i { aspect-ratio: 1; background: #fff; border-radius: 1px; position: relative; }
+.cal i.z { background: transparent; box-shadow: inset 0 0 0 1px rgba(255,255,255,.35); }
+.cal i.fut { background: rgba(255,255,255,.06); }
+.cal i.pad { background: transparent; }
+.cal i.mk::after { content: ''; position: absolute; inset: -3px; border: 1px solid #fff; }
+.cal-x { display: grid; grid-auto-flow: column; gap: 3px; margin-top: 8px; }
+.legend { display: flex; align-items: center; gap: 6px; margin-top: 18px; }
+.legend i { width: 12px; height: 12px; background: #fff; display: inline-block; }
+
+/* 03 最长的一天 / 深夜 */
+.clock { font-size: clamp(200px, 30vw, 500px); margin-left: -.04em; }
+.nights { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; margin-top: 56px; }
+.nights div { border-top: 1px solid #fff; padding-top: 10px; }
+.nights b { display: block; font-size: clamp(28px, 3vw, 46px); margin-top: 6px; }
+.nights .late b { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.nights img { margin-top: 10px; }
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: var(--pad); margin-top: 48px; }
+.duo .d { font-size: clamp(110px, 13vw, 210px); }
+.duo .bar24 { display: grid; grid-template-columns: repeat(24, 1fr); height: 10px; gap: 1px; margin-top: 18px; }
+.duo .bar24 i { background: rgba(255,255,255,.15); }
+.duo .bar24 i.on { background: #fff; }
+
+/* 04 一天之中 */
+.day-strip { display: flex; height: 240px; margin-top: 56px; gap: 3px; }
+.day-strip div { display: flex; flex-direction: column; justify-content: space-between; padding: 14px; background: rgba(255,255,255,.1); min-width: 0; }
+.day-strip div.pk { background: #fff; color: #000; }
+.day-strip b { font-size: clamp(40px, 5vw, 80px); line-height: .9; }
+
+/* 05 月份 */
+.mbar { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; align-items: end; height: 300px; margin-top: 56px; }
+.mbar div { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
+.mbar i { display: block; background: #fff; }
+.mbar .fut i { background: rgba(255,255,255,.12); }
+.mbar .part i { background: repeating-linear-gradient(-45deg, #fff 0 2px, transparent 2px 6px); }
+.mbar b { font-size: 22px; font-weight: 700; font-stretch: 75%; margin-bottom: 6px; }
+.mtop { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; border-top: 1px solid #fff; padding-top: 10px; margin-top: 8px; }
+.mtop .t { font-family: var(--cjk); font-size: 12px; line-height: 1.3; margin-top: 8px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.mtop .p { font-size: 11px; opacity: .55; margin-top: 2px; }
+
+/* 06 年度之歌 */
 .sot { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--pad); align-items: end; }
 .sot .art { grid-column: 1 / 7; box-shadow: 0 40px 80px rgba(0,0,0,.35); }
 .sot .info { grid-column: 7 / 13; }
 .sot h3 { font-family: var(--cjk); font-size: clamp(36px, 4.4vw, 68px); font-weight: 800; line-height: 1.08; margin: 14px 0 10px; }
 .sot .pc { font-size: clamp(120px, 14vw, 220px); margin-top: 24px; }
 .sot p.why { font-family: var(--cjk); font-size: 17px; line-height: 1.6; margin-top: 24px; max-width: 26em; }
+.runners { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--pad); margin-top: 72px; border-top: 1px solid currentColor; padding-top: 14px; }
+.runners .t { font-family: var(--cjk); font-weight: 700; margin-top: 10px; }
+.runners .p { font-size: 11px; opacity: .7; margin-top: 4px; }
 
-/* A3 月份：每月一列封面 */
-.months { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; align-items: end; margin-top: 48px; min-height: 52vh; }
+/* 07 年度艺人 */
+.mart { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; margin-top: 48px; }
+.mart img { border-radius: 50%; }
+.mart .n { font-family: var(--cjk); font-size: 12px; font-weight: 600; margin-top: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mart .m { font-size: 10px; opacity: .55; margin-top: 2px; }
+.mart .hl img { box-shadow: 0 0 0 3px currentColor; }
+.ahero { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--pad); align-items: end; }
+.ahero img { grid-column: 1 / 5; border-radius: 50%; }
+.ahero .info { grid-column: 6 / 13; }
+.ahero h3 { font-family: var(--cjk); font-size: clamp(56px, 8vw, 128px); font-weight: 900; line-height: 1; }
+
+/* 08 口味 */
+.taste { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--pad); margin-top: 56px; }
+.taste .blk { border-top: 1px solid #fff; padding-top: 12px; }
+.taste .stack { display: flex; height: 18px; gap: 2px; margin: 14px 0 18px; }
+.taste .stack i { background: rgba(255,255,255,.3); }
+.taste .stack i:first-child { background: #fff; }
+.taste li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--hair); font-family: var(--cjk); }
+.taste li b { font-family: var(--sans); font-weight: 700; }
+.oldest { display: grid; grid-template-columns: 120px 1fr; gap: 24px; align-items: center; margin-top: 64px; border-top: 1px solid #fff; padding-top: 18px; }
+
+/* 09 红心 */
+.months { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; align-items: end; margin-top: 48px; min-height: 30vh; }
 .months .m { display: flex; flex-wrap: wrap-reverse; align-content: flex-start; gap: 2px; }
 .months .m img { width: calc(50% - 1px); aspect-ratio: 1; object-fit: cover; transition: transform .3s; }
 .months .m img:hover { transform: scale(1.6); position: relative; z-index: 2; }
 .months .m.fut { opacity: .25; }
 .months-x { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; border-top: 1px solid #fff; margin-top: 8px; padding-top: 8px; }
-.months-x b { display: block; font-size: 32px; }
+.months-x b { display: block; font-size: 28px; }
+.notes { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--pad); margin-top: 80px; }
+.note { border-top: 1px solid #fff; padding-top: 12px; }
+.note .quad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin: 14px 0; }
+.note p { font-family: var(--cjk); font-size: 15px; line-height: 1.6; }
+.note h4 { font-size: 64px; margin-top: 8px; }
 
-/* A4 */
-.days { display: grid; grid-template-columns: 1fr 1fr; gap: var(--pad); margin-top: 48px; }
-.day .d { font-size: clamp(100px, 12vw, 180px); }
-.day .quad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin: 16px 0; }
-.day li { display: grid; grid-template-columns: 1fr auto; gap: 16px; padding: 9px 0; border-top: 1px solid var(--hair); font-family: var(--cjk); }
-.day li span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.day li small { display: block; opacity: .5; font-size: 12px; }
-
-/* A5 */
-.same { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--pad); margin-top: 48px; }
-.same .w { font-family: var(--cjk); font-weight: 900; font-size: clamp(80px, 11vw, 180px); line-height: 1; letter-spacing: -.03em; margin-top: 18px; }
-.same .w.o { color: transparent; -webkit-text-stroke: 1.5px currentColor; }
-.same .who { font-family: var(--cjk); font-weight: 700; font-size: 18px; margin-top: 12px; }
-
-/* B1 */
-.arts li { display: grid; grid-template-columns: 40px 72px 1fr auto; gap: 18px; align-items: center; padding: 10px 0; border-top: 1px solid var(--hair); }
-.arts .nm { font-family: var(--cjk); font-weight: 800; font-size: clamp(26px, 3.6vw, 52px); line-height: 1.1; }
-.arts .covers { display: flex; gap: 3px; }
-.arts .covers img { width: 72px; }
-
-/* B2 */
-.langs { display: grid; gap: var(--pad); margin-top: 48px; align-items: start; }
-.langs .grp .lab { display: flex; justify-content: space-between; border-top: 1px solid #fff; padding-top: 10px; margin-bottom: 12px; }
-.langs .grp .lab b { font-size: 64px; }
-.langs .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); gap: 3px; }
-
-/* B3 */
-.axis { position: relative; height: 340px; margin-top: 64px; border-bottom: 1px solid #fff; }
-.axis img { position: absolute; width: 30px; height: 30px; object-fit: cover; transform: translateX(-50%); }
-.axis .avg { position: absolute; top: 0; bottom: 0; border-left: 1px solid #fff; }
-.axis .avg span { position: absolute; top: 0; left: 8px; white-space: nowrap; }
-.axis-x { position: relative; height: 24px; margin-top: 8px; }
-.axis-x span { position: absolute; transform: translateX(-50%); }
-
-/* B4 */
-.hours { display: grid; grid-template-columns: repeat(24, 1fr); gap: 3px; align-items: end; height: 260px; margin-top: 56px; border-bottom: 1px solid #fff; }
-.hours div { background: #fff; opacity: .3; }
-.hours div.pk { opacity: 1; }
-.hours-x { display: grid; grid-template-columns: repeat(24, 1fr); gap: 3px; margin-top: 8px; }
-
-/* B5 */
+/* 10 此刻 */
 .now { display: grid; grid-template-columns: repeat(10, 1fr); margin-top: 48px; }
 .now img.dim { filter: grayscale(1); opacity: .35; }
 
@@ -118,20 +160,25 @@ body { background: #000; color: #fff; }
 .end a { text-decoration: underline; text-underline-offset: 3px; }
 
 @media (max-width: 720px) {
-  .sot .art, .sot .info, .end .big, .end .small { grid-column: 1 / 13; }
-  .sot .art { margin-bottom: 32px; }
-  .days, .same { grid-template-columns: 1fr; }
-  .langs { grid-template-columns: 1fr !important; }
+  .toc { display: none; }
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  .sot .art, .sot .info, .ahero img, .ahero .info, .end .big, .end .small { grid-column: 1 / 13; }
+  .sot .art, .ahero img { margin-bottom: 32px; }
+  .duo, .taste, .notes { grid-template-columns: 1fr; }
+  .runners { grid-template-columns: repeat(2, 1fr); }
+  .nights, .mart { grid-template-columns: repeat(5, 1fr); row-gap: 20px; }
+  .mtop .t, .mtop .p { display: none; }
+  .day-strip { flex-direction: column; height: auto; }
+  .day-strip div { flex: none !important; flex-direction: row; align-items: baseline; }
   .liner { columns: 1; }
   .now { grid-template-columns: repeat(5, 1fr); }
-  .trio b { font-size: 44px; }
-  .arts .covers img:nth-child(n+2) { display: none; }
 }
 </style>
 </head>
 <body>
 <div class="prog" id="prog"></div>
 <div class="top pad cap"><span><a href="../">← JoniLin — Listening</a> &nbsp;/&nbsp; 2026</span><span>Annual Report</span></div>
+<nav class="toc" id="toc"></nav>
 
 <header class="cover">
   <div class="mosaic" id="mosaic"></div>
@@ -141,58 +188,59 @@ body { background: #000; color: #fff; }
     <h1 class="xl reveal">2026</h1>
     <div class="row cap">
       <span id="c-sub">—</span>
-      <div class="wave" id="wave" title="每一根竖线是一天，亮的那天你点了红心"></div>
+      <div class="wave" id="wave" title="每一根竖线是一天的听歌时长"></div>
       <span>Scroll ↓</span>
     </div>
   </div>
 </header>
 
 <main>
-  <section class="ch" data-bg="#000"><div class="ch-h cap"><span>A1</span><span>Numbers · 数字</span></div>
-    <div class="reveal"><div class="giant xl tnum" id="a1-n">—</div><p class="say" id="a1-say"></p><div class="trio cap" id="trio"></div></div>
+  <section class="ch" data-t="Time"><div class="ch-h cap"><span>01</span><span>Minutes · 听歌时长</span></div>
+    <div class="reveal"><div class="giant xl tnum" id="t-h">—</div><p class="say" id="t-say"></p><div class="kpis cap" id="t-kpi"></div>
+      <div class="yrs" id="yrs"></div><div class="yrs-x cap" id="yrs-x"></div></div>
   </section>
 
-  <section class="ch" id="a2-sec"><div class="ch-h cap"><span>A2</span><span>Song of the Year · 年度之歌</span></div>
-    <div class="reveal" id="a2"></div>
+  <section class="ch" data-t="Calendar"><div class="ch-h cap"><span>02</span><span>Calendar · 听歌年历</span></div>
+    <div class="reveal"><p class="say" id="cal-say"></p><div class="cal" id="cal"></div><div class="cal-x cap" id="cal-x"></div>
+      <div class="legend cap" id="legend"></div></div>
   </section>
 
-  <section class="ch" id="old-sec"><div class="ch-h cap"><span>A3</span><span>Old Love · 迟到的红心</span></div>
-    <div class="reveal" id="old"></div>
+  <section class="ch" data-t="Late"><div class="ch-h cap"><span>03</span><span>Late Nights · 最晚的时刻</span></div>
+    <div class="reveal"><div class="clock xl tnum" id="late-t">—</div><p class="say" id="late-say"></p>
+      <div class="nights cap" id="nights"></div>
+      <div class="duo" id="duo"></div></div>
   </section>
 
-  <section class="ch" data-bg="#000"><div class="ch-h cap"><span>A4</span><span>Months · 十二个月</span></div>
-    <div class="reveal"><p class="say" id="m-say"></p><div class="months" id="months"></div><div class="months-x cap" id="months-x"></div></div>
+  <section class="ch" data-t="Day"><div class="ch-h cap"><span>04</span><span>Your Day · 一天之中</span></div>
+    <div class="reveal"><p class="say" id="dp-say"></p><div class="day-strip" id="dstrip"></div></div>
   </section>
 
-  <section class="ch" data-bg="#000"><div class="ch-h cap"><span>A5</span><span>The Days · 那两天</span></div>
-    <div class="reveal"><p class="say" id="d-say"></p><div class="days" id="days"></div></div>
+  <section class="ch" data-t="Months"><div class="ch-h cap"><span>05</span><span>Months · 每月主打</span></div>
+    <div class="reveal"><p class="say" id="mo-say"></p><div class="mbar" id="mbar"></div><div class="mtop cap" id="mtop"></div></div>
   </section>
 
-  <section class="ch" id="same-sec"><div class="ch-h cap"><span>A6</span><span>Same Title · 同名</span></div>
-    <div class="reveal" id="same"></div>
+  <section class="ch" id="sot-sec" data-t="Song"><div class="ch-h cap"><span>06</span><span>Song of the Year · 年度之歌</span></div>
+    <div class="reveal" id="sot"></div>
   </section>
 
-  <section class="ch" data-bg="#000"><div class="ch-h cap"><span>B1</span><span>Artists · 艺人</span></div>
-    <div class="reveal"><p class="say" id="ar-say"></p><ol class="arts" id="arts" style="margin-top:48px"></ol></div>
+  <section class="ch" id="art-sec" data-t="Artist"><div class="ch-h cap"><span>07</span><span>Artist of the Year · 年度艺人</span></div>
+    <div class="reveal" id="art"></div>
   </section>
 
-  <section class="ch" data-bg="#000"><div class="ch-h cap"><span>B2</span><span>Languages · 语言</span></div>
-    <div class="reveal"><p class="say" id="l-say"></p><div class="langs" id="langs"></div></div>
+  <section class="ch" data-t="Taste"><div class="ch-h cap"><span>08</span><span>Taste · 语言 · 曲风 · 年代</span></div>
+    <div class="reveal"><p class="say" id="ta-say"></p><div class="taste" id="taste"></div><div class="oldest" id="oldest"></div></div>
   </section>
 
-  <section class="ch" data-bg="#000"><div class="ch-h cap"><span>B3</span><span>Time Travel · 时间旅行</span></div>
-    <div class="reveal"><p class="say" id="t-say"></p><div class="axis" id="axis"></div><div class="axis-x cap" id="axis-x"></div></div>
+  <section class="ch" data-t="Likes"><div class="ch-h cap"><span>09</span><span>Likes · 今年的红心</span></div>
+    <div class="reveal"><p class="say" id="lk-say"></p><div class="months" id="months"></div><div class="months-x cap" id="months-x"></div>
+      <div class="notes" id="notes"></div></div>
   </section>
 
-  <section class="ch" data-bg="#000"><div class="ch-h cap"><span>B4</span><span>Hours · 时刻</span></div>
-    <div class="reveal"><p class="say" id="h-say"></p><div class="hours" id="hours"></div><div class="hours-x cap" id="hours-x"></div></div>
+  <section class="ch" id="now-sec" data-t="Now"><div class="ch-h cap"><span>10</span><span>Right Now · 此刻</span></div>
+    <div class="reveal"><p class="say" id="n-say"></p><div class="kpis cap" id="n-kpi"></div><div class="now" id="now"></div></div>
   </section>
 
-  <section class="ch" id="now-sec"><div class="ch-h cap"><span>B5</span><span>Right Now · 此刻</span></div>
-    <div class="reveal"><p class="say" id="n-say"></p><div class="now" id="now"></div></div>
-  </section>
-
-  <section class="ch back" data-bg="#000"><div class="ch-h cap"><span>Tracklist</span><span>按点下红心的顺序</span></div>
+  <section class="ch back" data-t="Tracklist"><div class="ch-h cap"><span>Tracklist</span><span>今年点下的红心 · 按时间</span></div>
     <h2 class="xl tnum reveal" id="b-h">—</h2>
     <ol class="liner" id="liner"></ol>
     <div class="end"><p class="big" id="e-big"></p><p class="small" id="e-small"></p></div>
@@ -200,197 +248,227 @@ body { background: #000; color: #fff; }
 </main>
 
 <script src="../data/music.js"></script>
+<script src="../data/listen2026.js"></script>
 <script>
-const D = window.MUSIC, $ = s => document.querySelector(s);
-const Y = 2026, pad2 = n => String(n).padStart(2, '0');
+const D = window.MUSIC, LS = window.LISTEN, $ = s => document.querySelector(s);
+const Y = 2026, pad2 = n => String(n).padStart(2, '0'), fmt = n => Math.round(n).toLocaleString('en-US');
 const img = (u, s = 300) => u ? `${u}?param=${s}y${s}` : '';
 const art = (u, s, extra = '') => `<img class="art" src="${img(u, s)}" alt="" loading="lazy" crossorigin="anonymous" ${extra}>`;
 const dt = ms => new Date(ms), md = ms => `${dt(ms).getMonth() + 1} 月 ${dt(ms).getDate()} 日`;
-const now = dt(D.fetchedAt), live = now.getFullYear() === Y;
-const y0 = new Date(Y, 0, 1), doy = ms => Math.floor((dt(ms) - y0) / 864e5);
-const daysSoFar = live ? doy(D.fetchedAt) + 1 : 365;
-const L = D.liked.filter(s => dt(s.at).getFullYear() === Y).sort((a, b) => a.at - b.at), N = L.length;
-const pcOf = Object.fromEntries(D.allTime.map(s => [s.id, s.pc]));
-const rankOf = Object.fromEntries(D.allTime.map((s, i) => [s.id, i + 1]));
-const lang = s => /[가-힯]/.test(s.n) ? 'ko' : /[぀-ヿ]/.test(s.n) ? 'ja' : /[一-鿿]/.test(s.n) ? 'zh' : 'west';
-const tip = s => `title="${s.n.replace(/"/g, '')} — ${s.a.join(' / ')}"`;
+const hm = m => `${Math.floor(m / 60)} 小时 ${Math.round(m % 60)} 分`;
+const MZH = m => (MON.indexOf(m) + 1) + ' 月';
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const now = dt(Math.max(D.fetchedAt, LS.updatedAt));
+const tip = s => `title="${(s.n || '').replace(/"/g, '')}${s.a ? ' — ' + s.a.join(' / ') : ''}"`;
 
-/* 从封面取主色（Apple Music 式），给章节当底色 */
+/* ---------- 听歌数据整理 ---------- */
+const MS = [...LS.months, LS.nov];                       // 1–11 月
+const days = [];                                          // [{date, min}]
+MS.forEach(m => { const [y, mo, d] = m.d0.split('-').map(Number);
+  m.daily.forEach((v, i) => { const t = new Date(y, mo - 1, d + i); if (t <= now && t.getMonth() === mo - 1) days.push({ t, v }); }); });
+const totalMin = MS.reduce((s, m) => s + m.min, 0);
+const listened = days.filter(d => d.v > 0).length;
+let best = 0, run = 0, bestEnd = null; days.forEach(d => { run = d.v > 0 ? run + 1 : 0; if (run > best) { best = run; bestEnd = d.t; } });
+let curStreak = 0; for (let i = days.length - 1; i >= 0 && days[i].v > 0; i--) curStreak++;
+const sec = (m, k) => (m.secs || []).find(x => x[0] === k);
+const late = LS.months.map((m, i) => { const s = sec(m, 'lateSleep'); return s ? { i, t: +s[2], m } : null; }).filter(Boolean);
+const lateness = t => { const d = dt(t); const h = d.getHours() + d.getMinutes() / 60; return h < 12 ? h + 24 : h; };
+const latest = late.reduce((a, b) => lateness(b.t) > lateness(a.t) ? b : a);
+const topDays = [...days].sort((a, b) => b.v - a.v);
+
+/* 从封面取主色 */
 const colorOf = url => new Promise(res => {
   const im = new Image(); im.crossOrigin = 'anonymous';
-  im.onload = () => {
-    const c = document.createElement('canvas'); c.width = c.height = 32;
-    const x = c.getContext('2d'); x.drawImage(im, 0, 0, 32, 32);
+  im.onload = () => { const c = document.createElement('canvas'); c.width = c.height = 32; const x = c.getContext('2d'); x.drawImage(im, 0, 0, 32, 32);
     const d = x.getImageData(0, 0, 32, 32).data; let r = 0, g = 0, b = 0, w = 0;
-    for (let i = 0; i < d.length; i += 4) {
-      const mx = Math.max(d[i], d[i + 1], d[i + 2]), mn = Math.min(d[i], d[i + 1], d[i + 2]);
-      const wt = 1 + (mx - mn) / 32;                       // 偏向饱和的像素
-      r += d[i] * wt; g += d[i + 1] * wt; b += d[i + 2] * wt; w += wt;
-    }
-    res([r / w, g / w, b / w].map(Math.round));
-  };
-  im.onerror = () => res([20, 20, 20]);
-  im.src = img(url, 64);
-});
-const paint = async (sec, url) => {
-  const [r, g, b] = await colorOf(url);
-  const lum = (.299 * r + .587 * g + .114 * b) / 255;
-  sec.dataset.bg = `rgb(${r},${g},${b})`;
-  sec.dataset.fg = lum > .62 ? '#000' : '#fff';
-};
+    for (let i = 0; i < d.length; i += 4) { const mx = Math.max(d[i], d[i+1], d[i+2]), mn = Math.min(d[i], d[i+1], d[i+2]), wt = 1 + (mx - mn) / 32; r += d[i]*wt; g += d[i+1]*wt; b += d[i+2]*wt; w += wt; }
+    res([r / w, g / w, b / w].map(Math.round)); };
+  im.onerror = () => res([20, 20, 20]); im.src = img(url, 64); });
+const paint = async (el, url) => { const [r, g, b] = await colorOf(url); el.dataset.bg = `rgb(${r},${g},${b})`; el.dataset.fg = (.299*r + .587*g + .114*b) / 255 > .62 ? '#000' : '#fff'; setBg(); };
 
 /* ---------- 封面 ---------- */
-$('#mosaic').innerHTML = L.map(s => `<img class="art" src="${img(s.pic, 240)}" alt="" ${tip(s)} onload="this.classList.add('on')">`).join('');
-const fitMosaic = () => { const cols = Math.ceil(Math.sqrt(N * innerWidth / innerHeight)); $('#mosaic').style.setProperty('--cols', cols); };
-fitMosaic(); addEventListener('resize', fitMosaic);
-const likedDays = {}; L.forEach(s => likedDays[doy(s.at)] = (likedDays[doy(s.at)] || 0) + 1);
-$('#wave').innerHTML = Array.from({ length: 365 }, (_, d) => {
-  const n = likedDays[d] || 0;
-  return `<i class="${n ? 'on' : ''} ${d >= daysSoFar ? 'fut' : ''}" style="height:${n ? 30 + n * 17 : 14}%"></i>`;
-}).join('');
-$('#c-kicker').textContent = `${D.profile.nick} — The Year in Likes`;
-$('#c-sub').textContent = `${N} likes · ${Object.keys(likedDays).length} days · until ${now.getMonth() + 1}.${now.getDate()}`;
+const L = D.liked.filter(s => dt(s.at).getFullYear() === Y).sort((a, b) => a.at - b.at), N = L.length;
+const coverSongs = [...new Map([...LS.months.flatMap(m => m.topSong ? [{ n: m.topSong.n, a: m.topSong.a, pic: m.topSong.pic }, ...m.topSong.more.map(x => ({ n: x[0], pic: x[1] }))] : []), ...L].map(s => [s.pic, s])).values()];
+$('#mosaic').innerHTML = coverSongs.map(s => `<img class="art" src="${img(s.pic, 240)}" alt="" ${tip(s)} onload="this.classList.add('on')">`).join('');
+const fit = () => $('#mosaic').style.setProperty('--cols', Math.ceil(Math.sqrt(coverSongs.length * innerWidth / innerHeight)));
+fit(); addEventListener('resize', fit);
+const allDays = []; for (let d = new Date(Y, 0, 1); d.getFullYear() === Y; d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)) allDays.push(d);
+const vOf = {}; days.forEach(d => vOf[d.t.toDateString()] = d.v);
+const vmax = Math.max(...days.map(d => d.v));
+$('#wave').innerHTML = allDays.map(d => { const v = vOf[d.toDateString()]; return v === undefined ? '<i class="fut" style="height:6%"></i>' : `<i style="height:${Math.max(2, Math.sqrt(v / vmax) * 100)}%"></i>`; }).join('');
+$('#c-kicker').textContent = `${D.profile.nick} — The Year in Music`;
+$('#c-sub').textContent = `${fmt(totalMin / 60)} hours · ${listened} days · until ${now.getMonth() + 1}.${now.getDate()}`;
 
-/* ---------- A1 ---------- */
-const mins = Math.round(L.reduce((s, x) => s + x.dt, 0) / 60);
-$('#a1-n').textContent = N;
-$('#a1-say').innerHTML = `今年你点下了 ${N} 颗新的红心。<span class="dim">从头到尾放一遍，需要 ${(mins / 60).toFixed(1)} 小时。</span>`;
-const avgSec = Math.round(L.reduce((s, x) => s + x.dt, 0) / N);
-$('#trio').innerHTML = `<div>Every<b class="xl tnum">${(daysSoFar / N).toFixed(1)} days</b></div>
-  <div>Artists<b class="xl tnum">${new Set(L.flatMap(s => s.a)).size}</b></div>
-  <div>Avg. length<b class="xl tnum">${Math.floor(avgSec / 60)}:${pad2(avgSec % 60)}</b></div>`;
+/* ---------- 01 时长 ---------- */
+$('#t-h').innerHTML = `<span>${fmt(totalMin / 60)}</span><span class="unit">Hours<span class="zh">小时</span></span>`;
+const y25 = LS.years.find(y => y[0] === Y - 1), y25min = y25 ? y25[2] / 60 : 0;
+const pace = totalMin / days.length * 365;
+const ypk0 = LS.years.reduce((a, b) => b[2] > a[2] ? b : a)[0];
+$('#t-say').innerHTML = `今年你听了 ${fmt(totalMin)} 分钟的音乐，相当于不吃不睡连续听 ${(totalMin / 1440).toFixed(1)} 天。` +
+  `<span class="dim">${y25 ? (pace > y25min ? `按这个速度，全年会超过 ${Y - 1} 年的 ${fmt(y25min / 60)} 小时。` : `比 ${Y - 1} 年的 ${fmt(y25min / 60)} 小时少${ypk0 === Y - 1 ? `——${Y - 1} 年是你听得最凶的一年` : ''}。`) : ''}</span>`;
+$('#t-kpi').innerHTML = `
+  <div>Per day<b class="xl tnum">${Math.floor(totalMin / days.length / 60)}:${pad2(Math.round(totalMin / days.length % 60))}</b><small>平均每天</small></div>
+  <div>Days<b class="xl tnum">${listened}/${days.length}</b><small>有听歌的天数</small></div>
+  <div>Streak<b class="xl tnum">${best}</b><small>最长连续听歌天数</small></div>
+  <div>Since 2017<b class="xl tnum">${fmt(LS.total / 3600)}</b><small>注册以来总时长（小时）</small></div>`;
+const yrs = [...LS.years.map(y => [y[0], y[2] / 3600])].filter(y => y[0] < Y).concat([[Y, totalMin / 60]]).sort((a, b) => a[0] - b[0]);
+const ymax = Math.max(...yrs.map(y => y[1])), ypk = yrs.reduce((a, b) => b[1] > a[1] ? b : a)[0];
+$('#yrs').style.gridTemplateColumns = $('#yrs-x').style.gridTemplateColumns = `repeat(${yrs.length}, 1fr)`;
+$('#yrs').innerHTML = yrs.map(([y, h]) => `<div class="${y === Y ? 'cur' : ''} ${y === ypk ? 'pk' : ''}"><b class="tnum">${fmt(h)}</b><i style="height:${h / ymax * 150}px"></i></div>`).join('');
+$('#yrs-x').innerHTML = yrs.map(([y]) => `<span>${y}${y === Y ? ' *' : ''}</span>`).join('');
 
-/* ---------- A2 年度之歌 ---------- */
-const both = L.filter(s => s.y === Y && pcOf[s.id]).sort((a, b) => pcOf[b.id] - pcOf[a.id]);
-const sot = both[0] || L.filter(s => pcOf[s.id]).sort((a, b) => pcOf[b.id] - pcOf[a.id])[0];
-if (sot) {
-  $('#a2').innerHTML = `<div class="sot">${art(sot.pic, 900)}
-    <div class="info"><span class="cap">Song of ${Y}</span><h3>${sot.n}</h3>
-      <p class="cap" style="opacity:.7">${sot.a.join(' / ')} — ${sot.al}</p>
-      <div class="pc xl tnum">${pcOf[sot.id]}</div><span class="cap">plays</span>
-      <p class="why">${both[0] ? `发行于 ${Y} 年，${md(sot.at)}被你收下，之后一路爬到你所有时间排行的第 ${rankOf[sot.id]} 位。${both.length === 1 ? '今年收藏的新歌里，只有它真正被你听进了常听榜。' : ''}` : `${md(sot.at)}被你收下，累计播放排到第 ${rankOf[sot.id]} 位。`}</p></div></div>`;
-  paint($('#a2-sec'), sot.pic);
-} else $('#a2-sec').remove();
+/* ---------- 02 年历 ---------- */
+const q = [...days.map(d => d.v)].filter(v => v > 0).sort((a, b) => a - b), qa = p => q[Math.floor(p * (q.length - 1))];
+const lvl = v => v >= qa(.9) ? 1 : v >= qa(.65) ? .7 : v >= qa(.35) ? .45 : .22;
+const lead = (allDays[0].getDay() + 6) % 7;                  // 周一开头
+const marks = new Set(topDays.slice(0, 2).map(d => d.t.toDateString()));
+$('#cal').innerHTML = '<i class="pad"></i>'.repeat(lead) + allDays.map(d => { const v = vOf[d.toDateString()];
+  if (v === undefined) return '<i class="fut"></i>';
+  return v === 0 ? `<i class="z" title="${d.getMonth() + 1}.${d.getDate()} · 0"></i>` : `<i class="${marks.has(d.toDateString()) ? 'mk' : ''}" style="opacity:${lvl(v)}" title="${d.getMonth() + 1}.${d.getDate()} · ${hm(v)}"></i>`; }).join('');
+const weeks = Math.ceil((lead + allDays.length) / 7);
+$('#cal').style.gridTemplateColumns = $('#cal-x').style.gridTemplateColumns = `repeat(${weeks}, 1fr)`;
+$('#cal-x').innerHTML = Array.from({ length: weeks }, (_, w) => { const d = allDays[Math.max(0, w * 7 - lead)]; return `<span>${d.getDate() <= 7 ? MON[d.getMonth()] : ''}</span>`; }).join('');
+$('#legend').innerHTML = `Less ${[.22, .45, .7, 1].map(o => `<i style="opacity:${o}"></i>`).join('')} More &nbsp;·&nbsp; 空心 = 那天没有听歌 &nbsp;·&nbsp; 外框 = 听得最久的两天`;
+const zeros = days.filter(d => d.v === 0);
+$('#cal-say').innerHTML = `从 1 月 1 日到 ${md(bestEnd)}，你连续 <b>${best}</b> 天没有一天不听歌。` +
+  `<span class="dim">整整半年。直到 ${md(zeros[0].t)}，才第一次空了一天。今年一共只空了 ${zeros.length} 天。</span>`;
 
-/* ---------- A3 迟到的红心 ---------- */
-const old = L.filter(x => rankOf[x.id] && x !== sot && x.y !== Y).sort((a, b) => rankOf[a.id] - rankOf[b.id])[0];
-if (old) {
-  $('#old').innerHTML = `<div class="sot">${art(old.pic, 900)}
-    <div class="info"><span class="cap">All-time No. ${pad2(rankOf[old.id])}</span><h3>${old.n}</h3>
-      <p class="cap" style="opacity:.7">${old.a.join(' / ')}</p>
-      <div class="pc xl tnum">${pcOf[old.id]}</div><span class="cap">plays before the like</span>
-      <p class="why">这是你听得第 ${rankOf[old.id]} 多的歌。听了 ${pcOf[old.id]} 遍，直到 ${md(old.at)}，你才终于给它点了红心。</p></div></div>`;
-  paint($('#old-sec'), old.pic);
-} else $('#old-sec').remove();
+/* ---------- 03 深夜与最长的一天 ---------- */
+const lt = dt(latest.t);
+$('#late-t').textContent = `${pad2(lt.getHours())}:${pad2(lt.getMinutes())}`;
+const sameDay = topDays.find(d => d.t.toDateString() === new Date(lt.getFullYear(), lt.getMonth(), lt.getDate()).toDateString());
+$('#late-say').innerHTML = `今年最晚的一次，是 ${md(latest.t)}凌晨 ${lt.getHours()}:${pad2(lt.getMinutes())}，你还在听歌。` +
+  `<span class="dim">${sameDay ? `那一天你一共听了 ${hm(sameDay.v)}。` : ''}那个月，你把《${latest.m.topSong.n}》放了 ${latest.m.topSong.pc} 遍。</span>`;
+$('#nights').innerHTML = late.map(x => { const d = dt(x.t); return `<div class="${x === latest ? 'late' : ''}">${MON[x.i]}<b class="xl tnum">${pad2(d.getHours())}:${pad2(d.getMinutes())}</b>
+  ${art(x.m.topSong.pic, 160, tip(x.m.topSong))}</div>`; }).join('');
+$('#duo').innerHTML = topDays.slice(0, 2).map((d, i) => { const hrs = Math.min(24, Math.round(d.v / 60));
+  return `<div><span class="cap">${i ? 'Runner-up' : 'The longest day'} · ${['最长的一天', '第二长的一天'][i]}</span>
+    <div class="d xl tnum">${d.t.getMonth() + 1}.${d.t.getDate()}</div>
+    <p class="say" style="font-size:22px">${hm(d.v)}<span class="dim"> — 一天 24 小时里的 ${Math.round(d.v / 14.4)}%</span></p>
+    <div class="bar24">${Array.from({ length: 24 }, (_, h) => `<i class="${h < hrs ? 'on' : ''}"></i>`).join('')}</div></div>`; }).join('');
 
-/* ---------- A4 月份 ---------- */
+/* ---------- 04 一天之中 ---------- */
+const PN = { early_morning: ['清晨', 'Early'], morning: ['上午', 'Morning'], noon: ['中午', 'Noon'], afternoon: ['下午', 'Afternoon'], night: ['晚上', 'Evening'], deep_night: ['深夜', 'Late night'] };
+const per = {}; LS.months.forEach(m => m.periods.forEach(([k, v]) => per[k] = (per[k] || 0) + v));
+const psum = Object.values(per).reduce((a, b) => a + b, 0);
+const order = ['early_morning', 'morning', 'noon', 'afternoon', 'night', 'deep_night'];
+const ppk = order.reduce((a, b) => per[b] > per[a] ? b : a);
+$('#dstrip').innerHTML = order.map(k => `<div class="${k === ppk ? 'pk' : ''}" style="flex:${Math.max(per[k], psum * .05)}">
+  <span class="cap">${PN[k][1]}<br><span class="zh">${PN[k][0]}</span></span><b class="xl tnum">${Math.round(per[k] / psum * 100)}%</b></div>`).join('');
+$('#dp-say').innerHTML = `你最常在<b>${PN[ppk][0]}</b>听歌，占了全天的 ${Math.round(per[ppk] / psum * 100)}%。` +
+  `<span class="dim">深夜也不少：今年有 ${fmt(per.deep_night / 60)} 个小时，是在别人睡着之后听的。</span>`;
+
+/* ---------- 05 每月 ---------- */
+const mmax = Math.max(...MS.map(m => m.min));
+const allM = Array.from({ length: 12 }, (_, i) => MS[i] || null);
+$('#mbar').innerHTML = allM.map((m, i) => m ? `<div class="${i === now.getMonth() ? 'part' : ''}"><b class="tnum">${fmt(m.min / 60)}h</b><i style="height:${m.min / mmax * 240}px"></i></div>` : '<div class="fut"><b>—</b><i style="height:2px"></i></div>').join('');
+$('#mtop').innerHTML = allM.map((m, i) => `<div>${MON[i]}${m && m.topSong ? `${art(m.topSong.pic, 200, tip(m.topSong))}<p class="t">${m.topSong.n}</p><p class="p tnum">${m.topSong.pc}×</p>` : ''}</div>`).join('');
+const mpk = MS.reduce((a, b) => b.min > a.min ? b : a), mlow = LS.months.reduce((a, b) => b.min < a.min ? b : a);
+$('#mo-say').innerHTML = `${dt(mpk.start + 864e5).getMonth() + 1} 月听得最多，${fmt(mpk.min / 60)} 小时；${dt(mlow.start + 864e5).getMonth() + 1} 月最少，${fmt(mlow.min / 60)} 小时。` +
+  `<span class="dim">下面是每个月循环最多的那首歌。</span>`;
+
+/* ---------- 06 年度之歌 ---------- */
+const SP = {};   // 把每月 Top1 + Top2–4 的播放次数加起来
+LS.months.forEach(m => { if (!m.topSong) return; const t = m.topSong;
+  [[t.n, t.pic, t.pc, t.a, t], ...t.more.map(x => [x[0], x[1], parseInt(x[2]), null, null])].forEach(([n, pic, pc, a, full]) => {
+    const k = n + '|' + pic; SP[k] = SP[k] || { n, pic, pc: 0, a, months: [], full }; SP[k].pc += pc || 0; SP[k].months.push(MON[LS.months.indexOf(m)]); if (full) SP[k].full = full; if (a) SP[k].a = a; }); });
+const songs = Object.values(SP).sort((a, b) => b.pc - a.pc), S1 = songs[0];
+const first = S1.full?.items.find(x => x[0] === '第一次听');
+const likedS1 = D.liked.find(s => s.n === S1.n);
+const allTimePc = (D.allTime.find(s => s.n === S1.n) || {}).pc;
+$('#sot').innerHTML = `<div class="sot">${art(S1.pic, 900)}
+  <div class="info"><span class="cap">Song of ${Y}</span><h3>${S1.n}</h3><p class="cap" style="opacity:.7">${(S1.a || []).join(' / ')}</p>
+    <div class="pc xl tnum">${S1.pc}</div><span class="cap">plays in ${S1.months.join(', ')}</span>
+    <p class="why">${S1.months.length === 1 ? `光是 ${S1.months[0] === 'Jan' ? '1 月' : S1.months[0]}一个月，你就把它放了 ${S1.pc} 遍${allTimePc ? `——它全部 ${allTimePc} 次播放里的 ${Math.round(S1.pc / allTimePc * 100)}%` : ''}。` : `今年你把它放了至少 ${S1.pc} 遍。`}
+    ${first ? `你第一次听它，是 ${first[1]}，一个${first[2]}。` : ''}${likedS1 && dt(likedS1.at).getFullYear() === Y ? `直到${md(likedS1.at)}，你才给它点了红心。` : ''}</p></div></div>
+  <div class="runners">${songs.slice(1, 5).map((s, i) => `<div>${art(s.pic, 300)}<p class="t">${s.n}</p><p class="p cap">No. ${i + 2} · ${s.pc} plays · ${s.months.join(' ')}</p></div>`).join('')}</div>`;
+paint($('#sot-sec'), S1.pic);
+
+/* ---------- 07 年度艺人 ---------- */
+const AP = {};
+LS.months.forEach((m, i) => { if (!m.topArtist) return; const t = m.topArtist;
+  const add = (n, pic, pc, top) => { AP[n] = AP[n] || { n, pic, pc: 0, tops: [] }; AP[n].pc += pc || 0; if (top) AP[n].tops.push(MON[i]); };
+  add(t.n, t.pic, t.pc, true); t.more.forEach(x => /次收听/.test(x[2]) && add(x[0], x[1], parseInt(x[2]), false)); });
+const arts = Object.values(AP).sort((a, b) => b.tops.length - a.tops.length || b.pc - a.pc), A1 = arts[0];
+const mins1 = LS.months.filter(m => m.topArtist?.n === A1.n).reduce((s, m) => s + parseInt(m.topArtist.items[1][1]), 0);
+$('#art').innerHTML = `<div class="ahero">${art(A1.pic, 600)}<div class="info"><span class="cap">Artist of ${Y}</span><h3>${A1.n}</h3>
+  <p class="say" style="margin-top:24px">${A1.tops.length} 个月的月度歌手。<span class="dim">${A1.tops.map(MZH).join('、')}——光是这几个月就听了 TA ${fmt(mins1 / 60)} 个小时，至少 ${A1.pc} 次。</span></p></div></div>
+  <p class="cap" style="margin-top:72px;border-top:1px solid currentColor;padding-top:12px">Artist of the month · 每月最常听的艺人</p>
+  <div class="mart">${LS.months.map((m, i) => m.topArtist ? `<div class="${m.topArtist.n === A1.n ? 'hl' : ''}">${art(m.topArtist.pic, 200)}<p class="n">${m.topArtist.n}</p><p class="m cap">${MON[i]} · ${m.topArtist.pc}×</p></div>` : '').join('')}</div>`;
+paint($('#art-sec'), A1.pic);
+
+/* ---------- 08 口味 ---------- */
+const agg = (key, fn) => { const o = {}; LS.months.forEach(m => (m[key] && fn(m[key]) || []).forEach(([k, v]) => o[k] = (o[k] || 0) + v)); return Object.entries(o).sort((a, b) => b[1] - a[1]); };
+const langs = agg('lang', l => l.map(x => [x[0], x[2]]));
+const genres = agg('genre', g => g.secs);
+const eras = agg('age', a => a.secs.map(x => [x[0] + 's', x[1]]));
+const blk = (title, rows, unit) => { const s = rows.reduce((a, b) => a + b[1], 0);
+  return `<div class="blk"><span class="cap">${title}</span><div class="stack">${rows.map(r => `<i style="flex:${r[1]}"></i>`).join('')}</div>
+    <ul>${rows.slice(0, 4).map(r => `<li><span>${r[0]}</span><b class="tnum">${Math.round(r[1] / s * 100)}%</b></li>`).join('')}</ul></div>`; };
+$('#taste').innerHTML = blk('Language · 语言', langs) + blk('Genre · 曲风', genres) + blk('Era · 发行年代', eras);
+const ls = langs.reduce((a, b) => a + b[1], 0), canto = langs.find(l => l[0] === '粤语');
+const cantoHi = LS.months.map((m, i) => (m.lang || []).find(x => x[0] === '粤语' && x[1] >= 28) ? (i + 1) + ' 月' : null).filter(Boolean);
+const olds = LS.months.map(m => m.age?.oldest).filter(Boolean).sort((a, b) => a.y - b.y)[0];
+$('#ta-say').innerHTML = `华语占 ${Math.round(langs[0][1] / ls * 100)}%。<span class="dim">${canto ? `粤语有 ${Math.round(canto[1] / ls * 100)}%${cantoHi.length ? `——${cantoHi.join('和')}，粤语一度占到三成` : ''}。` : ''}最常听的是 ${eras[0][0]} 的歌。</span>`;
+$('#oldest').innerHTML = `${art(olds.pic, 240)}<div><span class="cap">Oldest song you played · 今年听过最老的歌</span>
+  <p class="say" style="margin-top:8px">${olds.n}<span class="dim"> — ${olds.y} 年。比你听它的这一年早了 ${Y - olds.y} 年。</span></p></div>`;
+
+/* ---------- 09 红心 ---------- */
 const M = Array.from({ length: 12 }, () => []); L.forEach(s => M[dt(s.at).getMonth()].push(s));
-const pk = M.reduce((a, b, i) => b.length > M[a].length ? i : a, 0);
-const past = live ? now.getMonth() : 12;
-const low = M.slice(0, past).reduce((a, b, i) => b.length < M[a].length ? i : a, 0);
-$('#months').innerHTML = M.map((list, i) => `<div class="m ${live && i > now.getMonth() ? 'fut' : ''}">${list.map(s => `<img src="${img(s.pic, 120)}" alt="" ${tip(s)} loading="lazy">`).join('')}</div>`).join('');
-$('#months-x').innerHTML = M.map((l, i) => `<span>${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][i]}<b class="xl tnum">${live && i > now.getMonth() ? '—' : l.length}</b></span>`).join('');
-$('#m-say').innerHTML = `${pk + 1} 月最贪心，收了 ${M[pk].length} 首。<span class="dim">${low + 1} 月最安静，只有 ${M[low].length} 首。每一格是一张你点了红心的唱片。</span>`;
-
-/* ---------- A5 那两天 ---------- */
-const byDay = {}; L.forEach(s => (byDay[doy(s.at)] = byDay[doy(s.at)] || []).push(s));
-const days = Object.values(byDay).sort((a, b) => b.length - a.length || a[0].at - b[0].at).slice(0, 2).sort((a, b) => a[0].at - b[0].at);
-const mmss = s => `${Math.floor(s.dt / 60)}:${pad2(s.dt % 60)}`;
-const tag = list => list.filter(s => /Symphony|Concerto|Op\.|Sonata|Menuet/i.test(s.n)).length >= list.length / 2 ? '一个交响乐的下午'
-  : list.every(s => lang(s) === 'west') && Math.max(...list.map(s => s.y || 0)) < 2015 ? '回到 2000 年代的欧美' : '同一天，同一种心情';
-$('#days').innerHTML = days.map(l => `<div class="day"><div class="d xl tnum">${dt(l[0].at).getMonth() + 1}.${dt(l[0].at).getDate()}</div>
-  <span class="cap">${l.length} songs · ${tag(l)}</span>
-  <div class="quad">${l.slice(0, 4).map(s => art(s.pic, 300, tip(s))).join('')}</div>
-  <ol>${l.map(s => `<li><span>${s.n}<small>${s.a.join(' / ')}</small></span><span class="cap tnum">${mmss(s)}</span></li>`).join('')}</ol></div>`).join('');
-$('#d-say').innerHTML = days.length > 1
-  ? `有两天，你一口气点了 ${days[0].length} 首。<span class="dim">${md(days[0][0].at)}是${tag(days[0])}，${md(days[1][0].at)}${tag(days[1])}。</span>`
-  : `${md(days[0][0].at)}，你一口气点了 ${days[0].length} 首。`;
-
-/* ---------- A6 同名 ---------- */
-const norm = n => n.replace(/[（(].*?[)）]/g, '').trim();
-const G = {}; L.forEach(s => (G[norm(s.n)] = G[norm(s.n)] || []).push(s));
+$('#months').innerHTML = M.map((list, i) => `<div class="m ${i > now.getMonth() ? 'fut' : ''}">${list.map(s => `<img src="${img(s.pic, 120)}" alt="" ${tip(s)} loading="lazy">`).join('')}</div>`).join('');
+$('#months-x').innerHTML = M.map((l, i) => `<span>${MON[i]}<b class="xl tnum">${i > now.getMonth() ? '—' : l.length}</b></span>`).join('');
+const ch = (D.liked.find(s => s.n === S1.n) || {});
+const likedPlays = LS.months.map(m => +(sec(m, 'maxPlayChannel') || [0, 0, 0])[2]).reduce((a, b) => a + b, 0);
+$('#lk-say').innerHTML = `今年点了 ${N} 颗新的红心。<span class="dim">你的听歌时间里，有 ${Math.round(likedPlays / 60 / totalMin * 100)}% 是在“我喜欢的音乐”里度过的。每一格是一张唱片。</span>`;
+// 小注：同名的歌、收得最多的那天
+const norm = n => n.replace(/[（(].*?[)）]/g, '').trim(), G = {}; L.forEach(s => (G[norm(s.n)] = G[norm(s.n)] || []).push(s));
 const rep = Object.entries(G).filter(([, v]) => v.length > 1).sort((a, b) => b[1].length - a[1].length)[0];
-if (rep) {
-  const [t, list] = rep;
-  $('#same').innerHTML = `<p class="say">今年你收藏了 ${list.length} 首都叫《${t}》的歌。<span class="dim">不是同一首——是 ${list.length} 个不同的版本。</span></p>
-    <div class="same">${list.map((s, i) => `<div>${art(s.pic, 600)}<div class="w ${i ? 'o' : ''}">${t}</div>
-      <p class="who">${s.a.join(' / ')}</p><p class="cap" style="opacity:.6;margin-top:4px">${md(s.at)}</p></div>`).join('')}</div>`;
-  paint($('#same-sec'), list[0].pic);
-} else $('#same-sec').remove();
+const byDay = {}; L.forEach(s => (byDay[dt(s.at).toDateString()] = byDay[dt(s.at).toDateString()] || []).push(s));
+const bd = Object.values(byDay).sort((a, b) => b.length - a.length || a[0].at - b[0].at).slice(0, 2).sort((a, b) => a[0].at - b[0].at);
+const tag = l => l.filter(s => /Symphony|Concerto|Op\.|Sonata/i.test(s.n)).length >= l.length / 2 ? '一个交响乐的下午' : '回到 2000 年代的欧美';
+$('#notes').innerHTML = (rep ? `<div class="note"><span class="cap">Same title · 同名</span><h4 class="xl">×${rep[1].length}</h4>
+  <div class="quad">${rep[1].slice(0, 4).map(s => art(s.pic, 200, tip(s))).join('')}</div>
+  <p>你收藏了 ${rep[1].length} 首都叫《${rep[0]}》的歌，来自 ${rep[1].map(s => s.a[0]).join('、')}。</p></div>` : '') +
+  bd.map(l => `<div class="note"><span class="cap">${dt(l[0].at).getMonth() + 1}.${dt(l[0].at).getDate()} · ${l.length} likes in one day</span><h4 class="xl tnum">${dt(l[0].at).getMonth() + 1}.${dt(l[0].at).getDate()}</h4>
+  <div class="quad">${l.slice(0, 4).map(s => art(s.pic, 200, tip(s))).join('')}</div><p>${tag(l)}：${l.map(s => '《' + s.n.replace(/:.*$/, '').slice(0, 22) + '》').join('')}</p></div>`).join('');
 
-/* ---------- B1 艺人 ---------- */
-const AC = {}; L.forEach(s => s.a.forEach(a => (AC[a] = AC[a] || []).push(s)));
-const topA = Object.entries(AC).sort((a, b) => b[1].length - a[1].length).slice(0, 7);
-$('#arts').innerHTML = topA.map(([a, l], i) => `<li><span class="cap tnum">${pad2(i + 1)}</span>
-  <span class="nm" style="grid-column: span 2">${a}</span>
-  <span class="covers">${l.slice(0, 3).map(s => art(s.pic, 150, tip(s))).join('')}</span></li>`).join('');
-const life = {}; D.allTime.forEach(s => s.a.forEach(a => life[a] = (life[a] || 0) + (s.pc || 0)));
-const king = Object.entries(life).sort((a, b) => b[1] - a[1])[0];
-const tied = topA.filter(x => x[1].length === topA[0][1].length).map(x => x[0]);
-$('#ar-say').innerHTML = `今年红心最多的是${tied.join('和')}，${tied.length > 1 ? '并列 ' : ''}${topA[0][1].length} 首。` +
-  (king ? `<span class="dim">而${king[0]}在你的常听榜上累计 ${king[1].toLocaleString()} 次——不靠新歌，也一直都在。</span>` : '');
-
-/* ---------- B2 语言 ---------- */
-const LG = { zh: [], west: [], asia: [] }; L.forEach(s => { const l = lang(s); (l === 'ko' || l === 'ja' ? LG.asia : LG[l]).push(s); });
-const groups = [['中文', LG.zh], ['西文', LG.west], ['日韩', LG.asia]].filter(g => g[1].length);
-$('#langs').style.gridTemplateColumns = groups.map(g => `${Math.max(g[1].length, 8)}fr`).join(' ');
-$('#langs').innerHTML = groups.map(([n, l]) => `<div class="grp"><div class="lab"><span class="cap">${n}</span><b class="xl tnum">${l.length}</b></div>
-  <div class="tiles">${l.map(s => art(s.pic, 120, tip(s))).join('')}</div></div>`).join('');
-const musical = L.filter(s => /Hamilton|Op[ée]ra|Musical|Don Juan|Rom[ée]o|Mozart!|音乐剧|Broadway/i.test(s.al + s.a.join())).length;
-$('#l-say').innerHTML = `中文占 ${Math.round(LG.zh.length / N * 100)}%。<span class="dim">剩下的大多是英文${musical ? `，还有法语和德语——今年你收了 ${musical} 首音乐剧` : ''}。</span>`;
-
-/* ---------- B3 时间旅行 ---------- */
-const ys = L.filter(s => s.y > 1900), lo = Math.floor(Math.min(...ys.map(s => s.y)) / 10) * 10, hi = Y + 2;
-const avg = Math.round(ys.reduce((s, x) => s + x.y, 0) / ys.length), X = y => (y - lo) / (hi - lo) * 100;
-const st = {};
-$('#axis').innerHTML = ys.sort((a, b) => a.y - b.y).map(s => { st[s.y] = (st[s.y] || 0) + 1;
-  return `<img src="${img(s.pic, 80)}" alt="" ${tip(s)} style="left:${X(s.y)}%;bottom:${(st[s.y] - 1) * 33 + 3}px" loading="lazy">`; }).join('') +
-  `<div class="avg cap" style="left:${X(avg)}%"><span>Avg. ${avg}</span></div>`;
-let ax = ''; for (let y = lo; y <= Y; y += 10) ax += `<span style="left:${X(y)}%">${y}</span>`;
-$('#axis-x').innerHTML = ax;
-const oldest = ys[0];
-$('#t-say').innerHTML = `平均发行年份是 ${avg}。<span class="dim">今年真正发行的新歌只有 ${ys.filter(s => s.y === Y).length} 首，最老的录音来自 ${oldest.y} 年。你的 ${Y}，大多在听过去。</span>`;
-
-/* ---------- B4 时刻 ---------- */
-const H = Array(24).fill(0); L.forEach(s => H[dt(s.at).getHours()]++);
-const hp = H.indexOf(Math.max(...H));
-$('#hours').innerHTML = H.map((n, i) => `<div class="${i === hp ? 'pk' : ''}" style="height:${n / H[hp] * 100}%" title="${i}:00 · ${n}"></div>`).join('');
-$('#hours-x').innerHTML = H.map((_, i) => `<span>${i % 3 ? '' : pad2(i)}</span>`).join('');
-const am = H.slice(6, 12).reduce((a, b) => a + b, 0), night = [...H.slice(21), ...H.slice(0, 3)].reduce((a, b) => a + b, 0);
-$('#h-say').innerHTML = `你最常在 ${hp}:00 点下红心。<span class="dim">${am > night ? `上午收的歌比深夜多，${am} 比 ${night}——你不是夜里才想起音乐的人。` : `深夜比上午多，${night} 比 ${am}。`}</span>`;
-
-/* ---------- B5 此刻 ---------- */
+/* ---------- 10 此刻 ---------- */
 const wc = {}; D.week.forEach(s => s.a.forEach(a => wc[a] = (wc[a] || 0) + 1));
 const [wa, wn] = Object.entries(wc).sort((a, b) => b[1] - a[1])[0];
+$('#n-say').innerHTML = `写到这里是 ${now.getMonth() + 1} 月 ${now.getDate()} 日。<span class="dim">这个月你已经听了 ${fmt(LS.nov.min / 60)} 小时，又连续听了 ${curStreak} 天。最近七天，${wa}出现了 ${wn} 次（亮着的那些）。</span>`;
+$('#n-kpi').innerHTML = `<div>November<b class="xl tnum">${fmt(LS.nov.min / 60)}h</b><small>本月至今</small></div>
+  <div>Streak<b class="xl tnum">${curStreak}</b><small>当前连续听歌天数</small></div>
+  <div>On repeat<b class="xl tnum">${D.week[0].pc || ''}×</b><small>《${D.week[0].n}》本周</small></div>
+  <div>Left<b class="xl tnum">${Math.round((new Date(Y, 11, 31) - now) / 864e5)}</b><small>今年还剩的天数</small></div>`;
 $('#now').innerHTML = D.week.slice(0, 50).map(s => `<img class="art ${s.a.includes(wa) ? '' : 'dim'}" src="${img(s.pic, 160)}" alt="" ${tip(s)} loading="lazy">`).join('');
-$('#n-say').innerHTML = `写到这里是 ${now.getMonth() + 1} 月 ${now.getDate()} 日。<span class="dim">最近七天，${wa}出现了 ${wn} 次（亮着的那些）。循环最多的是《${D.week[0].n}》。</span>`;
 paint($('#now-sec'), D.week.find(s => s.a.includes(wa)).pic);
 
 /* ---------- 封底 ---------- */
-$('#b-h').textContent = `${N} Tracks`;
+$('#b-h').textContent = `${N} Likes`;
 let html = '', lm = -1;
-L.forEach((s, i) => {
-  const m = dt(s.at).getMonth();
+L.forEach((s, i) => { const m = dt(s.at).getMonth();
   if (m !== lm) { html += `<li class="mo cap">${['January','February','March','April','May','June','July','August','September','October','November','December'][m]}</li>`; lm = m; }
-  html += `<li><span class="cap tnum">${pad2(i + 1)}</span>${art(s.pic, 80)}<span class="t"><b>${s.n}</b><span>${s.a.join(' / ')}</span></span><span class="cap tnum" style="text-align:right">${pad2(m + 1)}.${pad2(dt(s.at).getDate())}</span></li>`;
-});
+  html += `<li><span class="cap tnum">${pad2(i + 1)}</span>${art(s.pic, 80)}<span class="t"><b>${s.n}</b><span>${s.a.join(' / ')}</span></span><span class="cap tnum" style="text-align:right">${pad2(m + 1)}.${pad2(dt(s.at).getDate())}</span></li>`; });
 $('#liner').innerHTML = html;
-const left = live ? Math.round((new Date(Y, 11, 31) - now) / 864e5) : 0;
-$('#e-big').textContent = left ? `还剩 ${left} 天，B 面还没写完。` : `${Y}，收录完毕。`;
-$('#e-small').innerHTML = `数据来自网易云音乐，截至 ${now.getFullYear()}.${now.getMonth() + 1}.${now.getDate()}。网易云不提供按年统计的播放次数，所以这份报告以点红心的时间为主线，播放次数取自“所有时间”排行。<br><br><a href="../">回到 Listening →</a>`;
+const left = Math.round((new Date(Y, 11, 31) - now) / 864e5);
+$('#e-big').textContent = left > 0 ? `还剩 ${left} 天，这一年还没听完。` : `${Y}，收录完毕。`;
+$('#e-small').innerHTML = `数据来自网易云音乐，截至 ${now.getFullYear()}.${now.getMonth() + 1}.${now.getDate()}。听歌时长、年历、时段、深夜与每月主打来自网易云的月度听歌报告；年度之歌与年度艺人由每月前几名的播放次数累加得出，是下限而不是全量。<br><br><a href="../">回到 Listening →</a>`;
 
-/* ---------- 滚动：章节换色 + 进度 + 进场 ---------- */
+/* ---------- 滚动：章节换色 + 进度 + 目录 ---------- */
 const secs = [...document.querySelectorAll('.ch')];
-const setBg = () => {
+$('#toc').innerHTML = secs.map((s, i) => `<a href="#" title="${s.dataset.t}" data-i="${i}"></a>`).join('');
+$('#toc').onclick = e => { const i = e.target.dataset.i; if (i !== undefined) { e.preventDefault(); scrollTo({ top: secs[i].offsetTop, behavior: 'smooth' }); } };
+function setBg() {
   const mid = innerHeight * .5;
-  const cur = secs.find(s => { const r = s.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; });
+  const ci = secs.findIndex(s => { const r = s.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; }), cur = secs[ci];
   document.body.style.background = cur?.dataset.bg || '#000';
   document.body.style.color = cur?.dataset.fg || '#fff';
+  document.querySelectorAll('#toc a').forEach((a, i) => a.classList.toggle('on', i === ci));
   const h = document.documentElement; $('#prog').style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
-};
+}
 document.body.style.transition = 'background-color .8s ease, color .8s ease';
 addEventListener('scroll', setBg, { passive: true }); setBg();
-const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && (e.target.classList.add('in'), io.unobserve(e.target))), { threshold: .08 });
+const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && (e.target.classList.add('in'), io.unobserve(e.target))), { threshold: .06 });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
 </body>
