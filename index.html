@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JoniLin — Listening</title>
+<meta name="referrer" content="no-referrer">
+<link rel="stylesheet" href="assets/base.css">
+<style>
+/* ---------- 顶栏：NTS 式黑色细条 ---------- */
+.top { position: sticky; top: 0; z-index: 20; background: var(--fg); color: var(--bg); height: 40px; display: flex; align-items: center; justify-content: space-between; }
+.top nav { display: flex; gap: 24px; }
+.top nav a { opacity: .6; transition: opacity .2s; }
+.top nav a:hover, .top nav a.on { opacity: 1; }
+.top .live { display: flex; align-items: center; gap: 10px; }
+.top .live i { width: 8px; height: 8px; background: #fff; border-radius: 50%; animation: blink 1.6s steps(2) infinite; }
+@keyframes blink { 50% { opacity: .2; } }
+
+/* ---------- 首屏 ---------- */
+.hero { padding-top: 28px; }
+.hero-meta { display: flex; justify-content: space-between; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.hero h1 { font-size: clamp(120px, 24vw, 380px); margin: 28px 0 0 -0.04em; }
+.hero h1 { display: flex; align-items: flex-start; gap: .12em; }
+.hero h1 .unit { font-size: .13em; font-stretch: 100%; line-height: 1.1; letter-spacing: 0; padding-top: .5em; }
+.hero h1 .unit .zh { display: block; font-weight: 700; margin-top: .3em; }
+.stats { display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid var(--line); margin-top: 28px; }
+.stats div { padding: 14px 0 18px; border-right: 1px solid var(--hair); padding-right: 12px; }
+.stats div + div { padding-left: 16px; }
+.stats div:last-child { border-right: 0; }
+.stats b { display: block; font-size: 40px; font-stretch: 75%; font-weight: 700; line-height: 1; margin-top: 10px; }
+.wall { display: grid; grid-template-columns: repeat(12, 1fr); margin-top: 40px; }
+.wall a { position: relative; display: block; }
+.wall a::after { content: attr(data-r); position: absolute; left: 6px; top: 5px; color: #fff; font-size: 10px; font-weight: 700; mix-blend-mode: difference; opacity: 0; transition: opacity .2s; }
+.wall a:hover::after { opacity: 1; }
+.wall a:hover img { filter: brightness(.85); }
+
+/* ---------- 章节 ---------- */
+.sec { padding-top: 120px; }
+.sec-h { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--pad); border-top: 1px solid var(--line); padding-top: 14px; margin-bottom: 40px; }
+.sec-h .n { grid-column: 1 / 3; }
+.sec-h h2 { grid-column: 3 / 9; font-size: clamp(56px, 8vw, 128px); }
+.sec-h h2 small { display: block; font-family: var(--cjk); font-size: 20px; font-weight: 600; letter-spacing: 0; text-transform: none; margin-top: 14px; line-height: 1.3; }
+.sec-h p { grid-column: 9 / 13; color: var(--g3); font-family: var(--cjk); font-size: 13px; padding-top: 6px; }
+
+/* ---------- 01 TOP ---------- */
+.no1 { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--pad); align-items: end; }
+.no1 .art { grid-column: 1 / 7; }
+.no1 .info { grid-column: 7 / 13; }
+.no1 .big { font-size: clamp(140px, 18vw, 300px); }
+.no1 h3 { font-family: var(--cjk); font-size: clamp(28px, 3vw, 44px); font-weight: 700; line-height: 1.1; margin-top: 18px; }
+.no1 .by { font-family: var(--cjk); color: var(--g3); margin-top: 8px; }
+.list { margin-top: 56px; border-top: 1px solid var(--line); }
+.row { display: grid; grid-template-columns: 48px 52px minmax(0, 4fr) minmax(0, 3fr) minmax(0, 3fr) 72px; gap: 16px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--hair); }
+.row:hover { background: var(--g1); }
+.row .r { font-weight: 600; font-size: 12px; }
+.row .art { width: 52px; }
+.row .t { font-family: var(--cjk); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row .a { font-family: var(--cjk); color: var(--g3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row .b { height: 6px; background: var(--g1); position: relative; }
+.row .b i { position: absolute; inset: 0 auto 0 0; background: var(--fg); }
+.row .p { text-align: right; font-weight: 600; }
+.btn { display: inline-block; margin-top: 20px; padding: 12px 20px; background: var(--fg); color: var(--bg); border: 0; cursor: pointer; font: inherit; }
+.btn:hover { background: #333; }
+
+/* ---------- 02 ARTISTS ---------- */
+.artists { border-top: 1px solid var(--line); }
+.artists li { display: grid; grid-template-columns: 48px 56px minmax(0, 3fr) minmax(0, 6fr) 80px; gap: 16px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--hair); }
+.artists .nm { font-family: var(--cjk); font-weight: 700; font-size: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.artists li:nth-child(-n+3) .nm { font-size: 30px; }
+.artists .bar { height: 22px; background: var(--fg); }
+.artists .art { width: 56px; }
+
+/* ---------- 03 YEARS ---------- */
+.years { display: grid; align-items: end; gap: 8px; height: 360px; border-bottom: 1px solid var(--line); }
+.years .c { height: 100%; display: flex; flex-direction: column; justify-content: flex-end; }
+.years .c b { font-size: 44px; font-stretch: 70%; font-weight: 700; line-height: 1; margin-bottom: 8px; }
+.years .c i { display: block; background: var(--g2); }
+.years .c.pk i { background: var(--fg); }
+.years .c.now i { background: repeating-linear-gradient(-45deg, var(--fg) 0 2px, transparent 2px 6px); }
+.years-x { display: grid; gap: 8px; margin-top: 10px; }
+.note { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--pad); margin-top: 40px; }
+.note p { grid-column: 3 / 10; font-family: var(--cjk); font-size: 20px; font-weight: 500; line-height: 1.55; }
+
+/* ---------- 04 DECADES ---------- */
+.dec { display: flex; height: 160px; gap: 2px; }
+.dec div { display: flex; flex-direction: column; justify-content: space-between; padding: 12px; background: var(--g1); min-width: 0; overflow: hidden; }
+.dec div.pk { background: var(--fg); color: var(--bg); }
+.dec b { font-size: 56px; font-stretch: 62%; font-weight: 800; line-height: .9; }
+
+/* ---------- 05 WEEK ---------- */
+.week { display: grid; grid-template-columns: repeat(10, 1fr); }
+.week a { position: relative; display: block; overflow: hidden; }
+.week a.first { grid-column: span 4; grid-row: span 4; }
+.week .tip { position: absolute; inset: auto 0 0 0; background: var(--fg); color: var(--bg); padding: 8px; font-family: var(--cjk); font-size: 11px; line-height: 1.35; transform: translateY(100%); transition: transform .25s; }
+.week a:hover .tip, .week a.first .tip { transform: none; }
+.week a.first .tip { font-size: 14px; padding: 14px; }
+
+/* ---------- 06 PLAYLISTS ---------- */
+.pls { display: grid; grid-template-columns: repeat(6, 1fr); gap: 28px var(--pad); }
+.pls a .t { font-family: var(--cjk); font-weight: 600; margin-top: 10px; line-height: 1.3; }
+.pls a:hover .art { filter: brightness(.9); }
+.subs { margin-top: 64px; border-top: 1px solid var(--line); columns: 2; column-gap: var(--pad); }
+.subs li { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; border-bottom: 1px solid var(--hair); break-inside: avoid; font-family: var(--cjk); }
+.subs li span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---------- FOOT ---------- */
+.foot { margin-top: 160px; background: var(--fg); color: var(--bg); padding-top: 24px; padding-bottom: 32px; }
+.foot a.go { display: block; font-size: clamp(120px, 22vw, 360px); margin: 24px 0 0 -0.04em; transition: letter-spacing .4s; }
+.foot a.go:hover { letter-spacing: .02em; }
+.foot .row2 { display: flex; justify-content: space-between; border-top: 1px solid #333; padding-top: 14px; margin-top: 24px; }
+.foot code { font-family: ui-monospace, monospace; background: #222; padding: 2px 6px; }
+
+@media (max-width: 1000px) { .top nav { display: none; } }
+@media (max-width: 720px) {
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .stats div, .stats div + div { padding-left: 0; border-right: 0; border-bottom: 1px solid var(--hair); }
+  .wall { grid-template-columns: repeat(6, 1fr); }
+  .sec-h .n, .sec-h h2, .sec-h p, .no1 .art, .no1 .info, .note p { grid-column: 1 / 13; }
+  .row { grid-template-columns: 32px 44px minmax(0, 1fr) 56px; }
+  .row .a, .row .b { display: none; }
+  .artists li { grid-template-columns: 32px 44px minmax(0, 1fr) 60px; }
+  .artists .bar-w { display: none; }
+  .week { grid-template-columns: repeat(5, 1fr); }
+  .week a.first { grid-column: span 5; grid-row: auto; }
+  .pls { grid-template-columns: repeat(2, 1fr); }
+  .subs { columns: 1; }
+}
+</style>
+</head>
+<body>
+
+<header class="top pad cap">
+  <span class="live"><i></i><span id="t-left">JoniLin — Listening</span></span>
+  <nav><a href="#s1">Top 100</a><a href="#s2">Artists</a><a href="#s3">Likes</a><a href="#s4">Decades</a><a href="#s5">This Week</a><a href="#s6">Playlists</a></nav>
+  <a href="2026/">2026 Report →</a>
+</header>
+
+<main>
+  <section class="hero pad">
+    <div class="hero-meta cap"><span id="m1">—</span><span id="m2" class="g">—</span></div>
+    <h1 class="xl tnum reveal"><span id="h-num">—</span><span class="unit">Plays<span class="zh">累计听歌</span></span></h1>
+    <div class="stats cap" id="stats"></div>
+  </section>
+  <div class="wall" id="wall"></div>
+
+  <section class="sec pad" id="s1">
+    <div class="sec-h"><span class="n cap">01</span><h2 class="xl">Top 100<small>反复按下的那些</small></h2><p>网易云“所有时间”排行。右侧数字是累计播放次数，黑条按第一名的比例画。</p></div>
+    <div class="no1 reveal" id="no1"></div>
+    <ol class="list cap-none" id="list"></ol>
+    <button class="btn cap" id="more">Show all 100</button>
+  </section>
+
+  <section class="sec pad" id="s2">
+    <div class="sec-h"><span class="n cap">02</span><h2 class="xl">Artists<small>谁占据了你的耳朵</small></h2><p>把前 100 首的播放次数按艺人累加，封面是 TA 在你榜上最高的那首。</p></div>
+    <ol class="artists" id="artists"></ol>
+  </section>
+
+  <section class="sec pad" id="s3">
+    <div class="sec-h"><span class="n cap">03</span><h2 class="xl">Likes<small>每一年点下的红心</small></h2><p>“我喜欢的音乐”里每首歌被点红心的年份。斜纹表示这一年还没过完。</p></div>
+    <div class="years reveal" id="years"></div>
+    <div class="years-x cap g" id="years-x"></div>
+    <div class="note"><p id="years-note"></p></div>
+  </section>
+
+  <section class="sec pad" id="s4">
+    <div class="sec-h"><span class="n cap">04</span><h2 class="xl">Decades<small>你收藏的歌来自哪个年代</small></h2><p id="dec-note"></p></div>
+    <div class="dec reveal" id="dec"></div>
+  </section>
+
+  <section class="sec pad" id="s5">
+    <div class="sec-h"><span class="n cap">05</span><h2 class="xl">This Week<small>最近七天</small></h2><p id="week-note"></p></div>
+  </section>
+  <div class="week" id="week"></div>
+
+  <section class="sec pad" id="s6">
+    <div class="sec-h"><span class="n cap">06</span><h2 class="xl">Playlists<small>自建歌单</small></h2><p>你自己建的歌单，包括 2019 年以来每年的年度歌单。下方是收藏的歌单。</p></div>
+    <div class="pls" id="pls"></div>
+    <ul class="subs" id="subs"></ul>
+  </section>
+</main>
+
+<footer class="foot pad">
+  <div class="cap" style="display:flex;justify-content:space-between"><span>Next</span><span>Annual Report</span></div>
+  <a class="go xl" href="2026/">2026 →</a>
+  <div class="row2 cap"><span id="f1"></span><span>Refresh · <code>python3 fetch_data.py</code></span><span>Source · music.163.com</span></div>
+</footer>
+
+<script src="data/music.js"></script>
+<script>
+const D = window.MUSIC, $ = s => document.querySelector(s), P = D.profile;
+const fmt = n => (n || 0).toLocaleString('en-US');
+const pad2 = n => String(n).padStart(2, '0');
+const day = ms => { const d = new Date(ms); return `${d.getFullYear()}.${pad2(d.getMonth() + 1)}.${pad2(d.getDate())}`; };
+const img = (u, s = 200) => u ? `${u}?param=${s}y${s}` : '';
+const yearOf = ms => new Date(ms).getFullYear();
+const mine = D.playlists.filter(p => p.mine);
+const art = (u, s, cls = '') => `<img class="art ${cls}" src="${img(u, s)}" alt="" loading="lazy" crossorigin="anonymous">`;
+
+/* HERO */
+$('#t-left').textContent = `${P.nick} — Listening since ${yearOf(P.created)}`;
+$('#m1').textContent = `${P.nick} · UID ${P.uid}`;
+$('#m2').textContent = `Updated ${day(D.fetchedAt)}`;
+$('#h-num').textContent = fmt(P.listenSongs);
+const hours = Math.round(D.allTime.reduce((s, x) => s + (x.pc || 0) * x.dt, 0) / 3600);
+$('#stats').innerHTML = [
+  ['Since', day(P.created)], ['Days', fmt(P.createDays)], ['Hours in Top 100', fmt(hours)],
+  ['Liked', fmt(D.liked.length)], ['Level', 'Lv.' + P.level]
+].map(([k, v]) => `<div><span class="g">${k}</span><b class="tnum">${v}</b></div>`).join('');
+$('#wall').innerHTML = D.allTime.slice(0, 36).map((s, i) => `<a data-r="${pad2(i + 1)}" title="${s.n} — ${s.a.join(' / ')}" href="#s1">${art(s.pic, 240)}</a>`).join('');
+
+/* 01 */
+const no1 = D.allTime[0], max = no1.pc || 1;
+$('#no1').innerHTML = `${art(no1.pic, 900)}
+  <div class="info"><span class="cap">No. 01 · ${no1.y || ''}</span>
+    <div class="big xl tnum">${fmt(no1.pc)}</div><span class="cap g">plays</span>
+    <h3>${no1.n}</h3><p class="by">${no1.a.join(' / ')} — ${no1.al}</p></div>`;
+let shown = 25;
+const renderList = () => {
+  $('#list').innerHTML = D.allTime.slice(1, shown).map((s, i) => `<li class="row">
+    <span class="r tnum">${pad2(i + 2)}</span>${art(s.pic, 104)}
+    <span class="t">${s.n}</span><span class="a">${s.a.join(' / ')}</span>
+    <span class="b"><i style="width:${(s.pc || 0) / max * 100}%"></i></span><span class="p tnum">${fmt(s.pc)}</span></li>`).join('');
+  $('#more').textContent = shown >= D.allTime.length ? 'Collapse' : `Show all ${D.allTime.length}`;
+};
+$('#more').onclick = () => { shown = shown >= D.allTime.length ? 25 : D.allTime.length; renderList(); };
+renderList();
+
+/* 02 */
+const A = {};
+D.allTime.forEach(s => s.a.forEach(a => { A[a] = A[a] || { v: 0, pic: s.pic }; A[a].v += s.pc || 0; }));
+const arts = Object.entries(A).sort((a, b) => b[1].v - a[1].v).slice(0, 15), amax = arts[0][1].v;
+$('#artists').innerHTML = arts.map(([a, o], i) => `<li><span class="cap tnum">${pad2(i + 1)}</span>${art(o.pic, 112)}
+  <span class="nm">${a}</span><span class="bar-w"><span class="bar" style="display:block;width:${o.v / amax * 100}%"></span></span>
+  <span class="tnum" style="text-align:right;font-weight:600">${fmt(o.v)}</span></li>`).join('');
+
+/* 03 */
+const by = {}; D.liked.forEach(s => { const y = yearOf(s.at); by[y] = (by[y] || 0) + 1; });
+const yrs = []; for (let y = yearOf(P.created); y <= yearOf(D.fetchedAt); y++) yrs.push(y);
+const peak = yrs.reduce((a, b) => (by[b] || 0) > (by[a] || 0) ? b : a), nowY = yrs[yrs.length - 1];
+const ymax = Math.max(...yrs.map(y => by[y] || 0));
+['#years', '#years-x'].forEach(s => $(s).style.gridTemplateColumns = `repeat(${yrs.length}, 1fr)`);
+$('#years').innerHTML = yrs.map(y => `<div class="c ${y === peak ? 'pk' : ''} ${y === nowY ? 'now' : ''}">
+  <b class="tnum">${by[y] || 0}</b><i style="height:${Math.max(2, (by[y] || 0) / ymax * 270)}px"></i></div>`).join('');
+$('#years-x').innerHTML = yrs.map(y => `<span>${y}</span>`).join('');
+const quiet = yrs.filter(y => (by[y] || 0) <= 5);
+$('#years-note').innerHTML = `${peak} 年是点红心最多的一年，${by[peak]} 首，占全部 ${D.liked.length} 首的 ${Math.round(by[peak] / D.liked.length * 100)}%。` +
+  (quiet.length ? ` ${quiet[0]}–${quiet[quiet.length - 1]} 年几乎是空白，加起来只有 ${quiet.reduce((s, y) => s + (by[y] || 0), 0)} 首。` : '');
+
+/* 04 */
+const dc = {}; D.liked.forEach(s => { if (s.y > 1900) { const k = Math.floor(s.y / 10) * 10; dc[k] = (dc[k] || 0) + 1; } });
+const decs = Object.entries(dc).sort((a, b) => a[0] - b[0]), dsum = decs.reduce((s, d) => s + d[1], 0);
+const dpk = decs.reduce((a, b) => b[1] > a[1] ? b : a)[0];
+$('#dec').innerHTML = decs.map(([k, v]) => `<div class="${k === dpk ? 'pk' : ''}" style="flex:${v}" title="${k}s · ${v}">
+  <span class="cap">${v / dsum > .05 ? k + 's' : ''}</span><b class="tnum">${v / dsum > .05 ? Math.round(v / dsum * 100) + '%' : ''}</b></div>`).join('');
+const ys = D.liked.filter(s => s.y > 1900);
+$('#dec-note').textContent = `平均发行年份 ${Math.round(ys.reduce((s, x) => s + x.y, 0) / ys.length)}，最集中在 ${dpk} 年代。无年份信息的歌曲不计入。`;
+
+/* 05 */
+$('#week').innerHTML = D.week.slice(0, 64).map((s, i) => `<a class="${i === 0 ? 'first' : ''}" title="${s.n}">
+  ${art(s.pic, i === 0 ? 800 : 200)}<span class="tip"><b>${s.n}</b><br>${s.a.join(' / ')}${s.pc ? ` · ${s.pc}×` : ''}</span></a>`).join('');
+const wa = {}; D.week.forEach(s => s.a.forEach(a => wa[a] = (wa[a] || 0) + 1));
+const [wt, wn] = Object.entries(wa).sort((a, b) => b[1] - a[1])[0];
+$('#week-note').textContent = `这一周听了 ${D.week.length} 首，${wt} 出现 ${wn} 次。最常听的是《${D.week[0].n}》。`;
+
+/* 06 */
+$('#pls').innerHTML = mine.map(p => `<a href="https://music.163.com/#/playlist?id=${p.id}" target="_blank">
+  ${art(p.pic, 400)}<p class="t">${p.n.replace(/^@?(JoniLin|Ttttriangel|Ttttriangle)的?/, '')}</p><p class="cap g" style="margin-top:4px">${p.c} songs · ${yearOf(p.ct)}</p></a>`).join('');
+$('#subs').innerHTML = D.playlists.filter(p => !p.mine).map(p => `<li><span>${p.n}</span><span class="g tnum">${p.c}</span></li>`).join('');
+
+$('#f1').textContent = `Data · ${day(D.fetchedAt)}`;
+
+const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && (e.target.classList.add('in'), io.unobserve(e.target))), { threshold: .1 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026 — JoniLin</title>
+<meta name="referrer" content="no-referrer">
+<link rel="stylesheet" href="../assets/base.css">
+<style>
+/* 年度报告：黑底。每一章的底色从那一章主角的专辑封面里取。 */
+body { background: #000; color: #fff; }
+:root { --g3: #8A8A8A; --hair: #262626; --line: #fff; }
+::selection { background: #fff; color: #000; }
+
+.top { position: fixed; inset: 0 0 auto 0; z-index: 30; height: 40px; display: flex; align-items: center; justify-content: space-between; mix-blend-mode: difference; color: #fff; }
+.prog { position: fixed; left: 0; top: 0; height: 2px; background: #fff; z-index: 31; width: 0; mix-blend-mode: difference; }
+
+/* 每一章 */
+.ch { position: relative; min-height: 100vh; padding: 96px var(--pad) 80px; transition: background-color .8s ease, color .8s ease; }
+.ch-h { display: flex; justify-content: space-between; border-top: 1px solid currentColor; padding-top: 12px; margin-bottom: 48px; opacity: .9; }
+.say { font-family: var(--cjk); font-size: clamp(22px, 2.6vw, 36px); font-weight: 600; line-height: 1.4; max-width: 24em; }
+.say .dim { opacity: .5; }
+.small { font-family: var(--cjk); font-size: 13px; opacity: .6; max-width: 40em; }
+
+/* 封面：79 张封面铺满 */
+.cover { position: relative; height: 100vh; min-height: 640px; overflow: hidden; }
+.mosaic { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--cols, 12), 1fr); align-content: start; }
+.mosaic img { opacity: 0; transition: opacity .6s ease; }
+.mosaic img.on { opacity: .55; }
+.cover .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.2) 0%, rgba(0,0,0,.1) 40%, #000 92%); }
+.cover .ttl { position: absolute; left: var(--pad); right: var(--pad); bottom: 28px; }
+.cover h1 { font-size: clamp(180px, 34vw, 560px); margin-left: -.04em; }
+.cover .row { display: flex; justify-content: space-between; align-items: end; border-top: 1px solid #fff; padding-top: 12px; margin-top: 8px; gap: 24px; }
+.wave { min-width: 160px; display: flex; align-items: flex-end; gap: 1px; height: 56px; flex: 1; max-width: 640px; }
+.wave i { flex: 1; background: #fff; opacity: .22; min-height: 2px; }
+.wave i.on { opacity: 1; }
+.wave i.fut { opacity: .08; }
+
+/* A1 */
+.giant { font-size: clamp(240px, 42vw, 700px); margin-left: -.05em; }
+.trio { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid #fff; margin-top: 40px; }
+.trio div { padding: 14px 16px 0 0; }
+.trio b { display: block; font-size: 72px; margin-top: 10px; }
+
+/* A2 */
+.sot { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--pad); align-items: end; }
+.sot .art { grid-column: 1 / 7; box-shadow: 0 40px 80px rgba(0,0,0,.35); }
+.sot .info { grid-column: 7 / 13; }
+.sot h3 { font-family: var(--cjk); font-size: clamp(36px, 4.4vw, 68px); font-weight: 800; line-height: 1.08; margin: 14px 0 10px; }
+.sot .pc { font-size: clamp(120px, 14vw, 220px); margin-top: 24px; }
+.sot p.why { font-family: var(--cjk); font-size: 17px; line-height: 1.6; margin-top: 24px; max-width: 26em; }
+
+/* A3 月份：每月一列封面 */
+.months { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; align-items: end; margin-top: 48px; min-height: 52vh; }
+.months .m { display: flex; flex-wrap: wrap-reverse; align-content: flex-start; gap: 2px; }
+.months .m img { width: calc(50% - 1px); aspect-ratio: 1; object-fit: cover; transition: transform .3s; }
+.months .m img:hover { transform: scale(1.6); position: relative; z-index: 2; }
+.months .m.fut { opacity: .25; }
+.months-x { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; border-top: 1px solid #fff; margin-top: 8px; padding-top: 8px; }
+.months-x b { display: block; font-size: 32px; }
+
+/* A4 */
+.days { display: grid; grid-template-columns: 1fr 1fr; gap: var(--pad); margin-top: 48px; }
+.day .d { font-size: clamp(100px, 12vw, 180px); }
+.day .quad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin: 16px 0; }
+.day li { display: grid; grid-template-columns: 1fr auto; gap: 16px; padding: 9px 0; border-top: 1px solid var(--hair); font-family: var(--cjk); }
+.day li span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.day li small { display: block; opacity: .5; font-size: 12px; }
+
+/* A5 */
+.same { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--pad); margin-top: 48px; }
+.same .w { font-family: var(--cjk); font-weight: 900; font-size: clamp(80px, 11vw, 180px); line-height: 1; letter-spacing: -.03em; margin-top: 18px; }
+.same .w.o { color: transparent; -webkit-text-stroke: 1.5px currentColor; }
+.same .who { font-family: var(--cjk); font-weight: 700; font-size: 18px; margin-top: 12px; }
+
+/* B1 */
+.arts li { display: grid; grid-template-columns: 40px 72px 1fr auto; gap: 18px; align-items: center; padding: 10px 0; border-top: 1px solid var(--hair); }
+.arts .nm { font-family: var(--cjk); font-weight: 800; font-size: clamp(26px, 3.6vw, 52px); line-height: 1.1; }
+.arts .covers { display: flex; gap: 3px; }
+.arts .covers img { width: 72px; }
+
+/* B2 */
+.langs { display: grid; gap: var(--pad); margin-top: 48px; align-items: start; }
+.langs .grp .lab { display: flex; justify-content: space-between; border-top: 1px solid #fff; padding-top: 10px; margin-bottom: 12px; }
+.langs .grp .lab b { font-size: 64px; }
+.langs .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); gap: 3px; }
+
+/* B3 */
+.axis { position: relative; height: 340px; margin-top: 64px; border-bottom: 1px solid #fff; }
+.axis img { position: absolute; width: 30px; height: 30px; object-fit: cover; transform: translateX(-50%); }
+.axis .avg { position: absolute; top: 0; bottom: 0; border-left: 1px solid #fff; }
+.axis .avg span { position: absolute; top: 0; left: 8px; white-space: nowrap; }
+.axis-x { position: relative; height: 24px; margin-top: 8px; }
+.axis-x span { position: absolute; transform: translateX(-50%); }
+
+/* B4 */
+.hours { display: grid; grid-template-columns: repeat(24, 1fr); gap: 3px; align-items: end; height: 260px; margin-top: 56px; border-bottom: 1px solid #fff; }
+.hours div { background: #fff; opacity: .3; }
+.hours div.pk { opacity: 1; }
+.hours-x { display: grid; grid-template-columns: repeat(24, 1fr); gap: 3px; margin-top: 8px; }
+
+/* B5 */
+.now { display: grid; grid-template-columns: repeat(10, 1fr); margin-top: 48px; }
+.now img.dim { filter: grayscale(1); opacity: .35; }
+
+/* 封底 */
+.back h2 { font-size: clamp(120px, 20vw, 320px); margin-left: -.04em; }
+.liner { columns: 3; column-gap: var(--pad); margin-top: 40px; }
+.liner li { break-inside: avoid; display: grid; grid-template-columns: 26px 40px 1fr 40px; gap: 10px; align-items: center; padding: 6px 0; border-top: 1px solid var(--hair); font-family: var(--cjk); font-size: 13px; }
+.liner li .t { overflow: hidden; }
+.liner li .t b { display: block; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.liner li .t span { display: block; opacity: .5; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.liner .mo { display: block; border-top: 1px solid #fff; padding-top: 10px; margin-top: 18px; }
+.liner .mo:first-child { margin-top: 0; }
+.end { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--pad); margin-top: 120px; border-top: 1px solid #fff; padding-top: 16px; }
+.end .big { grid-column: 1 / 8; font-family: var(--cjk); font-weight: 800; font-size: clamp(32px, 4vw, 60px); line-height: 1.15; }
+.end .small { grid-column: 9 / 13; }
+.end a { text-decoration: underline; text-underline-offset: 3px; }
+
+@media (max-width: 720px) {
+  .sot .art, .sot .info, .end .big, .end .small { grid-column: 1 / 13; }
+  .sot .art { margin-bottom: 32px; }
+  .days, .same { grid-template-columns: 1fr; }
+  .langs { grid-template-columns: 1fr !important; }
+  .liner { columns: 1; }
+  .now { grid-template-columns: repeat(5, 1fr); }
+  .trio b { font-size: 44px; }
+  .arts .covers img:nth-child(n+2) { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<div class="top pad cap"><span><a href="../">← JoniLin — Listening</a> &nbsp;/&nbsp; 2026</span><span>Annual Report</span></div>
+
+<header class="cover">
+  <div class="mosaic" id="mosaic"></div>
+  <div class="shade"></div>
+  <div class="ttl">
+    <div class="cap" id="c-kicker">—</div>
+    <h1 class="xl reveal">2026</h1>
+    <div class="row cap">
+      <span id="c-sub">—</span>
+      <div class="wave" id="wave" title="每一根竖线是一天，亮的那天你点了红心"></div>
+      <span>Scroll ↓</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="ch" data-bg="#000"><div class="ch-h cap"><span>A1</span><span>Numbers · 数字</span></div>
+    <div class="reveal"><div class="giant xl tnum" id="a1-n">—</div><p class="say" id="a1-say"></p><div class="trio cap" id="trio"></div></div>
+  </section>
+
+  <section class="ch" id="a2-sec"><div class="ch-h cap"><span>A2</span><span>Song of the Year · 年度之歌</span></div>
+    <div class="reveal" id="a2"></div>
+  </section>
+
+  <section class="ch" id="old-sec"><div class="ch-h cap"><span>A3</span><span>Old Love · 迟到的红心</span></div>
+    <div class="reveal" id="old"></div>
+  </section>
+
+  <section class="ch" data-bg="#000"><div class="ch-h cap"><span>A4</span><span>Months · 十二个月</span></div>
+    <div class="reveal"><p class="say" id="m-say"></p><div class="months" id="months"></div><div class="months-x cap" id="months-x"></div></div>
+  </section>
+
+  <section class="ch" data-bg="#000"><div class="ch-h cap"><span>A5</span><span>The Days · 那两天</span></div>
+    <div class="reveal"><p class="say" id="d-say"></p><div class="days" id="days"></div></div>
+  </section>
+
+  <section class="ch" id="same-sec"><div class="ch-h cap"><span>A6</span><span>Same Title · 同名</span></div>
+    <div class="reveal" id="same"></div>
+  </section>
+
+  <section class="ch" data-bg="#000"><div class="ch-h cap"><span>B1</span><span>Artists · 艺人</span></div>
+    <div class="reveal"><p class="say" id="ar-say"></p><ol class="arts" id="arts" style="margin-top:48px"></ol></div>
+  </section>
+
+  <section class="ch" data-bg="#000"><div class="ch-h cap"><span>B2</span><span>Languages · 语言</span></div>
+    <div class="reveal"><p class="say" id="l-say"></p><div class="langs" id="langs"></div></div>
+  </section>
+
+  <section class="ch" data-bg="#000"><div class="ch-h cap"><span>B3</span><span>Time Travel · 时间旅行</span></div>
+    <div class="reveal"><p class="say" id="t-say"></p><div class="axis" id="axis"></div><div class="axis-x cap" id="axis-x"></div></div>
+  </section>
+
+  <section class="ch" data-bg="#000"><div class="ch-h cap"><span>B4</span><span>Hours · 时刻</span></div>
+    <div class="reveal"><p class="say" id="h-say"></p><div class="hours" id="hours"></div><div class="hours-x cap" id="hours-x"></div></div>
+  </section>
+
+  <section class="ch" id="now-sec"><div class="ch-h cap"><span>B5</span><span>Right Now · 此刻</span></div>
+    <div class="reveal"><p class="say" id="n-say"></p><div class="now" id="now"></div></div>
+  </section>
+
+  <section class="ch back" data-bg="#000"><div class="ch-h cap"><span>Tracklist</span><span>按点下红心的顺序</span></div>
+    <h2 class="xl tnum reveal" id="b-h">—</h2>
+    <ol class="liner" id="liner"></ol>
+    <div class="end"><p class="big" id="e-big"></p><p class="small" id="e-small"></p></div>
+  </section>
+</main>
+
+<script src="../data/music.js"></script>
+<script>
+const D = window.MUSIC, $ = s => document.querySelector(s);
+const Y = 2026, pad2 = n => String(n).padStart(2, '0');
+const img = (u, s = 300) => u ? `${u}?param=${s}y${s}` : '';
+const art = (u, s, extra = '') => `<img class="art" src="${img(u, s)}" alt="" loading="lazy" crossorigin="anonymous" ${extra}>`;
+const dt = ms => new Date(ms), md = ms => `${dt(ms).getMonth() + 1} 月 ${dt(ms).getDate()} 日`;
+const now = dt(D.fetchedAt), live = now.getFullYear() === Y;
+const y0 = new Date(Y, 0, 1), doy = ms => Math.floor((dt(ms) - y0) / 864e5);
+const daysSoFar = live ? doy(D.fetchedAt) + 1 : 365;
+const L = D.liked.filter(s => dt(s.at).getFullYear() === Y).sort((a, b) => a.at - b.at), N = L.length;
+const pcOf = Object.fromEntries(D.allTime.map(s => [s.id, s.pc]));
+const rankOf = Object.fromEntries(D.allTime.map((s, i) => [s.id, i + 1]));
+const lang = s => /[가-힯]/.test(s.n) ? 'ko' : /[぀-ヿ]/.test(s.n) ? 'ja' : /[一-鿿]/.test(s.n) ? 'zh' : 'west';
+const tip = s => `title="${s.n.replace(/"/g, '')} — ${s.a.join(' / ')}"`;
+
+/* 从封面取主色（Apple Music 式），给章节当底色 */
+const colorOf = url => new Promise(res => {
+  const im = new Image(); im.crossOrigin = 'anonymous';
+  im.onload = () => {
+    const c = document.createElement('canvas'); c.width = c.height = 32;
+    const x = c.getContext('2d'); x.drawImage(im, 0, 0, 32, 32);
+    const d = x.getImageData(0, 0, 32, 32).data; let r = 0, g = 0, b = 0, w = 0;
+    for (let i = 0; i < d.length; i += 4) {
+      const mx = Math.max(d[i], d[i + 1], d[i + 2]), mn = Math.min(d[i], d[i + 1], d[i + 2]);
+      const wt = 1 + (mx - mn) / 32;                       // 偏向饱和的像素
+      r += d[i] * wt; g += d[i + 1] * wt; b += d[i + 2] * wt; w += wt;
+    }
+    res([r / w, g / w, b / w].map(Math.round));
+  };
+  im.onerror = () => res([20, 20, 20]);
+  im.src = img(url, 64);
+});
+const paint = async (sec, url) => {
+  const [r, g, b] = await colorOf(url);
+  const lum = (.299 * r + .587 * g + .114 * b) / 255;
+  sec.dataset.bg = `rgb(${r},${g},${b})`;
+  sec.dataset.fg = lum > .62 ? '#000' : '#fff';
+};
+
+/* ---------- 封面 ---------- */
+$('#mosaic').innerHTML = L.map(s => `<img class="art" src="${img(s.pic, 240)}" alt="" ${tip(s)} onload="this.classList.add('on')">`).join('');
+const fitMosaic = () => { const cols = Math.ceil(Math.sqrt(N * innerWidth / innerHeight)); $('#mosaic').style.setProperty('--cols', cols); };
+fitMosaic(); addEventListener('resize', fitMosaic);
+const likedDays = {}; L.forEach(s => likedDays[doy(s.at)] = (likedDays[doy(s.at)] || 0) + 1);
+$('#wave').innerHTML = Array.from({ length: 365 }, (_, d) => {
+  const n = likedDays[d] || 0;
+  return `<i class="${n ? 'on' : ''} ${d >= daysSoFar ? 'fut' : ''}" style="height:${n ? 30 + n * 17 : 14}%"></i>`;
+}).join('');
+$('#c-kicker').textContent = `${D.profile.nick} — The Year in Likes`;
+$('#c-sub').textContent = `${N} likes · ${Object.keys(likedDays).length} days · until ${now.getMonth() + 1}.${now.getDate()}`;
+
+/* ---------- A1 ---------- */
+const mins = Math.round(L.reduce((s, x) => s + x.dt, 0) / 60);
+$('#a1-n').textContent = N;
+$('#a1-say').innerHTML = `今年你点下了 ${N} 颗新的红心。<span class="dim">从头到尾放一遍，需要 ${(mins / 60).toFixed(1)} 小时。</span>`;
+const avgSec = Math.round(L.reduce((s, x) => s + x.dt, 0) / N);
+$('#trio').innerHTML = `<div>Every<b class="xl tnum">${(daysSoFar / N).toFixed(1)} days</b></div>
+  <div>Artists<b class="xl tnum">${new Set(L.flatMap(s => s.a)).size}</b></div>
+  <div>Avg. length<b class="xl tnum">${Math.floor(avgSec / 60)}:${pad2(avgSec % 60)}</b></div>`;
+
+/* ---------- A2 年度之歌 ---------- */
+const both = L.filter(s => s.y === Y && pcOf[s.id]).sort((a, b) => pcOf[b.id] - pcOf[a.id]);
+const sot = both[0] || L.filter(s => pcOf[s.id]).sort((a, b) => pcOf[b.id] - pcOf[a.id])[0];
+if (sot) {
+  $('#a2').innerHTML = `<div class="sot">${art(sot.pic, 900)}
+    <div class="info"><span class="cap">Song of ${Y}</span><h3>${sot.n}</h3>
+      <p class="cap" style="opacity:.7">${sot.a.join(' / ')} — ${sot.al}</p>
+      <div class="pc xl tnum">${pcOf[sot.id]}</div><span class="cap">plays</span>
+      <p class="why">${both[0] ? `发行于 ${Y} 年，${md(sot.at)}被你收下，之后一路爬到你所有时间排行的第 ${rankOf[sot.id]} 位。${both.length === 1 ? '今年收藏的新歌里，只有它真正被你听进了常听榜。' : ''}` : `${md(sot.at)}被你收下，累计播放排到第 ${rankOf[sot.id]} 位。`}</p></div></div>`;
+  paint($('#a2-sec'), sot.pic);
+} else $('#a2-sec').remove();
+
+/* ---------- A3 迟到的红心 ---------- */
+const old = L.filter(x => rankOf[x.id] && x !== sot && x.y !== Y).sort((a, b) => rankOf[a.id] - rankOf[b.id])[0];
+if (old) {
+  $('#old').innerHTML = `<div class="sot">${art(old.pic, 900)}
+    <div class="info"><span class="cap">All-time No. ${pad2(rankOf[old.id])}</span><h3>${old.n}</h3>
+      <p class="cap" style="opacity:.7">${old.a.join(' / ')}</p>
+      <div class="pc xl tnum">${pcOf[old.id]}</div><span class="cap">plays before the like</span>
+      <p class="why">这是你听得第 ${rankOf[old.id]} 多的歌。听了 ${pcOf[old.id]} 遍，直到 ${md(old.at)}，你才终于给它点了红心。</p></div></div>`;
+  paint($('#old-sec'), old.pic);
+} else $('#old-sec').remove();
+
+/* ---------- A4 月份 ---------- */
+const M = Array.from({ length: 12 }, () => []); L.forEach(s => M[dt(s.at).getMonth()].push(s));
+const pk = M.reduce((a, b, i) => b.length > M[a].length ? i : a, 0);
+const past = live ? now.getMonth() : 12;
+const low = M.slice(0, past).reduce((a, b, i) => b.length < M[a].length ? i : a, 0);
+$('#months').innerHTML = M.map((list, i) => `<div class="m ${live && i > now.getMonth() ? 'fut' : ''}">${list.map(s => `<img src="${img(s.pic, 120)}" alt="" ${tip(s)} loading="lazy">`).join('')}</div>`).join('');
+$('#months-x').innerHTML = M.map((l, i) => `<span>${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][i]}<b class="xl tnum">${live && i > now.getMonth() ? '—' : l.length}</b></span>`).join('');
+$('#m-say').innerHTML = `${pk + 1} 月最贪心，收了 ${M[pk].length} 首。<span class="dim">${low + 1} 月最安静，只有 ${M[low].length} 首。每一格是一张你点了红心的唱片。</span>`;
+
+/* ---------- A5 那两天 ---------- */
+const byDay = {}; L.forEach(s => (byDay[doy(s.at)] = byDay[doy(s.at)] || []).push(s));
+const days = Object.values(byDay).sort((a, b) => b.length - a.length || a[0].at - b[0].at).slice(0, 2).sort((a, b) => a[0].at - b[0].at);
+const mmss = s => `${Math.floor(s.dt / 60)}:${pad2(s.dt % 60)}`;
+const tag = list => list.filter(s => /Symphony|Concerto|Op\.|Sonata|Menuet/i.test(s.n)).length >= list.length / 2 ? '一个交响乐的下午'
+  : list.every(s => lang(s) === 'west') && Math.max(...list.map(s => s.y || 0)) < 2015 ? '回到 2000 年代的欧美' : '同一天，同一种心情';
+$('#days').innerHTML = days.map(l => `<div class="day"><div class="d xl tnum">${dt(l[0].at).getMonth() + 1}.${dt(l[0].at).getDate()}</div>
+  <span class="cap">${l.length} songs · ${tag(l)}</span>
+  <div class="quad">${l.slice(0, 4).map(s => art(s.pic, 300, tip(s))).join('')}</div>
+  <ol>${l.map(s => `<li><span>${s.n}<small>${s.a.join(' / ')}</small></span><span class="cap tnum">${mmss(s)}</span></li>`).join('')}</ol></div>`).join('');
+$('#d-say').innerHTML = days.length > 1
+  ? `有两天，你一口气点了 ${days[0].length} 首。<span class="dim">${md(days[0][0].at)}是${tag(days[0])}，${md(days[1][0].at)}${tag(days[1])}。</span>`
+  : `${md(days[0][0].at)}，你一口气点了 ${days[0].length} 首。`;
+
+/* ---------- A6 同名 ---------- */
+const norm = n => n.replace(/[（(].*?[)）]/g, '').trim();
+const G = {}; L.forEach(s => (G[norm(s.n)] = G[norm(s.n)] || []).push(s));
+const rep = Object.entries(G).filter(([, v]) => v.length > 1).sort((a, b) => b[1].length - a[1].length)[0];
+if (rep) {
+  const [t, list] = rep;
+  $('#same').innerHTML = `<p class="say">今年你收藏了 ${list.length} 首都叫《${t}》的歌。<span class="dim">不是同一首——是 ${list.length} 个不同的版本。</span></p>
+    <div class="same">${list.map((s, i) => `<div>${art(s.pic, 600)}<div class="w ${i ? 'o' : ''}">${t}</div>
+      <p class="who">${s.a.join(' / ')}</p><p class="cap" style="opacity:.6;margin-top:4px">${md(s.at)}</p></div>`).join('')}</div>`;
+  paint($('#same-sec'), list[0].pic);
+} else $('#same-sec').remove();
+
+/* ---------- B1 艺人 ---------- */
+const AC = {}; L.forEach(s => s.a.forEach(a => (AC[a] = AC[a] || []).push(s)));
+const topA = Object.entries(AC).sort((a, b) => b[1].length - a[1].length).slice(0, 7);
+$('#arts').innerHTML = topA.map(([a, l], i) => `<li><span class="cap tnum">${pad2(i + 1)}</span>
+  <span class="nm" style="grid-column: span 2">${a}</span>
+  <span class="covers">${l.slice(0, 3).map(s => art(s.pic, 150, tip(s))).join('')}</span></li>`).join('');
+const life = {}; D.allTime.forEach(s => s.a.forEach(a => life[a] = (life[a] || 0) + (s.pc || 0)));
+const king = Object.entries(life).sort((a, b) => b[1] - a[1])[0];
+const tied = topA.filter(x => x[1].length === topA[0][1].length).map(x => x[0]);
+$('#ar-say').innerHTML = `今年红心最多的是${tied.join('和')}，${tied.length > 1 ? '并列 ' : ''}${topA[0][1].length} 首。` +
+  (king ? `<span class="dim">而${king[0]}在你的常听榜上累计 ${king[1].toLocaleString()} 次——不靠新歌，也一直都在。</span>` : '');
+
+/* ---------- B2 语言 ---------- */
+const LG = { zh: [], west: [], asia: [] }; L.forEach(s => { const l = lang(s); (l === 'ko' || l === 'ja' ? LG.asia : LG[l]).push(s); });
+const groups = [['中文', LG.zh], ['西文', LG.west], ['日韩', LG.asia]].filter(g => g[1].length);
+$('#langs').style.gridTemplateColumns = groups.map(g => `${Math.max(g[1].length, 8)}fr`).join(' ');
+$('#langs').innerHTML = groups.map(([n, l]) => `<div class="grp"><div class="lab"><span class="cap">${n}</span><b class="xl tnum">${l.length}</b></div>
+  <div class="tiles">${l.map(s => art(s.pic, 120, tip(s))).join('')}</div></div>`).join('');
+const musical = L.filter(s => /Hamilton|Op[ée]ra|Musical|Don Juan|Rom[ée]o|Mozart!|音乐剧|Broadway/i.test(s.al + s.a.join())).length;
+$('#l-say').innerHTML = `中文占 ${Math.round(LG.zh.length / N * 100)}%。<span class="dim">剩下的大多是英文${musical ? `，还有法语和德语——今年你收了 ${musical} 首音乐剧` : ''}。</span>`;
+
+/* ---------- B3 时间旅行 ---------- */
+const ys = L.filter(s => s.y > 1900), lo = Math.floor(Math.min(...ys.map(s => s.y)) / 10) * 10, hi = Y + 2;
+const avg = Math.round(ys.reduce((s, x) => s + x.y, 0) / ys.length), X = y => (y - lo) / (hi - lo) * 100;
+const st = {};
+$('#axis').innerHTML = ys.sort((a, b) => a.y - b.y).map(s => { st[s.y] = (st[s.y] || 0) + 1;
+  return `<img src="${img(s.pic, 80)}" alt="" ${tip(s)} style="left:${X(s.y)}%;bottom:${(st[s.y] - 1) * 33 + 3}px" loading="lazy">`; }).join('') +
+  `<div class="avg cap" style="left:${X(avg)}%"><span>Avg. ${avg}</span></div>`;
+let ax = ''; for (let y = lo; y <= Y; y += 10) ax += `<span style="left:${X(y)}%">${y}</span>`;
+$('#axis-x').innerHTML = ax;
+const oldest = ys[0];
+$('#t-say').innerHTML = `平均发行年份是 ${avg}。<span class="dim">今年真正发行的新歌只有 ${ys.filter(s => s.y === Y).length} 首，最老的录音来自 ${oldest.y} 年。你的 ${Y}，大多在听过去。</span>`;
+
+/* ---------- B4 时刻 ---------- */
+const H = Array(24).fill(0); L.forEach(s => H[dt(s.at).getHours()]++);
+const hp = H.indexOf(Math.max(...H));
+$('#hours').innerHTML = H.map((n, i) => `<div class="${i === hp ? 'pk' : ''}" style="height:${n / H[hp] * 100}%" title="${i}:00 · ${n}"></div>`).join('');
+$('#hours-x').innerHTML = H.map((_, i) => `<span>${i % 3 ? '' : pad2(i)}</span>`).join('');
+const am = H.slice(6, 12).reduce((a, b) => a + b, 0), night = [...H.slice(21), ...H.slice(0, 3)].reduce((a, b) => a + b, 0);
+$('#h-say').innerHTML = `你最常在 ${hp}:00 点下红心。<span class="dim">${am > night ? `上午收的歌比深夜多，${am} 比 ${night}——你不是夜里才想起音乐的人。` : `深夜比上午多，${night} 比 ${am}。`}</span>`;
+
+/* ---------- B5 此刻 ---------- */
+const wc = {}; D.week.forEach(s => s.a.forEach(a => wc[a] = (wc[a] || 0) + 1));
+const [wa, wn] = Object.entries(wc).sort((a, b) => b[1] - a[1])[0];
+$('#now').innerHTML = D.week.slice(0, 50).map(s => `<img class="art ${s.a.includes(wa) ? '' : 'dim'}" src="${img(s.pic, 160)}" alt="" ${tip(s)} loading="lazy">`).join('');
+$('#n-say').innerHTML = `写到这里是 ${now.getMonth() + 1} 月 ${now.getDate()} 日。<span class="dim">最近七天，${wa}出现了 ${wn} 次（亮着的那些）。循环最多的是《${D.week[0].n}》。</span>`;
+paint($('#now-sec'), D.week.find(s => s.a.includes(wa)).pic);
+
+/* ---------- 封底 ---------- */
+$('#b-h').textContent = `${N} Tracks`;
+let html = '', lm = -1;
+L.forEach((s, i) => {
+  const m = dt(s.at).getMonth();
+  if (m !== lm) { html += `<li class="mo cap">${['January','February','March','April','May','June','July','August','September','October','November','December'][m]}</li>`; lm = m; }
+  html += `<li><span class="cap tnum">${pad2(i + 1)}</span>${art(s.pic, 80)}<span class="t"><b>${s.n}</b><span>${s.a.join(' / ')}</span></span><span class="cap tnum" style="text-align:right">${pad2(m + 1)}.${pad2(dt(s.at).getDate())}</span></li>`;
+});
+$('#liner').innerHTML = html;
+const left = live ? Math.round((new Date(Y, 11, 31) - now) / 864e5) : 0;
+$('#e-big').textContent = left ? `还剩 ${left} 天，B 面还没写完。` : `${Y}，收录完毕。`;
+$('#e-small').innerHTML = `数据来自网易云音乐，截至 ${now.getFullYear()}.${now.getMonth() + 1}.${now.getDate()}。网易云不提供按年统计的播放次数，所以这份报告以点红心的时间为主线，播放次数取自“所有时间”排行。<br><br><a href="../">回到 Listening →</a>`;
+
+/* ---------- 滚动：章节换色 + 进度 + 进场 ---------- */
+const secs = [...document.querySelectorAll('.ch')];
+const setBg = () => {
+  const mid = innerHeight * .5;
+  const cur = secs.find(s => { const r = s.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; });
+  document.body.style.background = cur?.dataset.bg || '#000';
+  document.body.style.color = cur?.dataset.fg || '#fff';
+  const h = document.documentElement; $('#prog').style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+};
+document.body.style.transition = 'background-color .8s ease, color .8s ease';
+addEventListener('scroll', setBg, { passive: true }); setBg();
+const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && (e.target.classList.add('in'), io.unobserve(e.target))), { threshold: .08 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
