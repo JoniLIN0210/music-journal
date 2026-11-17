@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Ccircle cx=%228%22 cy=%228%22 r=%227%22/%3E%3C/svg%3E">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>JoniLin — Listening</title>
 <meta name="referrer" content="no-referrer">
@@ -23,12 +24,12 @@
 .hero h1 { display: flex; align-items: flex-start; gap: .12em; }
 .hero h1 .unit { font-size: .13em; font-stretch: 100%; line-height: 1.1; letter-spacing: 0; padding-top: .5em; }
 .hero h1 .unit .zh { display: block; font-weight: 700; margin-top: .3em; }
-.stats { display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid var(--line); margin-top: 28px; }
+.stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--line); margin-top: 28px; }
 .stats div { padding: 14px 0 18px; border-right: 1px solid var(--hair); padding-right: 12px; }
 .stats div + div { padding-left: 16px; }
 .stats div:last-child { border-right: 0; }
 .stats b { display: block; font-size: 40px; font-stretch: 75%; font-weight: 700; line-height: 1; margin-top: 10px; }
-.wall { display: grid; grid-template-columns: repeat(12, 1fr); margin-top: 40px; }
+.wall { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); margin-top: 40px; }
 .wall a { position: relative; display: block; }
 .wall a::after { content: attr(data-r); position: absolute; left: 6px; top: 5px; color: #fff; font-size: 10px; font-weight: 700; mix-blend-mode: difference; opacity: 0; transition: opacity .2s; }
 .wall a:hover::after { opacity: 1; }
@@ -36,14 +37,14 @@
 
 /* ---------- 章节 ---------- */
 .sec { padding-top: 120px; }
-.sec-h { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--pad); border-top: 1px solid var(--line); padding-top: 14px; margin-bottom: 40px; }
+.sec-h { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--pad); border-top: 1px solid var(--line); padding-top: 14px; margin-bottom: 40px; }
 .sec-h .n { grid-column: 1 / 3; }
 .sec-h h2 { grid-column: 3 / 9; font-size: clamp(56px, 8vw, 128px); }
 .sec-h h2 small { display: block; font-family: var(--cjk); font-size: 20px; font-weight: 600; letter-spacing: 0; text-transform: none; margin-top: 14px; line-height: 1.3; }
 .sec-h p { grid-column: 9 / 13; color: var(--g3); font-family: var(--cjk); font-size: 13px; padding-top: 6px; }
 
 /* ---------- 01 TOP ---------- */
-.no1 { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--pad); align-items: end; }
+.no1 { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--pad); align-items: end; }
 .no1 .art { grid-column: 1 / 7; }
 .no1 .info { grid-column: 7 / 13; }
 .no1 .big { font-size: clamp(140px, 18vw, 300px); }
@@ -78,7 +79,7 @@
 .years .c.pk i { background: var(--fg); }
 .years .c.now i { background: repeating-linear-gradient(-45deg, var(--fg) 0 2px, transparent 2px 6px); }
 .years-x { display: grid; gap: 8px; margin-top: 10px; }
-.note { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--pad); margin-top: 40px; }
+.note { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--pad); margin-top: 40px; }
 .note p { grid-column: 3 / 10; font-family: var(--cjk); font-size: 20px; font-weight: 500; line-height: 1.55; }
 
 /* ---------- 04 DECADES ---------- */
@@ -88,7 +89,7 @@
 .dec b { font-size: 56px; font-stretch: 62%; font-weight: 800; line-height: .9; }
 
 /* ---------- 05 WEEK ---------- */
-.week { display: grid; grid-template-columns: repeat(10, 1fr); }
+.week { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); }
 .week a { position: relative; display: block; overflow: hidden; }
 .week a.first { grid-column: span 4; grid-row: span 4; }
 .week .tip { position: absolute; inset: auto 0 0 0; background: var(--fg); color: var(--bg); padding: 8px; font-family: var(--cjk); font-size: 11px; line-height: 1.35; transform: translateY(100%); transition: transform .25s; }
@@ -96,7 +97,7 @@
 .week a.first .tip { font-size: 14px; padding: 14px; }
 
 /* ---------- 06 PLAYLISTS ---------- */
-.pls { display: grid; grid-template-columns: repeat(6, 1fr); gap: 28px var(--pad); }
+.pls { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 28px var(--pad); }
 .pls a .t { font-family: var(--cjk); font-weight: 600; margin-top: 10px; line-height: 1.3; }
 .pls a:hover .art { filter: brightness(.9); }
 .subs { margin-top: 64px; border-top: 1px solid var(--line); columns: 2; column-gap: var(--pad); }
@@ -112,17 +113,21 @@
 
 @media (max-width: 1000px) { .top nav { display: none; } }
 @media (max-width: 720px) {
-  .stats { grid-template-columns: repeat(2, 1fr); }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stats div, .stats div + div { padding-left: 0; border-right: 0; border-bottom: 1px solid var(--hair); }
-  .wall { grid-template-columns: repeat(6, 1fr); }
+  .wall { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .sec-h .n, .sec-h h2, .sec-h p, .no1 .art, .no1 .info, .note p { grid-column: 1 / 13; }
   .row { grid-template-columns: 32px 44px minmax(0, 1fr) 56px; }
   .row .a, .row .b { display: none; }
   .artists li { grid-template-columns: 32px 44px minmax(0, 1fr) 60px; }
   .artists .bar-w { display: none; }
-  .week { grid-template-columns: repeat(5, 1fr); }
+  .week { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .week a.first { grid-column: span 5; grid-row: auto; }
-  .pls { grid-template-columns: repeat(2, 1fr); }
+  .pls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .years { gap: 3px !important; }
+  .years .c b { font-size: 18px; }
+  #years-x { font-size: 9px; letter-spacing: 0; }
+  .hero .unit .zh { white-space: nowrap; }
   .subs { columns: 1; }
 }
 </style>
@@ -182,11 +187,12 @@
 <footer class="foot pad">
   <div class="cap" style="display:flex;justify-content:space-between"><span>Next</span><span>Annual Report</span></div>
   <a class="go xl" href="2026/">2026 →</a>
-  <div class="row2 cap"><span id="f1"></span><span>Refresh · <code>python3 fetch_data.py</code></span><span>Source · music.163.com</span></div>
+  <div class="row2 cap"><span id="f1"></span><span>JoniLin · Listening since 2017</span><span>Source · music.163.com</span></div>
 </footer>
 
 <script src="data/music.js"></script>
 <script src="data/listen2026.js"></script>
+<script src="assets/cjk.js"></script>
 <script>
 const D = window.MUSIC, $ = s => document.querySelector(s), P = D.profile;
 const fmt = n => (n || 0).toLocaleString('en-US');
@@ -239,7 +245,7 @@ const by = {}; D.liked.forEach(s => { const y = yearOf(s.at); by[y] = (by[y] || 
 const yrs = []; for (let y = yearOf(P.created); y <= yearOf(D.fetchedAt); y++) yrs.push(y);
 const peak = yrs.reduce((a, b) => (by[b] || 0) > (by[a] || 0) ? b : a), nowY = yrs[yrs.length - 1];
 const ymax = Math.max(...yrs.map(y => by[y] || 0));
-['#years', '#years-x'].forEach(s => $(s).style.gridTemplateColumns = `repeat(${yrs.length}, 1fr)`);
+['#years', '#years-x'].forEach(s => $(s).style.gridTemplateColumns = `repeat(${yrs.length}, minmax(0, 1fr))`);
 $('#years').innerHTML = yrs.map(y => `<div class="c ${y === peak ? 'pk' : ''} ${y === nowY ? 'now' : ''}">
   <b class="tnum">${by[y] || 0}</b><i style="height:${Math.max(2, (by[y] || 0) / ymax * 270)}px"></i></div>`).join('');
 $('#years-x').innerHTML = yrs.map(y => `<span>${y}</span>`).join('');
@@ -251,8 +257,12 @@ $('#years-note').innerHTML = `${peak} 年是点红心最多的一年，${by[peak
 const dc = {}; D.liked.forEach(s => { if (s.y > 1900) { const k = Math.floor(s.y / 10) * 10; dc[k] = (dc[k] || 0) + 1; } });
 const decs = Object.entries(dc).sort((a, b) => a[0] - b[0]), dsum = decs.reduce((s, d) => s + d[1], 0);
 const dpk = decs.reduce((a, b) => b[1] > a[1] ? b : a)[0];
-$('#dec').innerHTML = decs.map(([k, v]) => `<div class="${k === dpk ? 'pk' : ''}" style="flex:${v}" title="${k}s · ${v}">
-  <span class="cap">${v / dsum > .05 ? k + 's' : ''}</span><b class="tnum">${v / dsum > .05 ? Math.round(v / dsum * 100) + '%' : ''}</b></div>`).join('');
+// 占比不到 5% 的早期年代合成一格「更早」，不留没有标签的细条
+const firstBig = decs.findIndex(([, v]) => v / dsum >= .05), early = decs.slice(0, firstBig);
+const dshow = early.length > 1 ? [[`${early[0][0]}–${early[early.length - 1][0].slice(2)}s`, early.reduce((t, d) => t + d[1], 0), true], ...decs.slice(firstBig)] : decs;
+$('#dec').innerHTML = dshow.map(([k, v, merged]) => { const p = v / dsum, lab = merged ? k : k + 's';
+  return `<div class="${k === dpk ? 'pk' : ''}" style="flex:${Math.max(v, dsum * .06)}" title="${lab} · ${v} 首">
+  <span class="cap">${lab}</span><b class="tnum">${p < .01 ? '<1' : Math.round(p * 100)}%</b></div>`; }).join('');
 const ys = D.liked.filter(s => s.y > 1900);
 $('#dec-note').textContent = `平均发行年份 ${Math.round(ys.reduce((s, x) => s + x.y, 0) / ys.length)}，最集中在 ${dpk} 年代。无年份信息的歌曲不计入。`;
 
@@ -272,6 +282,7 @@ $('#f1').textContent = `Data · ${day(D.fetchedAt)}`;
 
 const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && (e.target.classList.add('in'), io.unobserve(e.target))), { threshold: .1 });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+clauses($('#years-note'));
 </script>
 </body>
 </html>

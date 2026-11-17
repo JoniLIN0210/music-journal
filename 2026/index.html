@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Ccircle cx=%228%22 cy=%228%22 r=%227%22/%3E%3C/svg%3E">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>2026 — JoniLin</title>
 <meta name="referrer" content="no-referrer">
@@ -14,23 +15,25 @@ body { background: #000; color: #fff; }
 
 .top { position: fixed; inset: 0 0 auto 0; z-index: 30; height: 40px; display: flex; align-items: center; justify-content: space-between; mix-blend-mode: difference; color: #fff; }
 .prog { position: fixed; left: 0; top: 0; height: 2px; background: #fff; z-index: 31; width: 0; mix-blend-mode: difference; }
-.toc { position: fixed; right: var(--pad); top: 50%; transform: translateY(-50%); z-index: 29; display: flex; flex-direction: column; gap: 6px; mix-blend-mode: difference; }
-.toc a { display: block; width: 18px; height: 2px; background: #fff; opacity: .3; transition: opacity .2s, width .2s; }
-.toc a.on { opacity: 1; width: 28px; }
+.toc { position: fixed; right: 8px; top: 50%; align-items: flex-end; transform: translateY(-50%); z-index: 29; display: flex; flex-direction: column; gap: 6px; mix-blend-mode: difference; }
+.toc a { display: block; width: 8px; height: 2px; background: #fff; opacity: .3; transition: opacity .2s, width .2s; }
+.toc a.on { opacity: 1; width: 16px; }
+.toc a:hover { opacity: .8; }
 
 .ch { position: relative; min-height: 100vh; padding: 96px var(--pad) 88px; }
 .ch-h { display: flex; justify-content: space-between; border-top: 1px solid currentColor; padding-top: 12px; margin-bottom: 48px; }
 .say { font-family: var(--cjk); font-size: clamp(22px, 2.6vw, 36px); font-weight: 600; line-height: 1.4; max-width: 24em; }
 .say .dim { opacity: .5; }
+
 .small { font-family: var(--cjk); font-size: 13px; opacity: .6; max-width: 40em; }
-.kpis { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid currentColor; margin-top: 48px; }
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid currentColor; margin-top: 48px; }
 .kpis div { padding: 14px 16px 0 0; }
 .kpis b { display: block; font-size: clamp(44px, 5.4vw, 84px); margin-top: 10px; }
 .kpis small { display: block; font-family: var(--cjk); font-size: 12px; opacity: .55; margin-top: 6px; text-transform: none; letter-spacing: 0; font-weight: 400; }
 
 /* 封面 */
 .cover { position: relative; height: 100vh; min-height: 640px; overflow: hidden; }
-.mosaic { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--cols, 12), 1fr); align-content: start; }
+.mosaic { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--cols, 12), minmax(0, 1fr)); align-content: start; }
 .mosaic img { opacity: 0; transition: opacity .6s ease; }
 .mosaic img.on { opacity: .5; }
 .cover .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.25) 0%, rgba(0,0,0,.1) 35%, #000 90%); }
@@ -42,24 +45,24 @@ body { background: #000; color: #fff; }
 .wave i.fut { opacity: .12; }
 
 /* 01 时长 */
-.giant { font-size: clamp(220px, 38vw, 640px); margin-left: -.05em; }
+.giant { font-size: clamp(150px, 38vw, 640px); margin-left: -.05em; }
 .giant { display: flex; align-items: flex-start; gap: .1em; }
 .giant .unit { font-size: .13em; font-stretch: 100%; letter-spacing: 0; line-height: 1.1; padding-top: .55em; }
 .giant .unit .zh { display: block; font-weight: 700; margin-top: .3em; }
-.yrs { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; align-items: end; height: 200px; margin-top: 64px; border-bottom: 1px solid #fff; }
+.yrs { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 6px; align-items: end; height: 200px; margin-top: 64px; border-bottom: 1px solid #fff; }
 .yrs div { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
 .yrs i { display: block; background: rgba(255,255,255,.28); }
 .yrs .cur i { background: #fff; }
 .yrs .pk i { background: rgba(255,255,255,.55); }
 .yrs b { font-size: 22px; font-weight: 700; font-stretch: 75%; margin-bottom: 6px; }
-.yrs-x { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; margin-top: 8px; }
+.yrs-x { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
 
 /* 02 年历 */
-.cal { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 1fr); gap: 3px; margin-top: 56px; }
+.cal { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, minmax(0, 1fr)); gap: 3px; margin-top: 56px; }
 .cal i { aspect-ratio: 1; background: #fff; border-radius: 1px; position: relative; }
 .cal i.z { background: transparent; box-shadow: inset 0 0 0 1px rgba(255,255,255,.35); }
 .cal i.fut { background: rgba(255,255,255,.06); }
-.cal i.pad { background: transparent; }
+.cal i.lead { background: transparent; }
 .cal i.mk::after { content: ''; position: absolute; inset: -3px; border: 1px solid #fff; }
 .cal-x { display: grid; grid-auto-flow: column; gap: 3px; margin-top: 8px; }
 .legend { display: flex; align-items: center; gap: 6px; margin-top: 18px; }
@@ -67,58 +70,58 @@ body { background: #000; color: #fff; }
 
 /* 03 最长的一天 / 深夜 */
 .clock { font-size: clamp(200px, 30vw, 500px); margin-left: -.04em; }
-.nights { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; margin-top: 56px; }
+.nights { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 6px; margin-top: 56px; }
 .nights div { border-top: 1px solid #fff; padding-top: 10px; }
 .nights b { display: block; font-size: clamp(28px, 3vw, 46px); margin-top: 6px; }
 .nights .late b { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
 .nights img { margin-top: 10px; }
 .duo { display: grid; grid-template-columns: 1fr 1fr; gap: var(--pad); margin-top: 48px; }
 .duo .d { font-size: clamp(110px, 13vw, 210px); }
-.duo .bar24 { display: grid; grid-template-columns: repeat(24, 1fr); height: 10px; gap: 1px; margin-top: 18px; }
+.duo .bar24 { display: grid; grid-template-columns: repeat(24, minmax(0, 1fr)); height: 10px; gap: 1px; margin-top: 18px; }
 .duo .bar24 i { background: rgba(255,255,255,.15); }
 .duo .bar24 i.on { background: #fff; }
 
 /* 04 一天之中 */
-.day-strip { display: flex; height: 240px; margin-top: 56px; gap: 3px; }
+.day-strip { display: flex; height: clamp(240px, 44vh, 440px); margin-top: 56px; gap: 3px; }
 .day-strip div { display: flex; flex-direction: column; justify-content: space-between; padding: 14px; background: rgba(255,255,255,.1); min-width: 0; }
 .day-strip div.pk { background: #fff; color: #000; }
 .day-strip b { font-size: clamp(40px, 5vw, 80px); line-height: .9; }
 
 /* 05 月份 */
-.mbar { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; align-items: end; height: 300px; margin-top: 56px; }
+.mbar { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 6px; align-items: end; height: 300px; margin-top: 56px; }
 .mbar div { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
 .mbar i { display: block; background: #fff; }
 .mbar .fut i { background: rgba(255,255,255,.12); }
 .mbar .part i { background: repeating-linear-gradient(-45deg, #fff 0 2px, transparent 2px 6px); }
 .mbar b { font-size: 22px; font-weight: 700; font-stretch: 75%; margin-bottom: 6px; }
-.mtop { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; border-top: 1px solid #fff; padding-top: 10px; margin-top: 8px; }
-.mtop .t { font-family: var(--cjk); font-size: 12px; line-height: 1.3; margin-top: 8px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.mtop { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 6px; border-top: 1px solid #fff; padding-top: 10px; margin-top: 8px; }
+.mtop .t { font-family: var(--cjk); text-transform: none; letter-spacing: 0; font-weight: 600; font-size: 12px; line-height: 1.3; margin-top: 8px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .mtop .p { font-size: 11px; opacity: .55; margin-top: 2px; }
 
 /* 06 年度之歌 */
-.sot { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--pad); align-items: end; }
+.sot { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--pad); align-items: end; }
 .sot .art { grid-column: 1 / 7; box-shadow: 0 40px 80px rgba(0,0,0,.35); }
 .sot .info { grid-column: 7 / 13; }
 .sot h3 { font-family: var(--cjk); font-size: clamp(36px, 4.4vw, 68px); font-weight: 800; line-height: 1.08; margin: 14px 0 10px; }
 .sot .pc { font-size: clamp(120px, 14vw, 220px); margin-top: 24px; }
 .sot p.why { font-family: var(--cjk); font-size: 17px; line-height: 1.6; margin-top: 24px; max-width: 26em; }
-.runners { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--pad); margin-top: 72px; border-top: 1px solid currentColor; padding-top: 14px; }
+.runners { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--pad); margin-top: 72px; border-top: 1px solid currentColor; padding-top: 14px; }
 .runners .t { font-family: var(--cjk); font-weight: 700; margin-top: 10px; }
 .runners .p { font-size: 11px; opacity: .7; margin-top: 4px; }
 
 /* 07 年度艺人 */
-.mart { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; margin-top: 48px; }
+.mart { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 6px; margin-top: 48px; }
 .mart img { border-radius: 50%; }
 .mart .n { font-family: var(--cjk); font-size: 12px; font-weight: 600; margin-top: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mart .m { font-size: 10px; opacity: .55; margin-top: 2px; }
 .mart .hl img { box-shadow: 0 0 0 3px currentColor; }
-.ahero { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--pad); align-items: end; }
+.ahero { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--pad); align-items: end; }
 .ahero img { grid-column: 1 / 5; border-radius: 50%; }
 .ahero .info { grid-column: 6 / 13; }
 .ahero h3 { font-family: var(--cjk); font-size: clamp(56px, 8vw, 128px); font-weight: 900; line-height: 1; }
 
 /* 08 口味 */
-.taste { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--pad); margin-top: 56px; }
+.taste { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--pad); margin-top: 56px; }
 .taste .blk { border-top: 1px solid #fff; padding-top: 12px; }
 .taste .stack { display: flex; height: 18px; gap: 2px; margin: 14px 0 18px; }
 .taste .stack i { background: rgba(255,255,255,.3); }
@@ -128,21 +131,21 @@ body { background: #000; color: #fff; }
 .oldest { display: grid; grid-template-columns: 120px 1fr; gap: 24px; align-items: center; margin-top: 64px; border-top: 1px solid #fff; padding-top: 18px; }
 
 /* 09 红心 */
-.months { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; align-items: end; margin-top: 48px; min-height: 30vh; }
+.months { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 6px; align-items: end; margin-top: 48px; min-height: 30vh; }
 .months .m { display: flex; flex-wrap: wrap-reverse; align-content: flex-start; gap: 2px; }
 .months .m img { width: calc(50% - 1px); aspect-ratio: 1; object-fit: cover; transition: transform .3s; }
 .months .m img:hover { transform: scale(1.6); position: relative; z-index: 2; }
 .months .m.fut { opacity: .25; }
-.months-x { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; border-top: 1px solid #fff; margin-top: 8px; padding-top: 8px; }
+.months-x { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 6px; border-top: 1px solid #fff; margin-top: 8px; padding-top: 8px; }
 .months-x b { display: block; font-size: 28px; }
-.notes { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--pad); margin-top: 80px; }
+.notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--pad); margin-top: 80px; }
 .note { border-top: 1px solid #fff; padding-top: 12px; }
-.note .quad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin: 14px 0; }
+.note .quad { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; margin: 14px 0; }
 .note p { font-family: var(--cjk); font-size: 15px; line-height: 1.6; }
 .note h4 { font-size: 64px; margin-top: 8px; }
 
 /* 10 此刻 */
-.now { display: grid; grid-template-columns: repeat(10, 1fr); margin-top: 48px; }
+.now { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); margin-top: 48px; }
 .now img.dim { filter: grayscale(1); opacity: .35; }
 
 /* 封底 */
@@ -154,30 +157,46 @@ body { background: #000; color: #fff; }
 .liner li .t span { display: block; opacity: .5; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .liner .mo { display: block; border-top: 1px solid #fff; padding-top: 10px; margin-top: 18px; }
 .liner .mo:first-child { margin-top: 0; }
-.end { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--pad); margin-top: 120px; border-top: 1px solid #fff; padding-top: 16px; }
+.end { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--pad); margin-top: 120px; border-top: 1px solid #fff; padding-top: 16px; }
+.end .big span { display: inline-block; white-space: nowrap; }
 .end .big { grid-column: 1 / 8; font-family: var(--cjk); font-weight: 800; font-size: clamp(32px, 4vw, 60px); line-height: 1.15; }
 .end .small { grid-column: 9 / 13; }
 .end a { text-decoration: underline; text-underline-offset: 3px; }
 
 @media (max-width: 720px) {
   .toc { display: none; }
-  .kpis { grid-template-columns: repeat(2, 1fr); }
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .sot .art, .sot .info, .ahero img, .ahero .info, .end .big, .end .small { grid-column: 1 / 13; }
   .sot .art, .ahero img { margin-bottom: 32px; }
   .duo, .taste, .notes { grid-template-columns: 1fr; }
-  .runners { grid-template-columns: repeat(2, 1fr); }
-  .nights, .mart { grid-template-columns: repeat(5, 1fr); row-gap: 20px; }
+  .runners { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .nights, .mart { grid-template-columns: repeat(5, minmax(0, 1fr)); row-gap: 20px; }
   .mtop .t, .mtop .p { display: none; }
   .day-strip { flex-direction: column; height: auto; }
   .day-strip div { flex: none !important; flex-direction: row; align-items: baseline; }
   .liner { columns: 1; }
-  .now { grid-template-columns: repeat(5, 1fr); }
+  .now { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .hide-s { display: none; }
+  .cover .row { flex-wrap: wrap; row-gap: 14px; }
+  .wave { order: -1; flex-basis: 100%; max-width: none; height: 40px; gap: 0; }
+  .legend { flex-wrap: wrap; row-gap: 6px; }
+  .cover h1 { font-size: 44vw; }
+  .giant { font-size: 40vw; }
+  .clock { font-size: 30vw; }
+  .cal-wrap { overflow-x: auto; margin: 0 calc(-1 * var(--pad)); padding: 0 var(--pad); scrollbar-width: none; }
+  .cal, .cal-x { width: 680px; }
+  .yrs, .mbar { gap: 3px; }
+  .yrs b, .mbar b { font-size: 12px; }
+  .yrs-x, .mtop, .months-x { font-size: 9px; letter-spacing: 0; gap: 3px; }
+  .months-x b { font-size: 18px; }
+  .duo .d { font-size: 28vw; }
+  .note h4 { font-size: 48px; }
 }
 </style>
 </head>
 <body>
 <div class="prog" id="prog"></div>
-<div class="top pad cap"><span><a href="../">← JoniLin — Listening</a> &nbsp;/&nbsp; 2026</span><span>Annual Report</span></div>
+<div class="top pad cap"><span><a href="../">← JoniLin — Listening</a> &nbsp;/&nbsp; 2026</span><span class="hide-s">Annual Report</span></div>
 <nav class="toc" id="toc"></nav>
 
 <header class="cover">
@@ -201,7 +220,7 @@ body { background: #000; color: #fff; }
   </section>
 
   <section class="ch" data-t="Calendar"><div class="ch-h cap"><span>02</span><span>Calendar · 听歌年历</span></div>
-    <div class="reveal"><p class="say" id="cal-say"></p><div class="cal" id="cal"></div><div class="cal-x cap" id="cal-x"></div>
+    <div class="reveal"><p class="say" id="cal-say"></p><div class="cal-wrap"><div class="cal" id="cal"></div><div class="cal-x cap" id="cal-x"></div></div>
       <div class="legend cap" id="legend"></div></div>
   </section>
 
@@ -249,6 +268,7 @@ body { background: #000; color: #fff; }
 
 <script src="../data/music.js"></script>
 <script src="../data/listen2026.js"></script>
+<script src="../assets/cjk.js"></script>
 <script>
 const D = window.MUSIC, LS = window.LISTEN, $ = s => document.querySelector(s);
 const Y = 2026, pad2 = n => String(n).padStart(2, '0'), fmt = n => Math.round(n).toLocaleString('en-US');
@@ -313,7 +333,7 @@ $('#t-kpi').innerHTML = `
   <div>Since 2017<b class="xl tnum">${fmt(LS.total / 3600)}</b><small>注册以来总时长（小时）</small></div>`;
 const yrs = [...LS.years.map(y => [y[0], y[2] / 3600])].filter(y => y[0] < Y).concat([[Y, totalMin / 60]]).sort((a, b) => a[0] - b[0]);
 const ymax = Math.max(...yrs.map(y => y[1])), ypk = yrs.reduce((a, b) => b[1] > a[1] ? b : a)[0];
-$('#yrs').style.gridTemplateColumns = $('#yrs-x').style.gridTemplateColumns = `repeat(${yrs.length}, 1fr)`;
+$('#yrs').style.gridTemplateColumns = $('#yrs-x').style.gridTemplateColumns = `repeat(${yrs.length}, minmax(0, 1fr))`;
 $('#yrs').innerHTML = yrs.map(([y, h]) => `<div class="${y === Y ? 'cur' : ''} ${y === ypk ? 'pk' : ''}"><b class="tnum">${fmt(h)}</b><i style="height:${h / ymax * 150}px"></i></div>`).join('');
 $('#yrs-x').innerHTML = yrs.map(([y]) => `<span>${y}${y === Y ? ' *' : ''}</span>`).join('');
 
@@ -322,12 +342,12 @@ const q = [...days.map(d => d.v)].filter(v => v > 0).sort((a, b) => a - b), qa =
 const lvl = v => v >= qa(.9) ? 1 : v >= qa(.65) ? .7 : v >= qa(.35) ? .45 : .22;
 const lead = (allDays[0].getDay() + 6) % 7;                  // 周一开头
 const marks = new Set(topDays.slice(0, 2).map(d => d.t.toDateString()));
-$('#cal').innerHTML = '<i class="pad"></i>'.repeat(lead) + allDays.map(d => { const v = vOf[d.toDateString()];
+$('#cal').innerHTML = '<i class="lead"></i>'.repeat(lead) + allDays.map(d => { const v = vOf[d.toDateString()];
   if (v === undefined) return '<i class="fut"></i>';
   return v === 0 ? `<i class="z" title="${d.getMonth() + 1}.${d.getDate()} · 0"></i>` : `<i class="${marks.has(d.toDateString()) ? 'mk' : ''}" style="opacity:${lvl(v)}" title="${d.getMonth() + 1}.${d.getDate()} · ${hm(v)}"></i>`; }).join('');
 const weeks = Math.ceil((lead + allDays.length) / 7);
-$('#cal').style.gridTemplateColumns = $('#cal-x').style.gridTemplateColumns = `repeat(${weeks}, 1fr)`;
-$('#cal-x').innerHTML = Array.from({ length: weeks }, (_, w) => { const d = allDays[Math.max(0, w * 7 - lead)]; return `<span>${d.getDate() <= 7 ? MON[d.getMonth()] : ''}</span>`; }).join('');
+$('#cal').style.gridTemplateColumns = $('#cal-x').style.gridTemplateColumns = `repeat(${weeks}, minmax(0, 1fr))`;
+let lastM = -1; $('#cal-x').innerHTML = Array.from({ length: weeks }, (_, w) => { const d = allDays[Math.min(allDays.length - 1, w * 7 - lead + 6)]; const show = d.getMonth() !== lastM; lastM = d.getMonth(); return `<span>${show ? MON[d.getMonth()] : ''}</span>`; }).join('');
 $('#legend').innerHTML = `Less ${[.22, .45, .7, 1].map(o => `<i style="opacity:${o}"></i>`).join('')} More &nbsp;·&nbsp; 空心 = 那天没有听歌 &nbsp;·&nbsp; 外框 = 听得最久的两天`;
 const zeros = days.filter(d => d.v === 0);
 $('#cal-say').innerHTML = `从 1 月 1 日到 ${md(bestEnd)}，你连续 <b>${best}</b> 天没有一天不听歌。` +
@@ -353,7 +373,7 @@ const per = {}; LS.months.forEach(m => m.periods.forEach(([k, v]) => per[k] = (p
 const psum = Object.values(per).reduce((a, b) => a + b, 0);
 const order = ['early_morning', 'morning', 'noon', 'afternoon', 'night', 'deep_night'];
 const ppk = order.reduce((a, b) => per[b] > per[a] ? b : a);
-$('#dstrip').innerHTML = order.map(k => `<div class="${k === ppk ? 'pk' : ''}" style="flex:${Math.max(per[k], psum * .05)}">
+$('#dstrip').innerHTML = order.map(k => `<div class="${k === ppk ? 'pk' : ''}" style="flex:${Math.max(per[k], psum * .085)}">
   <span class="cap">${PN[k][1]}<br><span class="zh">${PN[k][0]}</span></span><b class="xl tnum">${Math.round(per[k] / psum * 100)}%</b></div>`).join('');
 $('#dp-say').innerHTML = `你最常在<b>${PN[ppk][0]}</b>听歌，占了全天的 ${Math.round(per[ppk] / psum * 100)}%。` +
   `<span class="dim">深夜也不少：今年有 ${fmt(per.deep_night / 60)} 个小时，是在别人睡着之后听的。</span>`;
@@ -380,7 +400,7 @@ $('#sot').innerHTML = `<div class="sot">${art(S1.pic, 900)}
   <div class="info"><span class="cap">Song of ${Y}</span><h3>${S1.n}</h3><p class="cap" style="opacity:.7">${(S1.a || []).join(' / ')}</p>
     <div class="pc xl tnum">${S1.pc}</div><span class="cap">plays in ${S1.months.join(', ')}</span>
     <p class="why">${S1.months.length === 1 ? `光是 ${S1.months[0] === 'Jan' ? '1 月' : S1.months[0]}一个月，你就把它放了 ${S1.pc} 遍${allTimePc ? `——它全部 ${allTimePc} 次播放里的 ${Math.round(S1.pc / allTimePc * 100)}%` : ''}。` : `今年你把它放了至少 ${S1.pc} 遍。`}
-    ${first ? `你第一次听它，是 ${first[1]}，一个${first[2]}。` : ''}${likedS1 && dt(likedS1.at).getFullYear() === Y ? `直到${md(likedS1.at)}，你才给它点了红心。` : ''}</p></div></div>
+    ${first ? `你第一次听它，是 ${first[1]}，一个${first[2]}。` : ''}${likedS1 && dt(likedS1.at).getFullYear() === Y ? `直到 ${md(likedS1.at)}，你才给它点了红心。` : ''}</p></div></div>
   <div class="runners">${songs.slice(1, 5).map((s, i) => `<div>${art(s.pic, 300)}<p class="t">${s.n}</p><p class="p cap">No. ${i + 2} · ${s.pc} plays · ${s.months.join(' ')}</p></div>`).join('')}</div>`;
 paint($('#sot-sec'), S1.pic);
 
@@ -392,7 +412,7 @@ LS.months.forEach((m, i) => { if (!m.topArtist) return; const t = m.topArtist;
 const arts = Object.values(AP).sort((a, b) => b.tops.length - a.tops.length || b.pc - a.pc), A1 = arts[0];
 const mins1 = LS.months.filter(m => m.topArtist?.n === A1.n).reduce((s, m) => s + parseInt(m.topArtist.items[1][1]), 0);
 $('#art').innerHTML = `<div class="ahero">${art(A1.pic, 600)}<div class="info"><span class="cap">Artist of ${Y}</span><h3>${A1.n}</h3>
-  <p class="say" style="margin-top:24px">${A1.tops.length} 个月的月度歌手。<span class="dim">${A1.tops.map(MZH).join('、')}——光是这几个月就听了 TA ${fmt(mins1 / 60)} 个小时，至少 ${A1.pc} 次。</span></p></div></div>
+  <p class="say" style="margin-top:24px">${A1.tops.length} 个月的月度歌手。<span class="dim">${A1.tops.map(MZH).join('、')}——光是这几个月就听了 ${fmt(mins1 / 60)} 个小时，至少 ${A1.pc} 次。</span></p></div></div>
   <p class="cap" style="margin-top:72px;border-top:1px solid currentColor;padding-top:12px">Artist of the month · 每月最常听的艺人</p>
   <div class="mart">${LS.months.map((m, i) => m.topArtist ? `<div class="${m.topArtist.n === A1.n ? 'hl' : ''}">${art(m.topArtist.pic, 200)}<p class="n">${m.topArtist.n}</p><p class="m cap">${MON[i]} · ${m.topArtist.pc}×</p></div>` : '').join('')}</div>`;
 paint($('#art-sec'), A1.pic);
@@ -409,7 +429,7 @@ $('#taste').innerHTML = blk('Language · 语言', langs) + blk('Genre · 曲风'
 const ls = langs.reduce((a, b) => a + b[1], 0), canto = langs.find(l => l[0] === '粤语');
 const cantoHi = LS.months.map((m, i) => (m.lang || []).find(x => x[0] === '粤语' && x[1] >= 28) ? (i + 1) + ' 月' : null).filter(Boolean);
 const olds = LS.months.map(m => m.age?.oldest).filter(Boolean).sort((a, b) => a.y - b.y)[0];
-$('#ta-say').innerHTML = `华语占 ${Math.round(langs[0][1] / ls * 100)}%。<span class="dim">${canto ? `粤语有 ${Math.round(canto[1] / ls * 100)}%${cantoHi.length ? `——${cantoHi.join('和')}，粤语一度占到三成` : ''}。` : ''}最常听的是 ${eras[0][0]} 的歌。</span>`;
+$('#ta-say').innerHTML = `华语占 ${Math.round(langs[0][1] / ls * 100)}%。<span class="dim">${canto ? `粤语有 ${Math.round(canto[1] / ls * 100)}%${cantoHi.length ? `——${cantoHi.join('和 ')}，粤语一度占到三成` : ''}。` : ''}最常听的是 ${eras[0][0]} 的歌。</span>`;
 $('#oldest').innerHTML = `${art(olds.pic, 240)}<div><span class="cap">Oldest song you played · 今年听过最老的歌</span>
   <p class="say" style="margin-top:8px">${olds.n}<span class="dim"> — ${olds.y} 年。比你听它的这一年早了 ${Y - olds.y} 年。</span></p></div>`;
 
@@ -428,9 +448,9 @@ const bd = Object.values(byDay).sort((a, b) => b.length - a.length || a[0].at - 
 const tag = l => l.filter(s => /Symphony|Concerto|Op\.|Sonata/i.test(s.n)).length >= l.length / 2 ? '一个交响乐的下午' : '回到 2000 年代的欧美';
 $('#notes').innerHTML = (rep ? `<div class="note"><span class="cap">Same title · 同名</span><h4 class="xl">×${rep[1].length}</h4>
   <div class="quad">${rep[1].slice(0, 4).map(s => art(s.pic, 200, tip(s))).join('')}</div>
-  <p>你收藏了 ${rep[1].length} 首都叫《${rep[0]}》的歌，来自 ${rep[1].map(s => s.a[0]).join('、')}。</p></div>` : '') +
-  bd.map(l => `<div class="note"><span class="cap">${dt(l[0].at).getMonth() + 1}.${dt(l[0].at).getDate()} · ${l.length} likes in one day</span><h4 class="xl tnum">${dt(l[0].at).getMonth() + 1}.${dt(l[0].at).getDate()}</h4>
-  <div class="quad">${l.slice(0, 4).map(s => art(s.pic, 200, tip(s))).join('')}</div><p>${tag(l)}：${l.map(s => '《' + s.n.replace(/:.*$/, '').slice(0, 22) + '》').join('')}</p></div>`).join('');
+  <p>你收藏了 ${rep[1].length} 首都叫《${rep[0]}》的歌，来自${rep[1].map(s => s.a[0]).join('、')}。</p></div>` : '') +
+  bd.map(l => `<div class="note"><span class="cap">One day · 一天 ${l.length} 颗红心</span><h4 class="xl tnum">${dt(l[0].at).getMonth() + 1}.${dt(l[0].at).getDate()}</h4>
+  <div class="quad">${l.slice(0, 4).map(s => art(s.pic, 200, tip(s))).join('')}</div><p>${tag(l)}：${l.map(s => '《' + s.n.replace(/:.*$/, '').replace(/,\s*Op\..*$/, '').replace(/\s*\(.*?\)\s*$/, '') + '》').join('')}</p></div>`).join('');
 
 /* ---------- 10 此刻 ---------- */
 const wc = {}; D.week.forEach(s => s.a.forEach(a => wc[a] = (wc[a] || 0) + 1));
@@ -451,8 +471,10 @@ L.forEach((s, i) => { const m = dt(s.at).getMonth();
   html += `<li><span class="cap tnum">${pad2(i + 1)}</span>${art(s.pic, 80)}<span class="t"><b>${s.n}</b><span>${s.a.join(' / ')}</span></span><span class="cap tnum" style="text-align:right">${pad2(m + 1)}.${pad2(dt(s.at).getDate())}</span></li>`; });
 $('#liner').innerHTML = html;
 const left = Math.round((new Date(Y, 11, 31) - now) / 864e5);
-$('#e-big').textContent = left > 0 ? `还剩 ${left} 天，这一年还没听完。` : `${Y}，收录完毕。`;
+$('#e-big').innerHTML = left > 0 ? `<span>还剩 ${left} 天，</span><span>这一年还没听完。</span>` : `<span>${Y}，</span><span>收录完毕。</span>`;
 $('#e-small').innerHTML = `数据来自网易云音乐，截至 ${now.getFullYear()}.${now.getMonth() + 1}.${now.getDate()}。听歌时长、年历、时段、深夜与每月主打来自网易云的月度听歌报告；年度之歌与年度艺人由每月前几名的播放次数累加得出，是下限而不是全量。<br><br><a href="../">回到 Listening →</a>`;
+
+document.querySelectorAll('.say').forEach(clauses);
 
 /* ---------- 滚动：章节换色 + 进度 + 目录 ---------- */
 const secs = [...document.querySelectorAll('.ch')];
