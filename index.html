@@ -14,8 +14,6 @@
 .top nav a { opacity: .6; transition: opacity .2s; }
 .top nav a:hover, .top nav a.on { opacity: 1; }
 .top .live { display: flex; align-items: center; gap: 10px; }
-.top .live i { width: 8px; height: 8px; background: #fff; border-radius: 50%; animation: blink 1.6s steps(2) infinite; }
-@keyframes blink { 50% { opacity: .2; } }
 
 /* ---------- 首屏 ---------- */
 .hero { padding-top: 28px; }
@@ -51,7 +49,7 @@
 .no1 h3 { font-family: var(--cjk); font-size: clamp(28px, 3vw, 44px); font-weight: 700; line-height: 1.1; margin-top: 18px; }
 .no1 .by { font-family: var(--cjk); color: var(--g3); margin-top: 8px; }
 .list { margin-top: 56px; border-top: 1px solid var(--line); }
-.row { display: grid; grid-template-columns: 48px 52px minmax(0, 4fr) minmax(0, 3fr) minmax(0, 3fr) 72px; gap: 16px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--hair); }
+.row { display: grid; grid-template-columns: 48px 52px minmax(0, 4fr) minmax(0, 3fr) 48px minmax(0, 3fr) 72px; gap: 16px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--hair); }
 .row:hover { background: var(--g1); }
 .row .r { font-weight: 600; font-size: 12px; }
 .row .art { width: 52px; }
@@ -60,6 +58,8 @@
 .row .b { height: 6px; background: var(--g1); position: relative; }
 .row .b i { position: absolute; inset: 0 auto 0 0; background: var(--fg); }
 .row .p { text-align: right; font-weight: 600; }
+.row .d { color: var(--g3); font-size: 12px; }
+.no1 .time { font-family: var(--cjk); margin-top: 22px; padding-top: 12px; border-top: 1px solid var(--hair); max-width: 30em; }
 .btn { display: inline-block; margin-top: 20px; padding: 12px 20px; background: var(--fg); color: var(--bg); border: 0; cursor: pointer; font: inherit; }
 .btn:hover { background: #333; }
 
@@ -98,8 +98,13 @@
 
 /* ---------- 06 PLAYLISTS ---------- */
 .pls { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 28px var(--pad); }
+.pls a { position: relative; }
+.pls .sl { position: relative; display: block; }
+.pls .sl .art { position: relative; z-index: 1; }
+.pls .sl .vd { position: absolute; inset: 3%; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+.pls .sl .vd .lbl { position: absolute; inset: 33%; border-radius: 50%; background: center / cover; }
+.pls a:hover .sl .vd { transform: translateY(-15%) rotate(40deg); }
 .pls a .t { font-family: var(--cjk); font-weight: 600; margin-top: 10px; line-height: 1.3; }
-.pls a:hover .art { filter: brightness(.9); }
 .subs { margin-top: 64px; border-top: 1px solid var(--line); columns: 2; column-gap: var(--pad); }
 .subs li { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; border-bottom: 1px solid var(--hair); break-inside: avoid; font-family: var(--cjk); }
 .subs li span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -118,7 +123,7 @@
   .wall { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .sec-h .n, .sec-h h2, .sec-h p, .no1 .art, .no1 .info, .note p { grid-column: 1 / 13; }
   .row { grid-template-columns: 32px 44px minmax(0, 1fr) 56px; }
-  .row .a, .row .b { display: none; }
+  .row .a, .row .b, .row .d { display: none; }
   .artists li { grid-template-columns: 32px 44px minmax(0, 1fr) 60px; }
   .artists .bar-w { display: none; }
   .week { grid-template-columns: repeat(5, minmax(0, 1fr)); }
@@ -135,7 +140,7 @@
 <body>
 
 <header class="top pad cap">
-  <span class="live"><i></i><span id="t-left">JoniLin — Listening</span></span>
+  <span class="live"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span id="t-left">JoniLin — Listening</span></span>
   <nav><a href="#s1">Top 100</a><a href="#s2">Artists</a><a href="#s3">Likes</a><a href="#s4">Decades</a><a href="#s5">This Week</a><a href="#s6">Playlists</a></nav>
   <a href="2026/">2026 Report →</a>
 </header>
@@ -156,7 +161,7 @@
   </section>
 
   <section class="sec pad" id="s2">
-    <div class="sec-h"><span class="n cap">02</span><h2 class="xl">Artists<small>谁占据了你的耳朵</small></h2><p>把前 100 首的播放次数按艺人累加，封面是 TA 在你榜上最高的那首。</p></div>
+    <div class="sec-h"><span class="n cap">02</span><h2 class="xl">Artists<small>谁占据了你的耳朵</small></h2><p>把前 100 首的播放次数按艺人累加，封面取自榜上排得最高的那首。</p></div>
     <ol class="artists" id="artists"></ol>
   </section>
 
@@ -193,6 +198,7 @@
 <script src="data/music.js"></script>
 <script src="data/listen2026.js"></script>
 <script src="assets/cjk.js"></script>
+<script src="assets/record.js"></script>
 <script>
 const D = window.MUSIC, $ = s => document.querySelector(s), P = D.profile;
 const fmt = n => (n || 0).toLocaleString('en-US');
@@ -200,6 +206,7 @@ const pad2 = n => String(n).padStart(2, '0');
 const day = ms => { const d = new Date(ms); return `${d.getFullYear()}.${pad2(d.getMonth() + 1)}.${pad2(d.getDate())}`; };
 const img = (u, s = 200) => u ? `${u}?param=${s}y${s}` : '';
 const yearOf = ms => new Date(ms).getFullYear();
+const mmss = sec => sec ? `${Math.floor(sec / 60)}:${pad2(Math.round(sec % 60))}` : '';
 const mine = D.playlists.filter(p => p.mine);
 const art = (u, s, cls = '') => `<img class="art ${cls}" src="${img(u, s)}" alt="" loading="lazy" crossorigin="anonymous">`;
 
@@ -220,12 +227,13 @@ const no1 = D.allTime[0], max = no1.pc || 1;
 $('#no1').innerHTML = `${art(no1.pic, 900)}
   <div class="info"><span class="cap">No. 01 · ${no1.y || ''}</span>
     <div class="big xl tnum">${fmt(no1.pc)}</div><span class="cap g">plays</span>
-    <h3>${no1.n}</h3><p class="by">${no1.a.join(' / ')} — ${no1.al}</p></div>`;
+    <h3>${no1.n}</h3><p class="by">${no1.a.join(' / ')} — ${no1.al}</p>
+    <p class="time">一首 ${mmss(no1.dt)} 的歌，${fmt(no1.pc)} 遍，加起来你在里面待了 ${Math.round(no1.dt * no1.pc / 3600)} 个小时。</p></div>`;
 let shown = 25;
 const renderList = () => {
   $('#list').innerHTML = D.allTime.slice(1, shown).map((s, i) => `<li class="row">
     <span class="r tnum">${pad2(i + 2)}</span>${art(s.pic, 104)}
-    <span class="t">${s.n}</span><span class="a">${s.a.join(' / ')}</span>
+    <span class="t">${s.n}</span><span class="a">${s.a.join(' / ')}</span><span class="d tnum">${mmss(s.dt)}</span>
     <span class="b"><i style="width:${(s.pc || 0) / max * 100}%"></i></span><span class="p tnum">${fmt(s.pc)}</span></li>`).join('');
   $('#more').textContent = shown >= D.allTime.length ? 'Collapse' : `Show all ${D.allTime.length}`;
 };
@@ -275,7 +283,7 @@ $('#week-note').textContent = `这一周听了 ${D.week.length} 首，${wt} 出�
 
 /* 06 */
 $('#pls').innerHTML = mine.map(p => `<a href="https://music.163.com/#/playlist?id=${p.id}" target="_blank">
-  ${art(p.pic, 400)}<p class="t">${p.n.replace(/^@?(JoniLin|Ttttriangel|Ttttriangle)的?/, '')}</p><p class="cap g" style="margin-top:4px">${p.c} songs · ${yearOf(p.ct)}</p></a>`).join('');
+  <span class="sl"><span class="vd vinyl-face"><span class="lbl" style="background-image:url('${img(p.pic, 120)}')"></span></span>${art(p.pic, 400)}</span><p class="t">${p.n.replace(/^@?(JoniLin|Ttttriangel|Ttttriangle)的?/, '')}</p><p class="cap g" style="margin-top:4px">${p.c} songs · ${yearOf(p.ct)}</p></a>`).join('');
 $('#subs').innerHTML = D.playlists.filter(p => !p.mine).map(p => `<li><span>${p.n}</span><span class="g tnum">${p.c}</span></li>`).join('');
 
 $('#f1').textContent = `Data · ${day(D.fetchedAt)}`;
@@ -283,6 +291,7 @@ $('#f1').textContent = `Data · ${day(D.fetchedAt)}`;
 const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && (e.target.classList.add('in'), io.unobserve(e.target))), { threshold: .1 });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 clauses($('#years-note'));
+mountRecord(img(no1.pic, 120));
 </script>
 </body>
 </html>

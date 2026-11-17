@@ -46,3 +46,41 @@ ol, ul { list-style: none; }
 h1, h2, h3, h4 { text-wrap: balance; }
 p, li, small { text-wrap: pretty; }
 .cl { display: inline-block; }
+
+/* ---------- 唱片元素（v3）----------
+   参考：黑胶唱片本身（纹路、标签、33⅓ 转）、唱片封套背面的目录号与 liner notes、
+   Peter Saville 为 Joy Division《Unknown Pleasures》做的脉冲叠线图。
+   只用黑白和封面原色，不加装饰色。 */
+
+/* 黑胶纹路：细密的同心圆 + 不随旋转移动的反光 */
+.vinyl-face { border-radius: 50%; background:
+  radial-gradient(circle, transparent 0 31%, rgba(255,255,255,.06) 31.5% 32.2%, transparent 32.8% 60%, rgba(255,255,255,.05) 60.5% 61%, transparent 61.5%),
+  repeating-radial-gradient(circle, #0c0c0c 0 1px, #1a1a1a 1px 2px); }
+.sheen { position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
+  background: conic-gradient(from 20deg, transparent 0 30deg, rgba(255,255,255,.16) 50deg, transparent 72deg 205deg, rgba(255,255,255,.10) 228deg, transparent 250deg); }
+
+/* 回到顶部：一张小黑胶，随滚动转动，外圈是读到哪里的进度 */
+.rec { position: fixed; right: 20px; bottom: 20px; z-index: 40; width: 52px; height: 52px; padding: 0; border: 0; background: none; color: inherit; cursor: pointer;
+  opacity: 0; transform: translateY(14px); pointer-events: none; transition: opacity .5s, transform .5s cubic-bezier(.2,.7,.2,1); }
+.rec.on { opacity: 1; transform: none; pointer-events: auto; }
+.rec svg { position: absolute; inset: 0; transform: rotate(-90deg); overflow: visible; }
+.rec circle { fill: none; stroke: currentColor; stroke-width: 1.25; }
+.rec circle.track { opacity: .18; }
+.rec .disc { position: absolute; inset: 5px; box-shadow: 0 8px 20px rgba(0,0,0,.28); transition: transform .3s cubic-bezier(.2,.7,.2,1); }
+.rec .spin { position: absolute; inset: 0; border-radius: 50%; }
+.rec .lbl { position: absolute; inset: 31%; border-radius: 50%; background: #333 center / cover; }
+.rec .lbl::after { content: ''; position: absolute; left: 50%; top: 50%; width: 3px; height: 3px; margin: -1.5px; border-radius: 50%; background: #fff; }
+.rec .tip { position: absolute; right: 62px; top: 50%; transform: translate(6px, -50%); white-space: nowrap; background: #0A0A0A; color: #fff; padding: 6px 9px;
+  font: 600 10px/1 var(--sans); letter-spacing: .08em; text-transform: uppercase; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
+.rec:hover .disc, .rec:focus-visible .disc { transform: scale(1.07); }
+.rec:hover .tip, .rec:focus-visible .tip { opacity: 1; transform: translate(0, -50%); }
+@media (max-width: 720px) { .rec { right: 14px; bottom: 14px; width: 46px; height: 46px; } .rec .tip { display: none; } }
+
+/* 均衡器：三根跳动的细条，表示“正在播放” */
+.eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 10px; }
+.eq i { width: 2px; height: 100%; background: currentColor; transform-origin: bottom; animation: eq 1s ease-in-out infinite alternate; }
+.eq i:nth-child(2) { animation-duration: .7s; animation-delay: -.3s; }
+.eq i:nth-child(3) { animation-duration: 1.3s; animation-delay: -.6s; }
+@keyframes eq { 0% { transform: scaleY(.25); } 100% { transform: scaleY(1); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .eq i { animation: none; transform: scaleY(.6); } }
