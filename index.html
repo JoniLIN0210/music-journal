@@ -114,6 +114,7 @@
 .foot a.go { display: block; font-size: clamp(120px, 22vw, 360px); margin: 24px 0 0 -0.04em; transition: letter-spacing .4s; }
 .foot a.go:hover { letter-spacing: .02em; }
 .foot .row2 { display: flex; justify-content: space-between; border-top: 1px solid #333; padding-top: 14px; margin-top: 24px; }
+.foot .mk { text-decoration: underline; text-underline-offset: 3px; }
 .foot code { font-family: ui-monospace, monospace; background: #222; padding: 2px 6px; }
 
 @media (max-width: 1000px) { .top nav { display: none; } }
@@ -192,15 +193,21 @@
 <footer class="foot pad">
   <div class="cap" style="display:flex;justify-content:space-between"><span>Next</span><span>Annual Report</span></div>
   <a class="go xl" href="2026/">2026 →</a>
-  <div class="row2 cap"><span id="f1"></span><span>JoniLin · Listening since 2017</span><span>Source · music.163.com</span></div>
+  <div class="row2 cap"><span id="f1"></span><a href="make/" class="mk">Make your own · 做一张你自己的 →</a><span>Source · music.163.com</span></div>
 </footer>
 
 <script src="data/music.js"></script>
 <script src="data/listen2026.js"></script>
+<script src="assets/source.js"></script>
+<script src="assets/stats.js"></script>
 <script src="assets/cjk.js"></script>
 <script src="assets/record.js"></script>
 <script>
 const D = window.MUSIC, $ = s => document.querySelector(s), P = D.profile;
+const NICK_T = window.MJ_NICK || P.nick;
+document.title = `${NICK_T} — Listening`;
+// 每一节单独渲染；数据不全时只隐藏这一节
+const sect = (id, fn) => { try { fn(); } catch (e) { console.warn(id, e); const el = document.getElementById(id); if (el) el.style.display = 'none'; if (id === 's5') $('#week').style.display = 'none'; } };
 const fmt = n => (n || 0).toLocaleString('en-US');
 const pad2 = n => String(n).padStart(2, '0');
 const day = ms => { const d = new Date(ms); return `${d.getFullYear()}.${pad2(d.getMonth() + 1)}.${pad2(d.getDate())}`; };
@@ -211,8 +218,8 @@ const mine = D.playlists.filter(p => p.mine);
 const art = (u, s, cls = '') => `<img class="art ${cls}" src="${img(u, s)}" alt="" loading="lazy" crossorigin="anonymous">`;
 
 /* HERO */
-$('#t-left').textContent = `${P.nick} — Listening since ${yearOf(P.created)}`;
-$('#m1').textContent = `${P.nick} · UID ${P.uid}`;
+$('#t-left').textContent = `${NICK_T} — Listening since ${yearOf(P.created)}`;
+$('#m1').textContent = `${NICK_T} · UID ${P.uid}`;
 $('#m2').textContent = `Updated ${day(D.fetchedAt)}`;
 $('#h-num').textContent = fmt(P.listenSongs);
 const hours = Math.round(D.allTime.reduce((s, x) => s + (x.pc || 0) * x.dt, 0) / 3600);
@@ -220,9 +227,11 @@ $('#stats').innerHTML = [
   ['Since', day(P.created)], ['Days', fmt(P.createDays)], window.LISTEN ? ['Hours listened', fmt(Math.round(LISTEN.total / 3600))] : ['Hours in Top 100', fmt(hours)],
   ['Liked', fmt(D.liked.length)], ['Level', 'Lv.' + P.level]
 ].map(([k, v]) => `<div><span class="g">${k}</span><b class="tnum">${v}</b></div>`).join('');
-$('#wall').innerHTML = D.allTime.slice(0, 36).map((s, i) => `<a data-r="${pad2(i + 1)}" title="${s.n} — ${s.a.join(' / ')}" href="#s1">${art(s.pic, 240)}</a>`).join('');
+$('#wall').innerHTML = (D.allTime.length ? D.allTime : D.liked).slice(0, 36).map((s, i) => `<a data-r="${pad2(i + 1)}" title="${s.n} — ${s.a.join(' / ')}" href="#s1">${art(s.pic, 240)}</a>`).join('');
 
 /* 01 */
+sect('s1', () => {
+if (!D.allTime.length) throw new Error('排行未公开');
 const no1 = D.allTime[0], max = no1.pc || 1;
 $('#no1').innerHTML = `${art(no1.pic, 900)}
   <div class="info"><span class="cap">No. 01 · ${no1.y || ''}</span>
@@ -239,18 +248,23 @@ const renderList = () => {
 };
 $('#more').onclick = () => { shown = shown >= D.allTime.length ? 25 : D.allTime.length; renderList(); };
 renderList();
+});
 
 /* 02 */
+sect('s2', () => {
 const A = {};
 D.allTime.forEach(s => s.a.forEach(a => { A[a] = A[a] || { v: 0, pic: s.pic }; A[a].v += s.pc || 0; }));
-const arts = Object.entries(A).sort((a, b) => b[1].v - a[1].v).slice(0, 15), amax = arts[0][1].v;
+const arts = Object.entries(A).sort((a, b) => b[1].v - a[1].v).slice(0, 15), amax = arts[0][1].v || 1;
 $('#artists').innerHTML = arts.map(([a, o], i) => `<li><span class="cap tnum">${pad2(i + 1)}</span>${art(o.pic, 112)}
   <span class="nm">${a}</span><span class="bar-w"><span class="bar" style="display:block;width:${o.v / amax * 100}%"></span></span>
   <span class="tnum" style="text-align:right;font-weight:600">${fmt(o.v)}</span></li>`).join('');
+});
 
 /* 03 */
+sect('s3', () => {
 const by = {}; D.liked.forEach(s => { const y = yearOf(s.at); by[y] = (by[y] || 0) + 1; });
 const yrs = []; for (let y = yearOf(P.created); y <= yearOf(D.fetchedAt); y++) yrs.push(y);
+if (!D.liked.length) throw new Error('no likes');
 const peak = yrs.reduce((a, b) => (by[b] || 0) > (by[a] || 0) ? b : a), nowY = yrs[yrs.length - 1];
 const ymax = Math.max(...yrs.map(y => by[y] || 0));
 ['#years', '#years-x'].forEach(s => $(s).style.gridTemplateColumns = `repeat(${yrs.length}, minmax(0, 1fr))`);
@@ -260,10 +274,13 @@ $('#years-x').innerHTML = yrs.map(y => `<span>${y}</span>`).join('');
 const quiet = yrs.filter(y => (by[y] || 0) <= 5);
 $('#years-note').innerHTML = `${peak} 年是点红心最多的一年，${by[peak]} 首，占全部 ${D.liked.length} 首的 ${Math.round(by[peak] / D.liked.length * 100)}%。` +
   (quiet.length ? ` ${quiet[0]}–${quiet[quiet.length - 1]} 年几乎是空白，加起来只有 ${quiet.reduce((s, y) => s + (by[y] || 0), 0)} 首。` : '');
+});
 
 /* 04 */
+sect('s4', () => {
 const dc = {}; D.liked.forEach(s => { if (s.y > 1900) { const k = Math.floor(s.y / 10) * 10; dc[k] = (dc[k] || 0) + 1; } });
 const decs = Object.entries(dc).sort((a, b) => a[0] - b[0]), dsum = decs.reduce((s, d) => s + d[1], 0);
+if (!decs.length) throw new Error('no years');
 const dpk = decs.reduce((a, b) => b[1] > a[1] ? b : a)[0];
 // 占比不到 5% 的早期年代合成一格「更早」，不留没有标签的细条
 const firstBig = decs.findIndex(([, v]) => v / dsum >= .05), early = decs.slice(0, firstBig);
@@ -273,25 +290,31 @@ $('#dec').innerHTML = dshow.map(([k, v, merged]) => { const p = v / dsum, lab = 
   <span class="cap">${lab}</span><b class="tnum">${p < .01 ? '<1' : Math.round(p * 100)}%</b></div>`; }).join('');
 const ys = D.liked.filter(s => s.y > 1900);
 $('#dec-note').textContent = `平均发行年份 ${Math.round(ys.reduce((s, x) => s + x.y, 0) / ys.length)}，最集中在 ${dpk} 年代。无年份信息的歌曲不计入。`;
+});
 
 /* 05 */
+sect('s5', () => {
 $('#week').innerHTML = D.week.slice(0, 64).map((s, i) => `<a class="${i === 0 ? 'first' : ''}" title="${s.n}">
   ${art(s.pic, i === 0 ? 800 : 200)}<span class="tip"><b>${s.n}</b><br>${s.a.join(' / ')}${s.pc ? ` · ${s.pc}×` : ''}</span></a>`).join('');
 const wa = {}; D.week.forEach(s => s.a.forEach(a => wa[a] = (wa[a] || 0) + 1));
+if (!D.week.length) throw new Error('本周排行未公开');
 const [wt, wn] = Object.entries(wa).sort((a, b) => b[1] - a[1])[0];
 $('#week-note').textContent = `这一周听了 ${D.week.length} 首，${wt} 出现 ${wn} 次。最常听的是《${D.week[0].n}》。`;
+});
 
 /* 06 */
+sect('s6', () => {
 $('#pls').innerHTML = mine.map(p => `<a href="https://music.163.com/#/playlist?id=${p.id}" target="_blank">
-  <span class="sl"><span class="vd vinyl-face"><span class="lbl" style="background-image:url('${img(p.pic, 120)}')"></span></span>${art(p.pic, 400)}</span><p class="t">${p.n.replace(/^@?(JoniLin|Ttttriangel|Ttttriangle)的?/, '')}</p><p class="cap g" style="margin-top:4px">${p.c} songs · ${yearOf(p.ct)}</p></a>`).join('');
+  <span class="sl"><span class="vd vinyl-face"><span class="lbl" style="background-image:url('${img(p.pic, 120)}')"></span></span>${art(p.pic, 400)}</span><p class="t">${p.n.replace(new RegExp(`^@?(${P.nick.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}|JoniLin|Ttttriangel|Ttttriangle)的?`), '') || p.n}</p><p class="cap g" style="margin-top:4px">${p.c} songs · ${yearOf(p.ct)}</p></a>`).join('');
 $('#subs').innerHTML = D.playlists.filter(p => !p.mine).map(p => `<li><span>${p.n}</span><span class="g tnum">${p.c}</span></li>`).join('');
+});
 
 $('#f1').textContent = `Data · ${day(D.fetchedAt)}`;
 
 const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && (e.target.classList.add('in'), io.unobserve(e.target))), { threshold: .1 });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 clauses($('#years-note'));
-mountRecord(img(no1.pic, 120));
+mountRecord(img((D.allTime[0] || D.liked[0] || {}).pic, 120));
 </script>
 </body>
 </html>

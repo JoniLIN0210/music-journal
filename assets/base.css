@@ -84,3 +84,10 @@ p, li, small { text-wrap: pretty; }
 @keyframes eq { 0% { transform: scaleY(.25); } 100% { transform: scaleY(1); } }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .eq i { animation: none; transform: scaleY(.6); } }
+
+/* 访客本地版本的小工具条 */
+.mj-bar { position: fixed; left: 20px; bottom: 20px; z-index: 41; display: flex; align-items: center; gap: 2px; background: #0A0A0A; color: #fff; padding: 4px 4px 4px 12px; font-size: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+.mj-bar span { margin-right: 8px; opacity: .6; }
+.mj-bar button { font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; background: none; border: 0; padding: 7px 9px; cursor: pointer; }
+.mj-bar button:hover { background: #fff; color: #0A0A0A; }
+@media (max-width: 720px) { .mj-bar { left: 10px; right: 70px; bottom: 14px; overflow-x: auto; } .mj-bar span { display: none; } }

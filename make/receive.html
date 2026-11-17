@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>正在生成 — 听歌手记</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Ccircle cx=%228%22 cy=%228%22 r=%227%22/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../assets/base.css">
+<style>
+body { background: #000; color: #fff; min-height: 100vh; display: grid; place-items: center; }
+.w { text-align: center; }
+.disc { position: relative; width: 120px; height: 120px; margin: 0 auto 28px; }
+.disc .spin { position: absolute; inset: 0; border-radius: 50%; animation: spin 1.8s linear infinite; }
+.disc .lbl { position: absolute; inset: 34%; border-radius: 50%; background: #F2F2F2; }
+p { font-family: var(--cjk); font-size: 18px; font-weight: 600; }
+.g { margin-top: 8px; font-size: 13px; font-weight: 400; }
+a { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="w"><div class="disc"><span class="spin vinyl-face"><span class="lbl"></span></span><span class="sheen"></span></div>
+  <p id="m">正在接收你的听歌数据…</p><p class="g" id="s">数据从网易云页面直接传到这里，只保存在这台电脑的浏览器里。</p></div>
+<script src="../assets/stats.js"></script>
+<script>
+const SRC = 'https://music.163.com', $ = s => document.querySelector(s);
+const ok = d => d && d.music && d.music.profile && Array.isArray(d.music.liked) && Array.isArray(d.music.allTime);
+addEventListener('message', e => {
+  if (e.origin !== SRC || !e.data || e.data.type !== 'mj-data' || !ok(e.data.payload)) return;
+  save(e.data.payload);
+});
+const save = d => {
+  try { localStorage.setItem('mj:data', JSON.stringify(d)); }
+  catch (err) { $('#m').textContent = '浏览器的存储空间不够，保存失败了。'; return; }
+  mjCount('event/generated', '生成了一份听歌手记');
+  $('#m').textContent = `${d.music.profile.nick}，你的听歌手记好了。`;
+  setTimeout(() => location.replace('../?me'), 900);
+};
+const dec = async b64 => { const bin = atob(b64.replace(/-/g, '+').replace(/_/g, '/'));
+  const st = new Blob([Uint8Array.from(bin, c => c.charCodeAt(0))]).stream().pipeThrough(new DecompressionStream('gzip'));
+  return JSON.parse(await new Response(st).text()); };
+const h = location.hash.match(/^#d=([\w-]+)$/);
+if (h) {
+  history.replaceState(null, '', location.pathname);   // 数据不留在地址栏
+  dec(h[1]).then(d => ok(d) ? save(d) : Promise.reject()).catch(() => { $('#m').textContent = '数据不完整，请回到网易云页面再点一次书签。'; });
+} else if (window.opener) window.opener.postMessage({ type: 'mj-ready' }, SRC);
+else { $('#m').textContent = '这个页面要从网易云页面里的书签打开。'; $('#s').innerHTML = '<a href="./">看看怎么做 →</a>'; }
+</script>
+</body>
+</html>
