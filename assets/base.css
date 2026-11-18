@@ -43,8 +43,9 @@ ol, ul { list-style: none; }
 @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
 
 /* 换行：标题均衡断行，正文避免最后一行只剩一两个字 */
-h1, h2, h3, h4 { text-wrap: balance; }
-p, li, small { text-wrap: pretty; }
+/* 用 text-wrap-style：只改断行质量，不会把子元素的 nowrap 改回可换行 */
+h1, h2, h3, h4 { text-wrap-style: balance; }
+p, li, small { text-wrap-style: pretty; }
 .cl { display: inline-block; }
 
 /* ---------- 唱片元素（v3）----------

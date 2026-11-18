@@ -118,6 +118,8 @@ body { background: #000; color: #fff; }
 .mtop { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 6px; border-top: 1px solid #fff; padding-top: 10px; margin-top: 8px; }
 .mtop .t { font-family: var(--cjk); text-transform: none; letter-spacing: 0; font-weight: 600; font-size: 12px; line-height: 1.3; margin-top: 8px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .mtop .p { font-size: 11px; opacity: .55; margin-top: 2px; }
+.mtop [data-note] img, .runners [data-note] img, .mart [data-note] img { transition: transform .4s cubic-bezier(.2,.7,.2,1); }
+.mtop [data-note]:hover img, .runners [data-note]:hover img, .mart [data-note]:hover img { transform: translateY(-4px); }
 
 /* 06 年度之歌 */
 .sot { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--pad); align-items: end; }
@@ -339,6 +341,7 @@ const MZH = m => (MON.indexOf(m) + 1) + ' 月';
 const mmss = sec => sec ? `${Math.floor(sec / 60)}:${pad2(Math.round(sec % 60))}` : '';
 const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const now = dt(Math.max(D.fetchedAt, LS.updatedAt));
+const noteAttr = (k, v) => window.Liner && v != null && Liner.has(k, v) ? `data-note="${k}:${v}"` : '';
 const tip = s => `title="${(s.n || '').replace(/"/g, '')}${s.a ? ' — ' + s.a.join(' / ') : ''}"`;
 
 /* ---------- 听歌数据整理 ---------- */
@@ -469,7 +472,7 @@ $('#ridge').innerHTML = allM.map((m, i) => { const vals = m ? days.filter(d => d
   return `<div class="r cap ${i === mpkI ? 'pk' : ''} ${m ? '' : 'fut'}"><span>${MON[i]}</span><div class="w"><svg viewBox="0 0 100 100" preserveAspectRatio="none">
     ${p.fill ? `<path class="fill" d="${p.fill}"/>` : ''}<path class="line" d="${p.line}"/></svg></div><span class="tnum">${m ? fmt(m.min / 60) + 'h' : '—'}</span></div>`; }).join('') +
   `<div class="ridge-x cap"><span></span><div><span>Day 1</span><span>10</span><span>20</span><span>31</span></div><span>Hours</span></div>`;
-$('#mtop').innerHTML = allM.map((m, i) => `<div>${MON[i]}${m && m.topSong ? `${art(m.topSong.pic, 200, tip(m.topSong))}<p class="t">${m.topSong.n}</p><p class="p tnum">${m.topSong.pc}×</p>` : ''}</div>`).join('');
+$('#mtop').innerHTML = allM.map((m, i) => `<div ${m && m.topSong ? noteAttr('song', m.topSong.id) : ''}>${MON[i]}${m && m.topSong ? `${art(m.topSong.pic, 200, tip(m.topSong))}<p class="t">${m.topSong.n}</p><p class="p tnum">${m.topSong.pc}×</p>` : ''}</div>`).join('');
 const mpk = MS.reduce((a, b) => b.min > a.min ? b : a), mlow = (LS.months.filter(m => m.min > 0).length ? LS.months.filter(m => m.min > 0) : LS.months).reduce((a, b) => b.min < a.min ? b : a);
 $('#mo-say').innerHTML = `${dt(mpk.start + 864e5).getMonth() + 1} 月听得最多，${fmt(mpk.min / 60)} 小时；${dt(mlow.start + 864e5).getMonth() + 1} 月最少，${fmt(mlow.min / 60)} 小时。` +
   `<span class="dim">每一条线是一个月，每个起伏是一天。最下面是每个月循环最多的歌。</span>`;
@@ -492,7 +495,7 @@ $('#sot').innerHTML = `<div class="sot"><div class="sleeve"><div class="vinyl"><
     <p class="why">${S1.months.length === 1 ? `光是 ${MZH(S1.months[0])}一个月，你就把它放了 ${S1.pc} 遍${allTimePc ? `——它全部 ${allTimePc} 次播放里的 ${Math.round(S1.pc / allTimePc * 100)}%` : ''}。` : `今年你把它放了至少 ${S1.pc} 遍。`}
     ${first ? `你第一次听它，是 ${first[1]}，一个${first[2]}。` : ''}${likedS1 && dt(likedS1.at).getFullYear() === Y ? `直到 ${md(likedS1.at)}，你才给它点了红心。` : ''}</p>
     ${window.Liner && S1.full && Liner.has('song', S1.full.id) ? `<a class="go-note cap" data-note="song:${S1.full.id}" href="#">Liner notes · 唱片内页 →</a>` : ''}</div></div>
-  <div class="runners">${songs.slice(1, 5).map((s, i) => `<div>${art(s.pic, 300)}<p class="t">${s.n}</p><p class="p cap">No. ${i + 2} · ${s.pc} plays · ${s.months.join(' ')}</p></div>`).join('')}</div>`;
+  <div class="runners">${songs.slice(1, 5).map((s, i) => `<div ${noteAttr('song', (s.full && s.full.id) || ([...D.allTime, ...D.liked, ...D.week].find(x => x.n === s.n && x.pic === s.pic) || {}).id)}>${art(s.pic, 300)}<p class="t">${s.n}</p><p class="p cap">No. ${i + 2} · ${s.pc} plays · ${s.months.join(' ')}</p></div>`).join('')}</div>`;
 paint($('#sot-sec'), S1.pic);
 });
 
@@ -509,7 +512,7 @@ $('#art').innerHTML = `<div class="ahero">${art(A1.pic, 600)}<div class="info"><
   <p class="say" style="margin-top:24px">${A1.tops.length} 个月的月度歌手。<span class="dim">${A1.tops.map(MZH).join('、')}${mins1 ? `——光是这几个月就听了 ${fmt(mins1 / 60)} 个小时` : ''}，至少 ${A1.pc} 次。</span></p>
   ${window.Liner && Liner.has('artist', A1.n) ? `<a class="go-note cap" data-note="artist:${A1.n}" href="#">Liner notes · 唱片内页 →</a>` : ''}</div></div>
   <p class="cap" style="margin-top:72px;border-top:1px solid currentColor;padding-top:12px">Artist of the month · 每月最常听的艺人</p>
-  <div class="mart">${LS.months.map((m, i) => m.topArtist ? `<div class="${m.topArtist.n === A1.n ? 'hl' : ''}">${art(m.topArtist.pic, 200)}<p class="n">${m.topArtist.n}</p><p class="m cap">${MON[i]} · ${m.topArtist.pc}×</p></div>` : '').join('')}</div>`;
+  <div class="mart">${LS.months.map((m, i) => m.topArtist ? `<div class="${m.topArtist.n === A1.n ? 'hl' : ''}" ${noteAttr('artist', m.topArtist.n)}>${art(m.topArtist.pic, 200)}<p class="n">${m.topArtist.n}</p><p class="m cap">${MON[i]} · ${m.topArtist.pc}×</p></div>` : '').join('')}</div>`;
 paint($('#art-sec'), A1.pic);
 });
 

@@ -148,6 +148,15 @@
 .feat-row .split { grid-column: 3 / 13; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--pad); }
 .feat-row .albums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--pad); }
 .row .t .has-note, .artists .nm .has-note { font-family: var(--sans); }
+.toc-row { margin-top: 64px; }
+.toc3 { grid-column: 3 / 13; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--pad); align-items: start; }
+.toc3 h4 { padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.toc3 li button { width: 100%; display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 10px; align-items: baseline; padding: 9px 0; border: 0; border-bottom: 1px solid var(--hair);
+  background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; transition: padding .25s; }
+.toc3 li button:hover { padding-left: 6px; background: var(--g1); }
+.toc3 .t { display: block; min-width: 0; font-family: var(--cjk); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.toc3 .t small { font-weight: 400; color: var(--g3); font-size: 12px; margin-left: 8px; }
+.toc3 .tnum { font-size: 12px; }
 
 @media (max-width: 1000px) { .top nav { display: none; } }
 @media (max-width: 720px) {
@@ -173,6 +182,7 @@
   .feat-row > .cap { margin-bottom: 14px; }
   .feat-row > .grid6 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .feat-row .split { grid-template-columns: 1fr; row-gap: 32px; }
+  .toc3 { grid-column: 1 / 13; grid-template-columns: 1fr; row-gap: 36px; }
 }
 </style>
 </head>
@@ -362,17 +372,19 @@ sect('s7', () => {
   if (!L) throw new Error('no notes');
   const NT = window.NOTES, CR = window.CREDITS;
   const sl = (pic, big) => `<span class="sl"><span class="vd vinyl-face"><span class="lbl" style="background-image:url('${img(pic, 120)}')"></span></span>${art(pic, big || 300)}</span>`;
-  const [lead, ...rest] = Object.keys(NT.artists), ln = NT.artists[lead], lp = (CR.artists[lead] || {}).pic;
+  const [lead, ...rest] = L.artists, ln = NT.artists[lead], lp = (CR.artists[lead] || {}).pic;
   $('#feat').innerHTML = `<div class="feat-lead" data-note="artist:${lead}">
       <div class="pt"><span class="ring"></span>${art(lp, 800)}</div>
       <div class="tx"><span class="cap">Artist · No. 01 in your ears</span><h3>${lead}</h3><span class="cap g">${ln.en}</span>
         <p class="tg">${ln.tagline}</p><p class="ex">${ln.story[0]}</p><a class="go cap" href="#">Read the notes →</a></div></div>
-    <div class="feat-row"><span class="cap">Songs · 歌</span><div class="grid6">${L.songs.map(id => { const s = D.allTime.find(x => x.id == id) || {};
+    <div class="feat-row"><span class="cap">Most played · 最常听</span><div class="grid6">${L.songs.slice(0, 6).map(id => { const s = D.allTime.find(x => x.id == id) || {};
       return `<button class="fc" data-note="song:${id}">${sl(s.pic)}<b>${s.n}</b><small>${NT.songs[id].tagline}</small></button>`; }).join('')}</div></div>
-    <div class="feat-row"><span class="cap">Artists &amp; Albums</span><div class="split">
-      <div>${rest.map(a => `<button class="fc fa" data-note="artist:${a}">${art((CR.artists[a] || {}).pic, 128)}<span><b style="margin:0">${a}</b><small>${NT.artists[a].tagline}</small></span><i>→</i></button>`).join('')}</div>
-      <div class="albums">${Object.keys(NT.albums).map(k => { const n = NT.albums[k], s = D.allTime.find(x => x.id == n.song) || {};
-        return `<button class="fc" data-note="album:${k}">${sl(s.pic)}<b>《${k}》</b><small>${n.artist} · ${n.tagline}</small></button>`; }).join('')}</div></div></div>`;
+    <div class="feat-row toc-row"><span class="cap">Contents · 目录</span><div class="toc3">${[
+      ['Artists · 艺人', L.artists.map(a => [`artist:${a}`, a, D.allTime.filter(s => s.a.includes(a)).reduce((t, s) => t + (s.pc || 0), 0)])],
+      ['Songs · 歌', L.songs.map(id => { const s = [...D.allTime, ...D.liked, ...D.week].find(x => x.id == id) || {}, top = D.allTime.find(x => x.id == id); return [`song:${id}`, s.n, top ? top.pc : 0, s.a ? s.a.join(' / ') : '']; })],
+      ['Albums · 专辑', Object.keys(NT.albums).map(k => [`album:${k}`, `《${k}》`, null, NT.albums[k].artist])]
+    ].map(([h, rows]) => `<div><h4 class="cap">${h} <span class="g">${rows.length}</span></h4><ol>${rows.map(([key, t, n, sub], i) =>
+      `<li><button data-note="${key}"><span class="cap g tnum">${pad2(i + 1)}</span><span class="t">${t}${sub ? `<small>${sub}</small>` : ''}</span><span class="tnum g">${n ? fmt(n) : ''}</span></button></li>`).join('')}</ol></div>`).join('')}</div></div>`;
 });
 
 $('#f1').textContent = `Data · ${day(D.fetchedAt)}`;

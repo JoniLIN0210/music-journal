@@ -16,7 +16,9 @@
   // 写了背景笔记的条目，按“艺人 → 歌 → 专辑”排成一本小册子，可以前后翻
   const rankOf = id => { const i = window.MUSIC.allTime.findIndex(s => s.id == id); return i < 0 ? 999 : i; };
   const SONGS = Object.keys(N.songs).map(Number).sort((a, b) => rankOf(a) - rankOf(b));   // 歌按你的播放排行排
-  const INDEX = [...Object.keys(N.artists).map(k => ['artist', k]), ...SONGS.map(k => ['song', k]), ...Object.keys(N.albums).map(k => ['album', k])];
+  const playsOf = a => window.MUSIC.allTime.filter(s => s.a.includes(a)).reduce((t, s) => t + (s.pc || 0), 0);
+  const ARTISTS = Object.keys(N.artists).sort((a, b) => playsOf(b) - playsOf(a));                // 艺人按播放次数排
+  const INDEX = [...ARTISTS.map(k => ['artist', k]), ...SONGS.map(k => ['song', k]), ...Object.keys(N.albums).map(k => ['album', k])];
   const all = [...D.allTime, ...D.liked, ...D.week];
   const songById = id => all.find(s => s.id == id);
   const alOf = id => C.albums[(C.songs[id] || {}).al];
@@ -43,6 +45,7 @@
         lines, credits: c.cr || [], facts, story: n.story, next: null, related, sources: n.sources, caveat: n.caveat };
     }
     if (kind === 'artist') {
+      if (!C.artists[key] && !N.artists[key]) return null;   // 没有资料的艺人不开空页
       const a = C.artists[key] || {}, n = N.artists[key] || {};
       const songs = D.allTime.filter(s => s.a.includes(key)), plays = songs.reduce((t, s) => t + (s.pc || 0), 0);
       const liked = D.liked.filter(s => s.a.includes(key)).length;
@@ -135,5 +138,5 @@
   addEventListener('load', () => { const m = location.hash.match(/^#notes\/(song|artist|album)\/(.+)$/);
     if (m) open(m[1], m[1] === 'song' ? +m[2] : decodeURIComponent(m[2])); });
 
-  window.Liner = { open, close, has: (k, v) => !!build(k, v), noted: (k, v) => !!(N[k + 's'] || {})[v], index: INDEX, songs: SONGS, build };
+  window.Liner = { open, close, has: (k, v) => !!build(k, v), noted: (k, v) => !!(N[k + 's'] || {})[v], index: INDEX, songs: SONGS, artists: ARTISTS, build };
 })();

@@ -19,6 +19,12 @@ def get(path, data=None):
 
 m = json.loads(re.search(r"window\.MUSIC = (.*);\s*$", (ROOT / "data/music.js").read_text(), re.S).group(1))
 top = m["allTime"][:100]
+# 写了背景笔记、但不在 Top 100 里的歌（比如 2026 年某个月的主打），也补上署名
+nf = ROOT / "data/notes.js"
+if nf.exists():
+    ids_top = {x["id"] for x in top}
+    extra = {int(i) for i in re.findall(r"^\s{4}(\d{4,}):\s*\{", nf.read_text(), re.M)} - ids_top
+    top = top + [{"id": i, "a": [], "pc": 0} for i in sorted(extra)]
 
 # 歌曲详情：专辑 id、艺人 id
 det = {}
