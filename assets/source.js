@@ -47,7 +47,7 @@
       const js = await get(ROOT + 'assets/' + f);
       html = html.replace(new RegExp(`<script src="[^"]*${f.replace('.', '\\.')}"></script>`), `<script>${inline(js)}</script>`);
     }
-    html = html.replace(/<script src="[^"]*(source|stats)\.js"><\/script>\n?/g, '')
+    html = html.replace(/<script src="[^"]*(source|stats|liner|credits|notes)\.js"><\/script>\n?/g, '')
       .replace(/<script src="[^"]*music\.js"><\/script>/, `<script>window.MUSIC = ${inline(JSON.stringify(window.MUSIC))};</script>`)
       .replace(/<script src="[^"]*listen2026\.js"><\/script>/, `<script>window.LISTEN = ${inline(JSON.stringify(window.LISTEN))};</script>`);
     const a = document.createElement('a');

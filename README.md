@@ -31,3 +31,9 @@
 - `assets/source.js`：带 `?me` 时改读本地数据；转义字符串、只放行网易云图床；左下角提供下载单文件 / 重新生成 / 清除。
 - 页面每个章节独立渲染，数据不全的章节自动隐藏。
 - 统计：`assets/stats.js` 里填 GoatCounter 站点代码。记录页面访问（访客本地页面记在 `/me/...` 下）和事件：`event/generated`（生成次数）、`event/bookmark-drag`、`event/download`。不记录任何听歌数据。
+
+## 唱片内页 Liner Notes
+点开 Top 100 里的任意一首、榜上的艺人，或主页第 03 节的专题，从右边抽出一页“内页”。
+- `data/credits.js`：`python3 fetch_credits.py` 生成。网易云公开接口里的署名（作词/作曲/编曲/制作，取自歌词开头的署名行，不保存歌词）、专辑发行时间与厂牌、艺人照片与作品数。
+- `data/notes.js`：手写的背景笔记（5 位艺人、6 首歌、3 张专辑）。由公开资料整理、交叉核对后重写；只有单一来源或只见于搜索摘要的说法已删除或在 `caveat` 中注明；每条附资料来源。
+- `assets/liner.js`：抽屉组件。任何带 `data-note="song:ID"` / `artist:名字` / `album:专辑名` 的元素都能点开；支持 `#notes/...` 直达、Esc 关闭、←/→ 翻页。访客本地版本不启用。

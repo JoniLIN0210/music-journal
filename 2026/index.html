@@ -129,6 +129,8 @@ body { background: #000; color: #fff; }
 .sot .vinyl .lbl { position: absolute; inset: 34%; border-radius: 50%; background: center / cover; }
 .sot .vinyl .lbl::after { content: ''; position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; margin: -4px; border-radius: 50%; background: #000; }
 .sot .info { grid-column: 8 / 13; }
+.go-note { display: inline-block; margin-top: 24px; padding: 10px 16px; border: 1px solid currentColor; transition: background .2s, color .2s; }
+.go-note:hover { background: rgba(128,128,128,.2); }
 .sot h3 { font-family: var(--cjk); font-size: clamp(36px, 4.4vw, 68px); font-weight: 800; line-height: 1.08; margin: 14px 0 10px; }
 .sot .pc { font-size: clamp(120px, 14vw, 220px); margin-top: 24px; }
 .sot p.why { font-family: var(--cjk); font-size: 17px; line-height: 1.6; margin-top: 24px; max-width: 26em; }
@@ -312,8 +314,11 @@ body { background: #000; color: #fff; }
 <script src="../data/listen2026.js"></script>
 <script src="../assets/source.js"></script>
 <script src="../assets/stats.js"></script>
+<script src="../data/credits.js"></script>
+<script src="../data/notes.js"></script>
 <script src="../assets/cjk.js"></script>
 <script src="../assets/record.js"></script>
+<script src="../assets/liner.js"></script>
 <script>
 const D = window.MUSIC, LS = window.LISTEN, $ = s => document.querySelector(s);
 if (!LS || !(LS.months || []).length) {   // 没有听歌月报，就没法做年度报告
@@ -485,7 +490,8 @@ $('#sot').innerHTML = `<div class="sot"><div class="sleeve"><div class="vinyl"><
   <div class="info"><span class="cap">Song of ${Y}</span><h3>${S1.n}</h3><p class="cap" style="opacity:.7">${(S1.a || []).join(' / ')}</p>
     <div class="pc xl tnum">${S1.pc}</div><span class="cap">plays in ${S1.months.join(', ')}</span>
     <p class="why">${S1.months.length === 1 ? `光是 ${MZH(S1.months[0])}一个月，你就把它放了 ${S1.pc} 遍${allTimePc ? `——它全部 ${allTimePc} 次播放里的 ${Math.round(S1.pc / allTimePc * 100)}%` : ''}。` : `今年你把它放了至少 ${S1.pc} 遍。`}
-    ${first ? `你第一次听它，是 ${first[1]}，一个${first[2]}。` : ''}${likedS1 && dt(likedS1.at).getFullYear() === Y ? `直到 ${md(likedS1.at)}，你才给它点了红心。` : ''}</p></div></div>
+    ${first ? `你第一次听它，是 ${first[1]}，一个${first[2]}。` : ''}${likedS1 && dt(likedS1.at).getFullYear() === Y ? `直到 ${md(likedS1.at)}，你才给它点了红心。` : ''}</p>
+    ${window.Liner && S1.full && Liner.has('song', S1.full.id) ? `<a class="go-note cap" data-note="song:${S1.full.id}" href="#">Liner notes · 唱片内页 →</a>` : ''}</div></div>
   <div class="runners">${songs.slice(1, 5).map((s, i) => `<div>${art(s.pic, 300)}<p class="t">${s.n}</p><p class="p cap">No. ${i + 2} · ${s.pc} plays · ${s.months.join(' ')}</p></div>`).join('')}</div>`;
 paint($('#sot-sec'), S1.pic);
 });
@@ -500,7 +506,8 @@ const arts = Object.values(AP).sort((a, b) => b.tops.length - a.tops.length || b
 if (!A1) throw new Error('no artists');
 const mins1 = LS.months.filter(m => m.topArtist?.n === A1.n).reduce((s, m) => s + (parseInt((m.topArtist.items[1] || [])[1]) || 0), 0);
 $('#art').innerHTML = `<div class="ahero">${art(A1.pic, 600)}<div class="info"><span class="cap">Artist of ${Y}</span><h3>${A1.n}</h3>
-  <p class="say" style="margin-top:24px">${A1.tops.length} 个月的月度歌手。<span class="dim">${A1.tops.map(MZH).join('、')}${mins1 ? `——光是这几个月就听了 ${fmt(mins1 / 60)} 个小时` : ''}，至少 ${A1.pc} 次。</span></p></div></div>
+  <p class="say" style="margin-top:24px">${A1.tops.length} 个月的月度歌手。<span class="dim">${A1.tops.map(MZH).join('、')}${mins1 ? `——光是这几个月就听了 ${fmt(mins1 / 60)} 个小时` : ''}，至少 ${A1.pc} 次。</span></p>
+  ${window.Liner && Liner.has('artist', A1.n) ? `<a class="go-note cap" data-note="artist:${A1.n}" href="#">Liner notes · 唱片内页 →</a>` : ''}</div></div>
   <p class="cap" style="margin-top:72px;border-top:1px solid currentColor;padding-top:12px">Artist of the month · 每月最常听的艺人</p>
   <div class="mart">${LS.months.map((m, i) => m.topArtist ? `<div class="${m.topArtist.n === A1.n ? 'hl' : ''}">${art(m.topArtist.pic, 200)}<p class="n">${m.topArtist.n}</p><p class="m cap">${MON[i]} · ${m.topArtist.pc}×</p></div>` : '').join('')}</div>`;
 paint($('#art-sec'), A1.pic);
