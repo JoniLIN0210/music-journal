@@ -37,7 +37,7 @@ body { background: #000; color: #fff; }
 .mosaic img { opacity: 0; transition: opacity .6s ease; }
 .mosaic img.on { opacity: .5; }
 .cover .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.25) 0%, rgba(0,0,0,.1) 35%, #000 90%); }
-.cover .ttl { position: absolute; left: var(--pad); right: var(--pad); bottom: 28px; }
+.cover .ttl { position: absolute; left: var(--pad); right: var(--pad); bottom: 92px; }   /* 给左下角的背景音乐按钮留位置 */
 .cover .kick { display: flex; justify-content: space-between; gap: 16px; }
 .cover h1 { font-size: clamp(180px, 34vw, 560px); margin-left: -.04em; }
 .cover .row { display: flex; justify-content: space-between; align-items: end; border-top: 1px solid #fff; padding-top: 12px; margin-top: 8px; gap: 24px; }
@@ -320,6 +320,7 @@ body { background: #000; color: #fff; }
 <script src="../data/notes.js"></script>
 <script src="../assets/cjk.js"></script>
 <script src="../assets/record.js"></script>
+<script src="../assets/music.js"></script>
 <script src="../assets/liner.js"></script>
 <script>
 const D = window.MUSIC, LS = window.LISTEN, $ = s => document.querySelector(s);

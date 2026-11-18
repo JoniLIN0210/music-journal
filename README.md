@@ -37,3 +37,8 @@
 - `data/credits.js`：`python3 fetch_credits.py` 生成。网易云公开接口里的署名（作词/作曲/编曲/制作，取自歌词开头的署名行，不保存歌词）、专辑发行时间与厂牌、艺人照片与作品数。
 - `data/notes.js`：手写的背景笔记（5 位艺人、6 首歌、3 张专辑）。由公开资料整理、交叉核对后重写；只有单一来源或只见于搜索摘要的说法已删除或在 `caveat` 中注明；每条附资料来源。
 - `assets/liner.js`：抽屉组件。任何带 `data-note="song:ID"` / `artist:名字` / `album:专辑名` 的元素都能点开；支持 `#notes/...` 直达、Esc 关闭、←/→ 翻页。访客本地版本不启用。
+
+## 背景音乐
+`assets/music.js`：勃拉姆斯《第三交响曲》第三乐章 Poco allegretto（在红心列表里），接第二乐章 Andante，循环。
+录音为 Musopen Symphony Orchestra，CC0 公有领域，直接引用 Wikimedia Commons 上的文件（优先 MP3 转码，失败时用原始 OGG）。
+浏览器不允许有声自动播放：能播就淡入，不能就等第一次点击或按键；暂停会记住（localStorage `mj:music`），切换页面时从原位置接着放（sessionStorage）。
