@@ -16,9 +16,43 @@ body { background: #000; color: #fff; }
 .top { position: fixed; inset: 0 0 auto 0; z-index: 30; height: 40px; display: flex; align-items: center; justify-content: space-between; mix-blend-mode: difference; color: #fff; }
 .prog { position: fixed; left: 0; top: 0; height: 2px; background: #fff; z-index: 31; width: 0; mix-blend-mode: difference; }
 .toc { position: fixed; right: 8px; top: 50%; align-items: flex-end; transform: translateY(-50%); z-index: 29; display: flex; flex-direction: column; gap: 6px; mix-blend-mode: difference; }
-.toc a { display: block; width: 8px; height: 2px; background: #fff; opacity: .3; transition: opacity .2s, width .2s; }
-.toc a.on { opacity: 1; width: 16px; }
-.toc a:hover { opacity: .8; }
+.toc { gap: 0; }
+.toc a { position: relative; display: flex; align-items: center; justify-content: flex-end; height: 14px; padding-left: 12px; opacity: .35; transition: opacity .2s; }
+.toc a::after { content: ''; display: block; width: 8px; height: 2px; background: #fff; transition: width .2s; }
+.toc a span { font: 600 10px/1 var(--cjk); letter-spacing: .04em; white-space: nowrap; margin-right: 10px; opacity: 0; transform: translateX(6px); transition: opacity .2s, transform .2s; pointer-events: none; }
+.toc a.on { opacity: 1; } .toc a.on::after { width: 18px; }
+.toc:hover a { opacity: .7; } .toc:hover a:hover { opacity: 1; }
+.toc:hover a span { opacity: 1; transform: none; }
+
+/* 封底式目录 */
+.contents { padding-top: 96px; padding-bottom: 120px; background: #000; color: #fff; }
+.ct-h { display: flex; justify-content: space-between; border-top: 1px solid #fff; padding-top: 12px; }
+.ct-cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--pad); margin-top: 48px; }
+.ct-side { padding-bottom: 12px; border-bottom: 1px solid #fff; }
+.ct-cols button { width: 100%; display: grid; grid-template-columns: 40px auto minmax(24px, 1fr) auto; align-items: end; gap: 12px; padding: 18px 0 14px; border: 0; border-bottom: 1px solid var(--hair);
+  background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; transition: padding .3s cubic-bezier(.2,.7,.2,1), background .2s; }
+.ct-cols button:hover { padding-left: 10px; padding-right: 10px; background: rgba(255,255,255,.06); }
+.ct-cols .no { align-self: start; padding-top: 4px; opacity: .55; }
+.ct-cols .nm b { display: block; font-size: 20px; font-weight: 700; letter-spacing: .01em; text-transform: uppercase; font-stretch: 85%; }
+.ct-cols .nm small { display: block; font-family: var(--cjk); font-size: 13px; opacity: .6; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 22em; }
+.ct-cols .lead { height: 1px; border-bottom: 1px dotted rgba(255,255,255,.35); margin-bottom: 10px; }
+.ct-cols .v { display: flex; align-items: baseline; gap: 6px; }
+.ct-cols .v b { font-size: clamp(40px, 4.4vw, 64px); }
+.ct-cols .v small { font-family: var(--cjk); font-size: 13px; opacity: .6; }
+.ct-foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 40px; }
+.ct-foot > .cap { opacity: .5; }
+.card-btn { background: #fff; color: #000; border: 0; padding: 14px 20px; cursor: pointer; font-family: var(--sans); }
+.card-btn:hover { background: #ddd; }
+.end-card { margin-top: 40px; }
+
+/* 年度卡片预览 */
+.cardv { position: fixed; inset: 0; z-index: 70; background: rgba(0,0,0,.86); display: flex; align-items: center; justify-content: center; gap: 32px; padding: 32px; opacity: 0; transition: opacity .3s; }
+.cardv.on { opacity: 1; }
+.cardv img { max-height: calc(100vh - 64px); max-width: min(540px, 100%); box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+.cardv .side { display: flex; flex-direction: column; gap: 10px; max-width: 220px; color: #fff; }
+.cardv .side p { font-family: var(--cjk); font-size: 13px; opacity: .6; line-height: 1.6; }
+.cardv .side a, .cardv .side button { text-align: center; padding: 12px 16px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; font: 600 11px/1.2 var(--sans); letter-spacing: .08em; text-transform: uppercase; }
+.cardv .side a { background: #fff; color: #000; }
 
 .ch { position: relative; min-height: 100vh; padding: 96px var(--pad) 88px; }
 .ch-h { display: flex; justify-content: space-between; border-top: 1px solid currentColor; padding-top: 12px; margin-bottom: 48px; }
@@ -59,8 +93,11 @@ body { background: #000; color: #fff; }
 .yrs-x { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
 
 /* 02 年历 */
-.cal { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, minmax(0, 1fr)); gap: 3px; margin-top: 56px; }
-.cal i { aspect-ratio: 1; background: #fff; border-radius: 1px; position: relative; }
+.cal { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, minmax(0, 1fr)); gap: 3px; margin-top: 12px; }
+.cal i { aspect-ratio: 1; background: rgba(255,255,255,var(--o, 1)); border-radius: 1px; position: relative; cursor: crosshair; }
+.cal i.cur { outline: 2px solid #fff; outline-offset: 1px; z-index: 1; }
+.cal-read { margin-top: 40px; min-height: 18px; opacity: .8; }
+.cal-read b { font-weight: 700; }
 .cal i.z { background: transparent; box-shadow: inset 0 0 0 1px rgba(255,255,255,.35); }
 .cal i.fut { background: rgba(255,255,255,.06); }
 .cal i.lead { background: transparent; }
@@ -196,6 +233,18 @@ body { background: #000; color: #fff; }
 
 @media (max-width: 720px) {
   .toc { display: none; }
+  .contents { padding-top: 72px; padding-bottom: 88px; }
+  .ct-cols { grid-template-columns: 1fr; row-gap: 40px; margin-top: 32px; }
+  .ct-cols button { grid-template-columns: 30px minmax(0, 1fr) auto; }
+  .ct-cols .lead { display: none; }
+  .ct-cols .nm small { white-space: normal; }
+  .ct-cols .v b { font-size: 40px; }
+  .ct-foot { flex-direction: column-reverse; align-items: stretch; }
+  .cardv { flex-direction: column; gap: 16px; padding: 20px; }
+  .cardv img { max-height: calc(100vh - 200px); }
+  .cardv .side { max-width: none; width: 100%; flex-direction: row; flex-wrap: wrap; }
+  .cardv .side p { flex-basis: 100%; }
+  .cardv .side a, .cardv .side button { flex: 1; }
   .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .sot .sleeve { grid-column: 1 / 13; width: 74%; }
   .reveal.in .sot .vinyl { transform: translateX(30%); }
@@ -252,21 +301,26 @@ body { background: #000; color: #fff; }
   </div>
 </header>
 
+<section class="contents pad" id="contents" aria-label="目录">
+  <div class="ct-h cap"><span>Contents · 目录</span><span id="ct-cat"></span></div>
+  <div class="ct-cols"><div><p class="cap ct-side">Side A · 时间</p><ol id="ct-a"></ol></div><div><p class="cap ct-side">Side B · 歌与人</p><ol id="ct-b"></ol></div></div>
+  <div class="ct-foot"><span class="cap">点任意一行，跳到那一章</span><button class="card-btn cap" data-card>Save the card · 保存年度卡片 ↓</button></div>
+</section>
+
 <main>
   <section class="ch" data-t="Time"><div class="ch-h cap"><span>A1</span><span>Minutes · 听歌时长</span></div>
     <div class="reveal"><div class="giant xl tnum" id="t-h">—</div><p class="say" id="t-say"></p><div class="kpis cap" id="t-kpi"></div>
       <div class="yrs" id="yrs"></div><div class="yrs-x cap" id="yrs-x"></div></div>
   </section>
 
-  <section class="ch" data-t="Calendar"><div class="ch-h cap"><span>A2</span><span>Calendar · 听歌年历</span></div>
-    <div class="reveal"><p class="say" id="cal-say"></p><div class="cal-wrap"><div class="cal" id="cal"></div><div class="cal-x cap" id="cal-x"></div></div>
-      <div class="legend cap" id="legend"></div></div>
+  <section class="ch" data-t="Calendar"><div class="ch-h cap"><span>A2</span><span>Calendar · 听歌年历与最长的一天</span></div>
+    <div class="reveal"><p class="say" id="cal-say"></p><p class="cal-read cap" id="cal-read" aria-live="polite">Hover a day · 把鼠标放在任意一天上</p><div class="cal-wrap"><div class="cal" id="cal"></div><div class="cal-x cap" id="cal-x"></div></div>
+      <div class="legend cap" id="legend"></div><div class="duo" id="duo"></div></div>
   </section>
 
   <section class="ch" data-t="Late"><div class="ch-h cap"><span>A3</span><span>Late Nights · 最晚的时刻</span></div>
     <div class="reveal"><div class="clock xl tnum" id="late-t">—</div><p class="say" id="late-say"></p>
-      <div class="nights cap" id="nights"></div>
-      <div class="duo" id="duo"></div></div>
+      <div class="nights cap" id="nights"></div></div>
   </section>
 
   <section class="ch" data-t="Day"><div class="ch-h cap"><span>A4</span><span>Your Day · 一天之中</span></div>
@@ -280,7 +334,7 @@ body { background: #000; color: #fff; }
   <div class="flip pad" aria-hidden="true">
     <div class="cap"><span>End of Side A</span><span id="flip-a"></span></div>
     <div class="flip-mid"><span class="flip-disc"><span class="spin vinyl-face"><span class="lbl"><span id="cat2">2026</span><b>B</b><span>33⅓ RPM</span></span></span><span class="sheen"></span></span><b class="xl">Side B</b></div>
-    <div class="cap"><span>翻面 · 年度之歌、年度艺人、口味、红心、此刻</span><span>B1 — B5</span></div>
+    <div class="cap"><span id="flip-bz">翻面 · 年度之歌、年度艺人、口味、红心、此刻</span><span id="flip-b">B1 — B5</span></div>
   </div>
 
   <section class="ch" id="sot-sec" data-t="Song"><div class="ch-h cap"><span>B1</span><span>Song of the Year · 年度之歌</span></div>
@@ -309,6 +363,7 @@ body { background: #000; color: #fff; }
     <p class="say" id="b-rt" style="margin-top:20px"></p>
     <ol class="liner" id="liner"></ol>
     <div class="end"><p class="big" id="e-big"></p><p class="small" id="e-small"></p></div>
+    <button class="card-btn cap end-card" data-card>Save the card · 把这一年存成一张卡片 ↓</button>
   </section>
 </main>
 
@@ -343,6 +398,7 @@ const mmss = sec => sec ? `${Math.floor(sec / 60)}:${pad2(Math.round(sec % 60))}
 const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const now = dt(Math.max(D.fetchedAt, LS.updatedAt));
 const noteAttr = (k, v) => window.Liner && v != null && Liner.has(k, v) ? `data-note="${k}:${v}"` : '';
+const HL = {}, CARD = {};   // 每章的要点（目录用）和年度卡片要用的数据
 const tip = s => `title="${(s.n || '').replace(/"/g, '')}${s.a ? ' — ' + s.a.join(' / ') : ''}"`;
 
 /* ---------- 听歌数据整理 ---------- */
@@ -399,6 +455,7 @@ $('#t-kpi').innerHTML = `
   <div>Days<b class="xl tnum">${listened}/${days.length}</b><small>有听歌的天数</small></div>
   <div>Streak<b class="xl tnum">${best}</b><small>最长连续听歌天数</small></div>
   <div>Since ${Math.min(...LS.years.map(y => y[0]), Y)}<b class="xl tnum">${fmt(LS.total / 3600)}</b><small>注册以来总时长（小时）</small></div>`;
+HL.Time = [fmt(totalMin / 60), '小时', `听歌时长 · 平均每天 ${Math.floor(totalMin / days.length / 60)}:${pad2(Math.round(totalMin / days.length % 60))}`];
 const yrs = [...LS.years.map(y => [y[0], y[2] / 3600])].filter(y => y[0] < Y).concat([[Y, totalMin / 60]]).sort((a, b) => a[0] - b[0]);
 const ymax = Math.max(...yrs.map(y => y[1])), ypk = yrs.reduce((a, b) => b[1] > a[1] ? b : a)[0];
 $('#yrs').style.gridTemplateColumns = $('#yrs-x').style.gridTemplateColumns = `repeat(${yrs.length}, minmax(0, 1fr))`;
@@ -414,13 +471,26 @@ const lead = (allDays[0].getDay() + 6) % 7;                  // 周一开头
 const marks = new Set(topDays.slice(0, 2).map(d => d.t.toDateString()));
 $('#cal').innerHTML = '<i class="lead"></i>'.repeat(lead) + allDays.map(d => { const v = vOf[d.toDateString()];
   if (v === undefined) return '<i class="fut"></i>';
-  return v === 0 ? `<i class="z" title="${d.getMonth() + 1}.${d.getDate()} · 0"></i>` : `<i class="${marks.has(d.toDateString()) ? 'mk' : ''}" style="opacity:${lvl(v)}" title="${d.getMonth() + 1}.${d.getDate()} · ${hm(v)}"></i>`; }).join('');
+  return v === 0 ? `<i class="z" data-d="${+d}" data-v="0"></i>` : `<i class="${marks.has(d.toDateString()) ? 'mk' : ''}" style="--o:${lvl(v)}" data-d="${+d}" data-v="${v}"></i>`; }).join('');
 const weeks = Math.ceil((lead + allDays.length) / 7);
 $('#cal').style.gridTemplateColumns = $('#cal-x').style.gridTemplateColumns = `repeat(${weeks}, minmax(0, 1fr))`;
 let lastM = -1; $('#cal-x').innerHTML = Array.from({ length: weeks }, (_, w) => { const d = allDays[Math.min(allDays.length - 1, w * 7 - lead + 6)]; const show = d.getMonth() !== lastM; lastM = d.getMonth(); return `<span>${show ? MON[d.getMonth()] : ''}</span>`; }).join('');
-$('#legend').innerHTML = `Less ${[.22, .45, .7, 1].map(o => `<i style="opacity:${o}"></i>`).join('')} More &nbsp;·&nbsp; 空心 = 那天没有听歌 &nbsp;·&nbsp; 外框 = 听得最久的两天`;
+$('#legend').innerHTML = `Less ${[.22, .45, .7, 1].map(o => `<i style="background:rgba(255,255,255,${o})"></i>`).join('')} More &nbsp;·&nbsp; 空心 = 那天没有听歌 &nbsp;·&nbsp; 外框 = 听得最久的两天`;
 const zeros = days.filter(d => d.v === 0);
 const bestStart = new Date(bestEnd.getFullYear(), bestEnd.getMonth(), bestEnd.getDate() - best + 1);
+$('#duo').innerHTML = topDays.slice(0, 2).map((d, i) => { const hrs = Math.min(24, Math.round(d.v / 60));
+  return `<div><span class="cap">${i ? 'Runner-up' : 'The longest day'} · ${['最长的一天', '第二长的一天'][i]}</span>
+    <div class="d xl tnum">${d.t.getMonth() + 1}.${d.t.getDate()}</div>
+    <p class="say" style="font-size:22px">${hm(d.v)}<span class="dim"> — 一天 24 小时里的 ${Math.round(d.v / 14.4)}%</span></p>
+    <div class="bar24">${Array.from({ length: 24 }, (_, h) => `<i class="${h < hrs ? 'on' : ''}"></i>`).join('')}</div></div>`; }).join('');
+// 悬停或点一天，显示那天的日期和时长
+const WK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+const read = e => { const c = e.target.closest('#cal i[data-d]'); if (!c) return; const d = new Date(+c.dataset.d), v = +c.dataset.v;
+  $('#cal-read').innerHTML = `<b>${d.getMonth() + 1} 月 ${d.getDate()} 日 · ${WK[d.getDay()]}</b> &nbsp; ${v ? hm(v) : '没有听歌'}${marks.has(d.toDateString()) ? ' · 今年最长的两天之一' : ''}`;
+  $('#cal').querySelectorAll('.cur').forEach(x => x.classList.remove('cur')); c.classList.add('cur'); };
+if (matchMedia('(hover: none)').matches) $('#cal-read').textContent = 'Tap a day · 点任意一天，看那天听了多久';
+$('#cal').addEventListener('pointerover', read); $('#cal').addEventListener('click', read);
+HL.Calendar = [`${best}`, '天', `最长连续听歌 · 最长的一天是 ${topDays[0].t.getMonth() + 1}.${topDays[0].t.getDate()}`];
 $('#cal-say').innerHTML = `从 ${md(bestStart)}到 ${md(bestEnd)}，你连续 <b>${best}</b> 天没有一天不听歌。` +
   `<span class="dim">${best >= 170 ? '整整半年。' : best >= 90 ? '整整一季。' : ''}${zeros.length ? `今年一共空了 ${zeros.length} 天，第一次是 ${md(zeros[0].t)}。` : '今年到现在，你一天都没有落下。'}</span>`;
 });
@@ -430,16 +500,13 @@ sect('Late', () => {
 if (!latest) throw new Error('no lateSleep');
 const lt = dt(latest.t);
 $('#late-t').textContent = `${pad2(lt.getHours())}:${pad2(lt.getMinutes())}`;
+HL.Late = [`${pad2(lt.getHours())}:${pad2(lt.getMinutes())}`, '', `最晚的一次 · ${lt.getMonth() + 1} 月 ${lt.getDate()} 日`];
 const sameDay = topDays.find(d => d.t.toDateString() === new Date(lt.getFullYear(), lt.getMonth(), lt.getDate()).toDateString());
 $('#late-say').innerHTML = `今年最晚的一次，是 ${md(latest.t)}${lt.getHours() < 6 ? '凌晨' : '夜里'} ${lt.getHours()}:${pad2(lt.getMinutes())}，你还在听歌。` +
   `<span class="dim">${sameDay ? `那一天你一共听了 ${hm(sameDay.v)}。` : ''}${latest.m.topSong ? `那个月，你把《${latest.m.topSong.n}》放了 ${latest.m.topSong.pc} 遍。` : ''}</span>`;
 $('#nights').innerHTML = late.map(x => { const d = dt(x.t); return `<div class="${x === latest ? 'late' : ''}">${MON[x.i]}<b class="xl tnum">${pad2(d.getHours())}:${pad2(d.getMinutes())}</b>
   ${x.m.topSong ? art(x.m.topSong.pic, 160, tip(x.m.topSong)) : ''}</div>`; }).join('');
-$('#duo').innerHTML = topDays.slice(0, 2).map((d, i) => { const hrs = Math.min(24, Math.round(d.v / 60));
-  return `<div><span class="cap">${i ? 'Runner-up' : 'The longest day'} · ${['最长的一天', '第二长的一天'][i]}</span>
-    <div class="d xl tnum">${d.t.getMonth() + 1}.${d.t.getDate()}</div>
-    <p class="say" style="font-size:22px">${hm(d.v)}<span class="dim"> — 一天 24 小时里的 ${Math.round(d.v / 14.4)}%</span></p>
-    <div class="bar24">${Array.from({ length: 24 }, (_, h) => `<i class="${h < hrs ? 'on' : ''}"></i>`).join('')}</div></div>`; }).join('');
+
 });
 
 /* ---------- 04 一天之中 ---------- */
@@ -452,6 +519,7 @@ order.forEach(k => per[k] = per[k] || 0);
 const ppk = order.reduce((a, b) => per[b] > per[a] ? b : a);
 $('#dstrip').innerHTML = order.map(k => `<div class="${k === ppk ? 'pk' : ''}" style="flex:${Math.max(per[k], psum * .085)}">
   <span class="cap">${PN[k][1]}<br><span class="zh">${PN[k][0]}</span></span><b class="xl tnum">${Math.round(per[k] / psum * 100)}%</b></div>`).join('');
+HL.Day = [`${Math.round(per[ppk] / psum * 100)}%`, '', `最常在${PN[ppk][0]}听歌`];
 $('#dp-say').innerHTML = `你最常在<b>${PN[ppk][0]}</b>听歌，占了全天的 ${Math.round(per[ppk] / psum * 100)}%。` +
   `<span class="dim">${per.deep_night > 600 ? `深夜也不少：今年有 ${fmt(per.deep_night / 60)} 个小时，是在别人睡着之后听的。` : '深夜很少听歌，作息不错。'}</span>`;
 });
@@ -461,20 +529,21 @@ sect('Months', () => {
 const mmax = Math.max(...MS.map(m => m.min));
 const allM = Array.from({ length: 12 }, (_, i) => MS[i] || null);
 const dmax = Math.max(...days.map(d => d.v));
-const ridgePath = vals => { const pts = vals.map((v, i) => [(i + .5) / 31 * 100, 100 - Math.sqrt(v / dmax) * 92]);
+const ridgePath = (vals, partial) => { const pts = vals.map((v, i) => [(i + .5) / 31 * 100, 100 - Math.sqrt(v / dmax) * 92]);
   if (!pts.length) return { line: 'M0,100 L100,100', fill: '' };
   let d = `M0,100 L${pts[0][0].toFixed(2)},100 L${pts[0][0].toFixed(2)},${pts[0][1].toFixed(2)}`;
   for (let i = 1; i < pts.length; i++) { const [x0, y0] = pts[i - 1], [x1, y1] = pts[i], mx = (x0 + x1) / 2;
     d += ` C${mx.toFixed(2)},${y0.toFixed(2)} ${mx.toFixed(2)},${y1.toFixed(2)} ${x1.toFixed(2)},${y1.toFixed(2)}`; }
-  const lx = pts[pts.length - 1][0].toFixed(2); d += ` L${lx},100`;
-  return { line: d + ' L100,100', fill: d + ' Z' }; };
+  const lx = pts[pts.length - 1][0].toFixed(2);
+  return { line: partial ? d : d + ` L${lx},100 L100,100`, fill: d + ` L${lx},100 Z` }; };
 const mpkI = MS.indexOf(MS.reduce((a, b) => b.min > a.min ? b : a));
-$('#ridge').innerHTML = allM.map((m, i) => { const vals = m ? days.filter(d => d.t.getMonth() === i).map(d => d.v) : [], p = ridgePath(vals);
+$('#ridge').innerHTML = allM.map((m, i) => { const vals = m ? days.filter(d => d.t.getMonth() === i).map(d => d.v) : [], p = ridgePath(vals, m && i === now.getMonth());
   return `<div class="r cap ${i === mpkI ? 'pk' : ''} ${m ? '' : 'fut'}"><span>${MON[i]}</span><div class="w"><svg viewBox="0 0 100 100" preserveAspectRatio="none">
     ${p.fill ? `<path class="fill" d="${p.fill}"/>` : ''}<path class="line" d="${p.line}"/></svg></div><span class="tnum">${m ? fmt(m.min / 60) + 'h' : '—'}</span></div>`; }).join('') +
   `<div class="ridge-x cap"><span></span><div><span>Day 1</span><span>10</span><span>20</span><span>31</span></div><span>Hours</span></div>`;
 $('#mtop').innerHTML = allM.map((m, i) => `<div ${m && m.topSong ? noteAttr('song', m.topSong.id) : ''}>${MON[i]}${m && m.topSong ? `${art(m.topSong.pic, 200, tip(m.topSong))}<p class="t">${m.topSong.n}</p><p class="p tnum">${m.topSong.pc}×</p>` : ''}</div>`).join('');
 const mpk = MS.reduce((a, b) => b.min > a.min ? b : a), mlow = (LS.months.filter(m => m.min > 0).length ? LS.months.filter(m => m.min > 0) : LS.months).reduce((a, b) => b.min < a.min ? b : a);
+HL.Months = [`${dt(mpk.start + 864e5).getMonth() + 1} 月`, '', `听得最多的月份 · ${fmt(mpk.min / 60)} 小时`];
 $('#mo-say').innerHTML = `${dt(mpk.start + 864e5).getMonth() + 1} 月听得最多，${fmt(mpk.min / 60)} 小时；${dt(mlow.start + 864e5).getMonth() + 1} 月最少，${fmt(mlow.min / 60)} 小时。` +
   `<span class="dim">每一条线是一个月，每个起伏是一天。最下面是每个月循环最多的歌。</span>`;
 });
@@ -487,6 +556,7 @@ LS.months.forEach(m => { if (!m.topSong) return; const t = m.topSong;
     const k = n + '|' + pic; SP[k] = SP[k] || { n, pic, pc: 0, a, months: [], full }; SP[k].pc += pc || 0; SP[k].months.push(MON[LS.months.indexOf(m)]); if (full) SP[k].full = full; if (a) SP[k].a = a; }); });
 const songs = Object.values(SP).sort((a, b) => b.pc - a.pc), S1 = songs[0];
 if (!S1) throw new Error('no top songs'); recPic = S1.pic;
+HL.Song = [`${S1.pc}`, '次', `年度之歌《${S1.n}》`]; CARD.song = S1;
 const first = S1.full?.items.find(x => x[0] === '第一次听');
 const likedS1 = D.liked.find(s => s.n === S1.n);
 const allTimePc = (D.allTime.find(s => s.n === S1.n) || {}).pc;
@@ -508,6 +578,7 @@ LS.months.forEach((m, i) => { if (!m.topArtist) return; const t = m.topArtist;
   add(t.n, t.pic, t.pc, true); (t.more || []).forEach(x => /次收听/.test(x[2]) && add(x[0], x[1], parseInt(x[2]), false)); });
 const arts = Object.values(AP).sort((a, b) => b.tops.length - a.tops.length || b.pc - a.pc), A1 = arts[0];
 if (!A1) throw new Error('no artists');
+HL.Artist = [`${A1.tops.length}`, '个月', `年度艺人 ${A1.n} · 月度歌手`]; CARD.artist = A1;
 const mins1 = LS.months.filter(m => m.topArtist?.n === A1.n).reduce((s, m) => s + (parseInt((m.topArtist.items[1] || [])[1]) || 0), 0);
 $('#art').innerHTML = `<div class="ahero">${art(A1.pic, 600)}<div class="info"><span class="cap">Artist of ${Y}</span><h3>${A1.n}</h3>
   <p class="say" style="margin-top:24px">${A1.tops.length} 个月的月度歌手。<span class="dim">${A1.tops.map(MZH).join('、')}${mins1 ? `——光是这几个月就听了 ${fmt(mins1 / 60)} 个小时` : ''}，至少 ${A1.pc} 次。</span></p>
@@ -530,6 +601,7 @@ $('#taste').innerHTML = blk('Language · 语言', langs) + blk('Genre · 曲风'
 const ls = langs.reduce((a, b) => a + b[1], 0), canto = langs.find(l => l[0] === '粤语');
 const cantoHi = LS.months.map((m, i) => (m.lang || []).find(x => x[0] === '粤语' && x[1] >= 28) ? (i + 1) + ' 月' : null).filter(Boolean);
 const olds = LS.months.map(m => m.age?.oldest).filter(Boolean).sort((a, b) => a.y - b.y)[0];
+HL.Taste = [`${Math.round(langs[0][1] / ls * 100)}%`, '', `${langs[0][0]}${eras.length ? ` · 最常听 ${eras[0][0]}` : ''}`];
 $('#ta-say').innerHTML = `${langs[0][0]}占 ${Math.round(langs[0][1] / ls * 100)}%。<span class="dim">${canto && langs[0][0] !== '粤语' ? `粤语有 ${Math.round(canto[1] / ls * 100)}%${cantoHi.length ? `——${cantoHi.join('和 ')}，粤语一度占到三成` : ''}。` : ''}${eras.length ? `最常听的是 ${eras[0][0]} 的歌。` : ''}</span>`;
 if (!olds) $('#oldest').remove(); else $('#oldest').innerHTML = `${art(olds.pic, 240)}<div><span class="cap">Oldest song you played · 今年听过最老的歌</span>
   <p class="say" style="margin-top:8px">${olds.n}<span class="dim"> — ${olds.y} 年。比你听它的这一年早了 ${Y - olds.y} 年。</span></p></div>`;
@@ -537,10 +609,12 @@ if (!olds) $('#oldest').remove(); else $('#oldest').innerHTML = `${art(olds.pic,
 
 /* ---------- 09 红心 ---------- */
 sect('Likes', () => {
+if (!N) throw new Error('no likes this year');
 const M = Array.from({ length: 12 }, () => []); L.forEach(s => M[dt(s.at).getMonth()].push(s));
 $('#months').innerHTML = M.map((list, i) => `<div class="m ${i > now.getMonth() ? 'fut' : ''}">${list.map(s => `<img src="${img(s.pic, 120)}" alt="" ${tip(s)} loading="lazy">`).join('')}</div>`).join('');
 $('#months-x').innerHTML = M.map((l, i) => `<span>${MON[i]}<b class="xl tnum">${i > now.getMonth() ? '—' : l.length}</b></span>`).join('');
 const likedPlays = LS.months.map(m => +(sec(m, 'maxPlayChannel') || [0, 0, 0])[2]).reduce((a, b) => a + b, 0);
+HL.Likes = [`${N}`, '颗', '今年新点的红心'];
 $('#lk-say').innerHTML = `今年点了 ${N} 颗新的红心。<span class="dim">你的听歌时间里，有 ${Math.round(likedPlays / 60 / totalMin * 100)}% 是在“我喜欢的音乐”里度过的。每一格是一张唱片。</span>`;
 // 小注：同名的歌、收得最多的那天
 const norm = n => n.replace(/[（(].*?[)）]/g, '').trim(), G = {}; L.forEach(s => (G[norm(s.n)] = G[norm(s.n)] || []).push(s));
@@ -560,6 +634,7 @@ sect('Now', () => {
 const wc = {}; D.week.forEach(s => s.a.forEach(a => wc[a] = (wc[a] || 0) + 1));
 if (!D.week.length || !LS.nov) throw new Error('no week');
 const [wa, wn] = Object.entries(wc).sort((a, b) => b[1] - a[1])[0];
+HL.Now = [`${curStreak}`, '天', `当前连续听歌 · 本月 ${fmt(LS.nov.min / 60)} 小时`];
 $('#n-say').innerHTML = `写到这里是 ${now.getMonth() + 1} 月 ${now.getDate()} 日。<span class="dim">这个月你已经听了 ${fmt(LS.nov.min / 60)} 小时，又连续听了 ${curStreak} 天。最近七天，${wa}出现了 ${wn} 次（亮着的那些）。</span>`;
 $('#n-kpi').innerHTML = `<div>${['January','February','March','April','May','June','July','August','September','October','November','December'][now.getMonth()]}<b class="xl tnum">${fmt(LS.nov.min / 60)}h</b><small>本月至今</small></div>
   <div>Streak<b class="xl tnum">${curStreak}</b><small>当前连续听歌天数</small></div>
@@ -575,7 +650,6 @@ if (!N) throw new Error('no likes this year');
 $('#b-h').textContent = `${N} Likes`;
 const rt = L.reduce((t, x) => t + (x.dt || 0), 0), lps = Math.ceil(rt / (44 * 60));
 $('#b-rt').innerHTML = `Total time ${Math.floor(rt / 3600)}:${pad2(Math.floor(rt % 3600 / 60))}:${pad2(Math.round(rt % 60))}。<span class="dim">如果把今年的红心刻成黑胶，要 ${lps} 张 LP 才放得下。</span>`;
-$("#flip-a").textContent = "A1 — A5";
 let html = '', lm = -1;
 L.forEach((s, i) => { const m = dt(s.at).getMonth();
   if (m !== lm) { html += `<li class="mo cap">${['January','February','March','April','May','June','July','August','September','October','November','December'][m]}</li>`; lm = m; }
@@ -586,12 +660,82 @@ $('#e-big').innerHTML = left > 0 ? `<span>还剩 ${left} 天，</span><span>这�
 $('#e-small').innerHTML = `℗ ${Y} ${NICK} · ${CAT} · 由 ${fmt(totalMin / 60)} 小时的聆听录成。<br><br>数据来自网易云音乐，截至 ${now.getFullYear()}.${now.getMonth() + 1}.${now.getDate()}。听歌时长、年历、时段、深夜与每月主打来自网易云的月度听歌报告；年度之歌与年度艺人由每月前几名的播放次数累加得出，是下限而不是全量。<br><br><a href="../">回到 Listening →</a>`;
 });
 
+/* ---------- 年度卡片：在你自己的浏览器里画一张 1080×1350 的图，不上传 ---------- */
+const loadImg = u => new Promise(res => { if (!u) return res(null); const im = new Image(); im.crossOrigin = 'anonymous'; im.onload = () => res(im); im.onerror = () => res(null); im.src = img(u, 600); });
+async function makeCard() {
+  await document.fonts.ready;
+  const W = 1080, H = 1350, P = 72, c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
+  const F = (w, size, cond) => { x.font = `${w} ${size}px Archivo, "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif`; x.fontStretch = cond ? 'extra-condensed' : 'normal'; };
+  const Z = (w, size) => { x.font = `${w} ${size}px -apple-system, "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif`; x.fontStretch = 'normal'; };
+  const cap = (t, X, Y, align = 'left', a = .6) => { F(600, 20); x.letterSpacing = '2px'; x.globalAlpha = a; x.textAlign = align; x.fillText(t.toUpperCase(), X, Y); x.globalAlpha = 1; x.letterSpacing = '0px'; x.textAlign = 'left'; };
+  const fitText = (t, max) => { if (x.measureText(t).width <= max) return t; while (t.length > 1 && x.measureText(t + '…').width > max) t = t.slice(0, -1); return t + '…'; };
+  const line = Y => { x.fillRect(P, Y, W - 2 * P, 2); };
+  x.fillStyle = '#0A0A0A'; x.fillRect(0, 0, W, H); x.fillStyle = '#fff';
+  cap(`${NICK_T} — The Year in Music`, P, 96, 'left', 1); cap(`${CAT} · 33⅓ RPM`, W - P, 96, 'right');
+  line(116);
+  F(800, 430, true); x.textBaseline = 'alphabetic'; x.fillText(String(Y), P - 14, 500);
+  // 每一天的听歌时长
+  const wy = 600, wh = 70, bw = (W - 2 * P) / allDays.length;
+  allDays.forEach((d, i) => { const v = vOf[d.toDateString()]; x.globalAlpha = v === undefined ? .15 : .9;
+    const h = v === undefined ? 3 : Math.max(2, Math.sqrt(v / vmax) * wh); x.fillRect(P + i * bw, wy - h, Math.max(1, bw - .6), h); });
+  x.globalAlpha = 1; line(wy + 2);
+  cap('每一根竖线是一天', P, wy + 34, 'left', .45);
+  // 四个数字
+  const K = [['Hours', fmt(totalMin / 60)], ['Days', String(listened)], ['Streak', String(best)], ['Likes', String(N)]], cw = (W - 2 * P) / 4;
+  K.forEach(([k, v], i) => { cap(k, P + i * cw, 690); F(800, 112, true); x.fillText(v, P + i * cw - 3, 800); });
+  line(840);
+  // 年度之歌 + 年度艺人
+  const S1 = CARD.song, A1 = CARD.artist, [si, ai] = await Promise.all([loadImg(S1 && S1.pic), loadImg(A1 && A1.pic)]);
+  if (S1) { const sz = 260, y0 = 872;
+    if (si) x.drawImage(si, P, y0, sz, sz); else { x.globalAlpha = .15; x.fillRect(P, y0, sz, sz); x.globalAlpha = 1; }
+    const tx = P + sz + 40, tw = W - P - tx;
+    cap(`Song of ${Y}`, tx, y0 + 22); Z(700, 52); x.fillText(fitText(S1.n, tw), tx, y0 + 94);
+    Z(400, 26); x.globalAlpha = .6; x.fillText(fitText((S1.a || []).join(' / '), tw), tx, y0 + 138); x.globalAlpha = 1;
+    F(800, 112, true); x.fillText(String(S1.pc), tx - 3, y0 + 252); const pw = x.measureText(String(S1.pc)).width; cap('plays', tx + pw + 14, y0 + 252); }
+  if (A1) { const y0 = 1200, r = 40;
+    x.save(); x.beginPath(); x.arc(P + r, y0, r, 0, Math.PI * 2); x.clip(); if (ai) x.drawImage(ai, P, y0 - r, r * 2, r * 2); else { x.globalAlpha = .15; x.fillRect(P, y0 - r, r * 2, r * 2); } x.restore(); x.globalAlpha = 1;
+    cap(`Artist of ${Y}`, P + r * 2 + 24, y0 - 12); Z(700, 34); x.fillText(fitText(`${A1.n} · ${A1.tops.length} 个月的月度歌手`, W - 2 * P - r * 2 - 24), P + r * 2 + 24, y0 + 30); }
+  line(H - 76);
+  cap(location.host + location.pathname.replace(/2026\/.*$/, ''), P, H - 40, 'left', .5); cap(`℗ ${Y} · until ${now.getMonth() + 1}.${now.getDate()}`, W - P, H - 40, 'right', .5);
+  return new Promise(res => c.toBlob(res, 'image/png'));
+}
+document.addEventListener('click', async e => { const b = e.target.closest('[data-card]'); if (!b) return;
+  const t0 = b.textContent; b.textContent = '正在生成…'; b.disabled = true;
+  let blob = null; try { blob = await makeCard(); } catch (err) { console.warn(err); }
+  b.textContent = t0; b.disabled = false;
+  if (!blob) { b.textContent = '生成失败，请稍后再试'; setTimeout(() => b.textContent = t0, 2400); return; }
+  const url = URL.createObjectURL(blob), v = document.createElement('div'); v.className = 'cardv'; v.setAttribute('role', 'dialog'); v.setAttribute('aria-label', '年度卡片');
+  v.innerHTML = `<img src="${url}" alt="${Y} 年度卡片"><div class="side"><a href="${url}" download="${CAT} ${NICK_T}.png">下载 PNG</a><button data-x>关闭</button><p>图片在你的浏览器里生成，不会上传。手机上也可以长按图片保存。</p></div>`;
+  document.body.appendChild(v); requestAnimationFrame(() => v.classList.add('on'));
+  const close = () => { v.remove(); URL.revokeObjectURL(url); removeEventListener('keydown', esc); }, esc = e => e.key === 'Escape' && close();
+  v.onclick = e => { if (e.target === v || e.target.closest('[data-x]')) close(); if (e.target.closest('a[download]')) window.mjCount && mjCount('event/card-download', '下载年度卡片'); };
+  addEventListener('keydown', esc); v.querySelector('a').focus();
+  window.mjCount && mjCount('event/card', '生成年度卡片');
+});
+
 document.querySelectorAll('.say').forEach(clauses);
 mountRecord(img(recPic, 120));
 
 /* ---------- 滚动：章节换色 + 进度 + 目录 ---------- */
 const secs = [...document.querySelectorAll('.ch')];
-$('#toc').innerHTML = secs.map((s, i) => `<a href="#" title="${s.dataset.t}" data-i="${i}"></a>`).join('');
+// 有章节因为数据不全被拿掉时，重新编号，不让曲目号跳着走
+['A', 'B'].forEach(side => secs.map(s => s.querySelector('.ch-h span')).filter(x => x && new RegExp(`^${side}\\d`).test(x.textContent)).forEach((x, i) => x.textContent = side + (i + 1)));
+{ const B = secs.filter(s => /^B\d/.test(s.querySelector('.ch-h span').textContent));
+  if (!B.length) document.querySelector('.flip').remove(); else $('#flip-b').textContent = `B1 — B${B.length}`; if (B.length) $('#flip-bz').textContent = '翻面 · ' + B.map(s => ({ Song: '年度之歌', Artist: '年度艺人', Taste: '口味', Likes: '红心', Now: '此刻' })[s.dataset.t]).join('、'); }
+if ($('#flip-a')) $('#flip-a').textContent = `A1 — A${secs.filter(s => /^A\d/.test(s.querySelector('.ch-h span').textContent)).length}`;
+const label = s => { const [no, nm] = [...s.querySelectorAll('.ch-h span')].map(x => x.textContent); return { no, en: nm.split(' · ')[0], zh: nm.split(' · ')[1] || '' }; };
+$('#toc').innerHTML = secs.map((s, i) => { const l = label(s); return `<a href="#" data-i="${i}" aria-label="${l.no} ${l.zh}"><span>${l.no === 'Tracklist' ? '' : l.no + ' '}${l.zh || l.en}</span></a>`; }).join('');
+
+// 封面后面的目录：像唱片封底的曲目表，每章一个要点数字
+{
+  const row = s => { const t = s.dataset.t, l = label(s), h = HL[t]; if (!h) return '';
+    return `<li><button data-go="${secs.indexOf(s)}"><span class="no cap">${l.no}</span><span class="nm"><b>${l.en}</b><small>${h[2]}</small></span><span class="lead"></span><span class="v"><b class="xl tnum">${h[0]}</b>${h[1] ? `<small>${h[1]}</small>` : ''}</span></button></li>`; };
+  $('#ct-a').innerHTML = secs.filter(s => /^A/.test(label(s).no)).map(row).join('');
+  $('#ct-b').innerHTML = secs.filter(s => /^B/.test(label(s).no)).map(row).join('');
+  $('#ct-cat').textContent = `${CAT} · ${now.getFullYear()}.${pad2(now.getMonth() + 1)}.${pad2(now.getDate())}`;
+  $('#contents').onclick = e => { const b = e.target.closest('[data-go]'); if (b) scrollTo({ top: secs[+b.dataset.go].offsetTop, behavior: 'smooth' }); };
+  ['#ct-a', '#ct-b'].forEach(id => { if (!$(id).innerHTML) $(id).parentElement.remove(); });
+}
 $('#toc').onclick = e => { const i = e.target.dataset.i; if (i !== undefined) { e.preventDefault(); scrollTo({ top: secs[i].offsetTop, behavior: 'smooth' }); } };
 function setBg() {
   const mid = innerHeight * .5;
