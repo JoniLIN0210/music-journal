@@ -168,8 +168,10 @@ html.ln-open .ln-back { opacity: 1; pointer-events: auto; }
 .bgm-meta button, .bgm-meta a { font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; opacity: .55; }
 .bgm-meta button:hover, .bgm-meta a:hover { opacity: 1; text-decoration: underline; text-underline-offset: 3px; }
 .bgm-hint { display: none; font: 12px/1.4 var(--cjk); opacity: .8; }
-.bgm:hover, .bgm:focus-within, .bgm.wait { max-width: 420px; }
-.bgm:hover .bgm-info, .bgm:focus-within .bgm-info, .bgm.wait .bgm-info { opacity: 1; }
+/* 触屏上点过以后 :hover 会一直留着，所以只在真正能悬停的设备上悬停展开 */
+.bgm:focus-visible, .bgm:has(:focus-visible), .bgm.wait { max-width: 420px; }
+.bgm:has(:focus-visible) .bgm-info, .bgm.wait .bgm-info { opacity: 1; }
+@media (hover: hover) { .bgm:hover { max-width: 420px; } .bgm:hover .bgm-info { opacity: 1; } }
 .bgm.wait .bgm-hint { display: block; }
 .bgm.wait .bgm-t, .bgm.wait .bgm-zh, .bgm.wait .bgm-meta { display: none; }
 /* 第一次响起时，曲目信息露出几秒再收起 */
@@ -177,8 +179,10 @@ html.ln-open .ln-back { opacity: 1; pointer-events: auto; }
 .bgm.on.heard .bgm-info { animation: bgm-peek-i 6s ease forwards; }
 @keyframes bgm-peek { 0%, 80% { max-width: 420px; } 100% { max-width: 46px; } }
 @keyframes bgm-peek-i { 0%, 75% { opacity: 1; } 100% { opacity: 0; } }
-.bgm.on.heard:hover { animation: none; max-width: 420px; }
-.bgm.on.heard:hover .bgm-info { animation: none; opacity: 1; }
+@media (hover: hover) { .bgm.on.heard:hover { animation: none; max-width: 420px; } .bgm.on.heard:hover .bgm-info { animation: none; opacity: 1; } }
 body:has(.bgm) .mj-bar { bottom: 76px; }
-@media (max-width: 720px) { .bgm { left: 14px; bottom: 14px; } .bgm:hover, .bgm:focus-within, .bgm.wait { max-width: calc(100vw - 90px); } .bgm-info { white-space: normal; } }
+@media (max-width: 720px) { .bgm { left: 14px; bottom: 14px; } .bgm-info { white-space: normal; }
+  /* 手机上提示只露几秒，不长时间挡住内容 */
+  .bgm.wait { animation: bgm-peek 7s ease forwards; } .bgm.wait .bgm-info { animation: bgm-peek-i 7s ease forwards; }
+  @keyframes bgm-peek { 0%, 80% { max-width: calc(100vw - 90px); } 100% { max-width: 46px; } } }
 @media (prefers-reduced-motion: reduce) { .bgm, .bgm-info { transition: none; } .bgm.on.heard, .bgm.on.heard .bgm-info { animation: none; } }
