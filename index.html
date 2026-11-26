@@ -22,29 +22,24 @@
 .hero h1 { display: flex; align-items: flex-start; gap: .12em; }
 .hero h1 .unit { font-size: .13em; font-stretch: 100%; line-height: 1.1; letter-spacing: 0; padding-top: .5em; }
 .hero h1 .unit .zh { display: block; font-weight: 700; margin-top: .3em; }
-.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); margin-top: 28px; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); margin-top: 28px; }
 .stats div { padding: 14px 0 18px; border-right: 1px solid var(--hair); padding-right: 12px; }
 .stats div + div { padding-left: 16px; }
 .stats div:last-child { border-right: 0; }
 .stats b { display: block; font-size: 40px; font-stretch: 75%; font-weight: 700; line-height: 1; margin-top: 10px; }
-/* ---------- On Repeat：钉在屏幕上的一屏，滚动让封面圆筒转 ---------- */
-.reel { position: relative; height: 360vh; margin-top: 140px; background: #F2F2F2; }
-.reel-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-.reel-h { display: flex; justify-content: space-between; padding-top: 64px; }
-.reel-stage { position: relative; flex: 1; min-height: 0; perspective: 1700px; perspective-origin: 50% 30%; }
-.reel-ring { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; will-change: transform; }
-.rc { --cw: clamp(128px, 12.5vw, 228px); position: absolute; left: calc(var(--cw) / -2); top: calc(var(--cw) / -2); width: var(--cw); height: var(--cw); display: block; will-change: transform, opacity; }
-.rc img { width: 100%; height: 100%; object-fit: cover; background: #E4E4E4; box-shadow: 0 24px 48px -18px rgba(0,0,0,.35); }
-.reel-cap { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; min-height: 128px; padding: 0 var(--pad); }
-.reel-cap b { font-family: var(--cjk); font-size: clamp(26px, 2.8vw, 40px); line-height: 1.15; }
-.reel-cap .by { font-family: var(--cjk); color: var(--g3); }
-.reel-cap.in > * { animation: cap-in .5s cubic-bezier(.2,.7,.2,1) both; }
-.reel-cap.in > :nth-child(2) { animation-delay: .04s; } .reel-cap.in > :nth-child(3) { animation-delay: .08s; } .reel-cap.in > :nth-child(4) { animation-delay: .12s; }
-@keyframes cap-in { from { opacity: 0; transform: translateY(10px); } }
-.reel-hint { display: flex; justify-content: space-between; padding-bottom: 22px; }
+/* ---------- 每部分结尾：下一部分 ---------- */
+.bridge { display: grid; grid-template-columns: 2fr 10fr auto; align-items: baseline; gap: var(--pad); margin-top: 120px; padding: 22px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--hair); transition: padding .3s cubic-bezier(.2,.7,.2,1), background .2s; }
+.bridge b { font-family: var(--cjk); font-size: clamp(20px, 2vw, 28px); font-weight: 700; }
+#artists-sec, #years, #now { padding-top: 64px; }   /* 上一部分结尾的“下一部分”已经做了过渡 */
+.bridge i { font-style: normal; font-size: 22px; transition: transform .3s; }
+.bridge:hover { padding-left: 12px; padding-right: 12px; background: var(--g1); }
+.bridge:hover i { transform: translateY(4px); }
+.sub-h { display: flex; justify-content: space-between; gap: 16px; margin-top: 96px; border-top: 1px solid var(--line); padding-top: 14px; }
+.sub-h + .filt { margin-top: 20px; }
+
 /* ---------- 唱片箱 ---------- */
 #songs { overflow-x: clip; }   /* 两侧的唱片会伸出屏幕，不能把页面撑宽 */
-.crate { position: relative; margin-top: 96px; }
+.crate { position: relative; margin-top: 24px; }
 .crate-pin { position: sticky; top: 40px; height: calc(100vh - 40px); display: flex; flex-direction: column; justify-content: center; }
 .crate-h { display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); padding-top: 14px; }
 .crate-stage { --s: min(clamp(190px, 24vw, 340px), calc((100vh - 380px) / 1.2)); position: relative; height: calc(var(--s) * 1.2); margin-top: 16px; perspective: 1400px; perspective-origin: 50% 40%;
@@ -84,12 +79,6 @@
 .sec-h p { grid-column: 9 / 13; color: var(--g3); font-family: var(--cjk); font-size: 13px; padding-top: 6px; }
 
 /* ---------- 01 TOP ---------- */
-.no1 { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--pad); align-items: end; }
-.no1 .art { grid-column: 1 / 7; }
-.no1 .info { grid-column: 7 / 13; }
-.no1 .big { font-size: clamp(140px, 18vw, 300px); }
-.no1 h3 { font-family: var(--cjk); font-size: clamp(28px, 3vw, 44px); font-weight: 700; line-height: 1.1; margin-top: 18px; }
-.no1 .by { font-family: var(--cjk); color: var(--g3); margin-top: 8px; }
 .list { margin-top: 56px; border-top: 1px solid var(--line); }
 .row { display: grid; grid-template-columns: 48px 52px minmax(0, 4fr) minmax(0, 3fr) 48px minmax(0, 3fr) 72px; gap: 16px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--hair); }
 .row:hover { background: var(--g1); }
@@ -101,8 +90,6 @@
 .row .b i { position: absolute; inset: 0 auto 0 0; background: var(--fg); }
 .row .p { text-align: right; font-weight: 600; }
 .row .d { color: var(--g3); font-size: 12px; }
-.no1 .go-note { display: inline-block; margin-top: 18px; text-decoration: underline; text-underline-offset: 4px; font-family: var(--cjk); font-weight: 600; }
-.no1 .time { font-family: var(--cjk); margin-top: 22px; padding-top: 12px; border-top: 1px solid var(--hair); max-width: 30em; }
 .btn { display: inline-block; margin-top: 20px; padding: 12px 20px; background: var(--fg); color: var(--bg); border: 0; cursor: pointer; font: inherit; }
 .btn:hover { background: #333; }
 
@@ -180,10 +167,11 @@
 .thesis .cap { grid-column: 1 / 3; padding-top: 10px; }
 .thesis p { grid-column: 3 / 12; font-family: var(--cjk); font-size: clamp(22px, 2.5vw, 36px); font-weight: 700; line-height: 1.45; }
 .stats small { display: block; margin-top: 8px; }
+.shuf-b { max-width: 420px; } .shuf-b,
 .shuf button { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 12px 16px; width: 100%; justify-content: space-between; text-align: left;
   background: var(--fg); color: var(--bg); border: 0; cursor: pointer; font-family: var(--cjk); letter-spacing: 0; text-transform: none; font-size: 13px; font-weight: 600; line-height: 1.35; }
-.shuf button i { font-style: normal; font-size: 18px; transition: transform .5s cubic-bezier(.2,.7,.2,1); }
-.shuf button:hover i { transform: rotate(180deg); }
+.shuf-b i, .shuf button i { font-style: normal; font-size: 18px; transition: transform .5s cubic-bezier(.2,.7,.2,1); }
+.shuf-b:hover i, .shuf button:hover i { transform: rotate(180deg); }
 .pick { border-bottom: 1px solid var(--line); }
 .pick.in { animation: pk-in .5s cubic-bezier(.2,.7,.2,1); }
 @keyframes pk-in { from { opacity: 0; transform: translateY(8px); } }
@@ -264,10 +252,6 @@
 .subs-d { margin-top: 48px; border-top: 1px solid var(--line); }
 
 /* ---------- 此刻 ---------- */
-.now { margin-top: 140px; }
-.now-h { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--pad); border-top: 1px solid var(--line); padding: 14px 0 20px; }
-.now-h .cap { grid-column: 1 / 3; }
-.now-h p { grid-column: 3 / 11; font-family: var(--cjk); font-size: 17px; font-weight: 600; }
 .strip { display: grid; grid-template-columns: repeat(14, minmax(0, 1fr)); }
 .strip .w { position: relative; display: block; }
 .strip .w.first { grid-column: span 2; grid-row: span 2; }
@@ -279,22 +263,21 @@
 @media (max-width: 720px) {
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stats div, .stats div + div { padding-left: 0; border-right: 0; border-bottom: 1px solid var(--hair); }
-  .stats .shuf { grid-column: 1 / 3; }
+  .stats div:last-child { grid-column: 1 / 3; }
   .stats b { font-size: 30px; }
   .crate-tip { display: none; }
-  .reel { height: 300vh; margin-top: 96px; }
-  .rc { --cw: 34vw; }
-  .reel-hint span:last-child { display: none; }
+  .bridge { grid-template-columns: 1fr auto; row-gap: 4px; margin-top: 88px; }
+  .bridge .cap { grid-column: 1 / 3; }
   .crate-stage { --s: min(58vw, calc((100vh - 400px) / 1.2)); }
   .hero .unit .zh { white-space: nowrap; }
-  .thesis .cap, .thesis p, .lede p, .now-h .cap, .now-h p { grid-column: 1 / 13; }
+  .thesis .cap, .thesis p, .lede p { grid-column: 1 / 13; }
   .thesis p { margin-top: 8px; font-size: 19px; }
   .lede p { font-size: 20px; }
   .pk-in { grid-template-columns: 88px minmax(0, 1fr); gap: 16px; }
   .pk-t { padding-left: 14px; }
   .pk-go { grid-column: 1 / 3; flex-direction: row; justify-content: flex-start; }
   .sec { padding-top: 96px; }
-  .sec-h .n, .sec-h h2, .sec-h p, .no1 .art, .no1 .info, .note p { grid-column: 1 / 13; }
+  .sec-h .n, .sec-h h2, .sec-h p, .note p { grid-column: 1 / 13; }
   .sec-h p.how { margin-top: 12px; }
   .lede { margin-bottom: 40px; }
   .sub { margin-top: 56px; }
@@ -329,7 +312,7 @@
 
 <header class="top pad cap">
   <span class="live"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span id="t-left">JoniLin — Listening</span></span>
-  <nav id="nav"><a href="#portrait"><span class="g">I</span> Portrait 画像</a><a href="#songs"><span class="g">II</span> Songs 歌</a><a href="#years"><span class="g">III</span> Years 这些年</a><a href="#now">This Week</a></nav>
+  <nav id="nav"><a href="#songs"><span class="g">I</span> 歌</a><a href="#artists-sec"><span class="g">II</span> 人</a><a href="#years"><span class="g">III</span> 这些年</a><a href="#now"><span class="g">IV</span> 此刻</a></nav>
   <a href="2026/">2026 Report →</a>
 </header>
 
@@ -339,54 +322,51 @@
     <h1 class="xl tnum reveal"><span id="h-num">—</span><span class="unit">Plays<span class="zh">累计听歌</span></span></h1>
     <div class="thesis"><span class="cap">In one line · 一句话</span><p id="thesis"></p></div>
     <div class="stats cap" id="stats"></div>
-    <div class="pick" id="pick" hidden></div>
   </section>
 
-  <section class="reel" id="reel" aria-label="On Repeat：播放最多的唱片">
-    <div class="reel-pin">
-      <div class="reel-h pad cap"><span>On Repeat · 反复按下的唱片</span><span class="reel-n tnum"></span></div>
-      <div class="reel-stage"><div class="reel-ring"></div></div>
-      <div class="reel-cap" aria-live="polite"></div>
-      <div class="reel-hint cap g pad"><span>Scroll · 往下滚，唱片会转</span><span>点封面看唱片内页</span></div>
-    </div>
-  </section>
 
-  <section class="sec pad" id="portrait">
-    <div class="sec-h"><span class="n cap">Part I</span><h2 class="xl">Portrait<small>你是怎样的听众</small></h2><p class="how">艺人按 Top 100 的累计播放相加；年代按“我喜欢的音乐”里每首歌的发行年份。</p></div>
-    <div class="lede"><p id="p-lede"></p></div>
-    <div class="feat" id="feat"></div>
-    <div class="sub"><span class="cap">Artists · 最常听的艺人</span><ol class="artists" id="artists"></ol></div>
-    <div class="sub" id="dec-w"><span class="cap">Decades · 红心里的年代</span><div><p class="sub-say" id="dec-note"></p><div class="dec reveal" id="dec"></div></div></div>
-  </section>
 
   <section class="sec pad" id="songs">
-    <div class="sec-h"><span class="n cap">Part II</span><h2 class="xl">Songs<small>反复按下的那些</small></h2><p class="how">网易云“所有时间”排行，数字是累计播放次数。带 Notes 标记的歌写了背景，点任意一行都能打开唱片内页。</p></div>
+    <div class="sec-h"><span class="n cap">Part I · 歌</span><h2 class="xl">Songs<small>你反复按下的歌</small></h2><p class="how">网易云“所有时间”排行，数字是累计播放次数。先在唱片箱里一张张翻前 20 首，下面是完整的 100 首。</p></div>
     <div class="lede"><p id="s-lede"></p></div>
-    <div class="no1 reveal" id="no1"></div>
     <div class="crate" id="crate"><div class="crate-pin">
-      <div class="crate-h"><span class="cap">Crate · 唱片箱</span><span class="cap g crate-tip">滚动鼠标翻唱片，停下来黑胶会自己滑出来</span></div>
+      <div class="crate-h"><span class="cap">Crate · 唱片箱</span><span class="cap g crate-tip">往下滚一张张翻，停下来黑胶会自己滑出来</span></div>
       <div class="crate-stage" tabindex="0" role="listbox" aria-label="唱片箱：播放最多的 20 首，左右方向键翻动，回车抽出黑胶"></div>
       <div class="crate-bar"><button class="cap" data-prev aria-label="上一张">←</button><div class="crate-track"><i></i></div><span class="cap tnum crate-n"></span><button class="cap" data-next aria-label="下一张">→</button></div>
       <div class="crate-info" aria-live="polite"></div>
     </div></div>
+    <div class="sub-h"><span class="cap">Tracklist · 完整的 100 首</span><span class="cap g">可以按艺人、年代筛选</span></div>
     <div class="filt" id="filt" role="toolbar" aria-label="筛选"></div>
     <ol class="list cap-none" id="list"></ol>
     <button class="btn cap" id="more">Show all 100</button>
     <details class="toc" id="toc"><summary class="cap"><span>Liner Notes · 全部唱片内页</span><span class="g" id="toc-n"></span></summary><div class="toc3" id="toc3"></div></details>
+    <a class="bridge" href="#artists-sec" data-next="artists-sec"></a>
+  </section>
+
+  <section class="sec pad" id="artists-sec">
+    <div class="sec-h"><span class="n cap">Part II · 人</span><h2 class="xl">Artists<small>你反复回到的人</small></h2><p class="how">把 Top 100 里每首歌的播放次数按艺人相加。带 Notes 标记的艺人写了背景。</p></div>
+    <div class="lede"><p id="p-lede"></p></div>
+    <div class="feat" id="feat"></div>
+    <div class="sub"><span class="cap">Top 10 · 前十位艺人</span><ol class="artists" id="artists"></ol></div>
+    <a class="bridge" href="#years" data-next="years"></a>
   </section>
 
   <section class="sec pad" id="years">
-    <div class="sec-h"><span class="n cap">Part III</span><h2 class="xl">Years<small>这些年点下的红心</small></h2><p class="how">按“我喜欢的音乐”里每首歌点红心的日期分年。斜纹表示这一年还没过完。</p></div>
+    <div class="sec-h"><span class="n cap">Part III · 这些年</span><h2 class="xl">Years<small>你一路收下的歌</small></h2><p class="how">“我喜欢的音乐”里每首歌点红心的日期和发行年份。斜纹表示这一年还没过完。</p></div>
     <div class="lede"><p id="y-lede"></p></div>
     <div class="yrs-h cap g"><span>点一年，看那一年你收下了什么</span><span>↓</span></div>
     <div class="years reveal" id="yrs" role="tablist" aria-label="年份"></div>
     <div class="yr" id="yr" role="tabpanel"></div>
+    <div class="sub" id="dec-w"><span class="cap">Decades · 这些歌来自哪个年代</span><div><p class="sub-say" id="dec-note"></p><div class="dec reveal" id="dec"></div></div></div>
+    <div class="sub" id="shuf-w"><span class="cap">Shuffle · 抽一首</span><div><button id="shuf" class="shuf-b cap"></button><div class="pick" id="pick" hidden></div></div></div>
     <div class="sub" id="pls-w"><span class="cap">Playlists · 其他歌单</span><div><div class="pls" id="pls"></div>
       <details class="subs-d" id="subs-d"><summary class="cap">收藏的歌单 <span class="g" id="subs-n"></span></summary><ul class="subs" id="subs"></ul></details></div></div>
+    <a class="bridge" href="#now" data-next="now"></a>
   </section>
 
-  <section class="now pad" id="now">
-    <div class="now-h"><span class="cap">This week · 最近七天</span><p id="week-note"></p></div>
+  <section class="sec pad now" id="now">
+    <div class="sec-h"><span class="n cap">Part IV · 此刻</span><h2 class="xl">Now<small>这一周你在听什么</small></h2><p class="how">网易云“最近一周”排行。今年的完整回顾在年度报告里。</p></div>
+    <div class="lede"><p id="week-note"></p></div>
     <div class="strip" id="week"></div>
   </section>
 </main>
@@ -421,6 +401,7 @@ const day = ms => { const d = new Date(ms); return `${d.getFullYear()}.${pad2(d.
 const img = (u, s = 200) => u ? `${u}?param=${s}y${s}` : '';
 const yearOf = ms => new Date(ms).getFullYear();
 const mmss = sec => sec ? `${Math.floor(sec / 60)}:${pad2(Math.round(sec % 60))}` : '';
+const hrs = sec => sec >= 36000 ? `${Math.round(sec / 3600)} 小时` : sec >= 3600 ? `${(sec / 3600).toFixed(1)} 小时` : `${Math.round(sec / 60)} 分钟`;
 const pct = (v, t) => t ? Math.min(100, Math.round(v / t * 100)) : 0;
 const mine = D.playlists.filter(p => p.mine);
 const art = (u, s, cls = '') => `<img class="art ${cls}" src="${img(u, s)}" alt="" loading="lazy" crossorigin="anonymous">`;
@@ -460,8 +441,7 @@ $('#h-num').textContent = fmt(P.listenSongs);
 const topHours = Math.round(D.allTime.reduce((s, x) => s + (x.pc || 0) * x.dt, 0) / 3600);
 const hours = window.LISTEN && LISTEN.total ? ['Hours listened', fmt(Math.round(LISTEN.total / 3600))] : topHours ? ['Hours in Top 100', fmt(topHours)] : ['Level', 'Lv.' + P.level];
 $('#stats').innerHTML = [['Since', day(P.created), `${fmt(P.createDays)} days`], hours, ['Liked', fmt(D.liked.length), 'songs']]
-  .map(([k, v, s]) => `<div><span class="g">${k}</span><b class="tnum">${v}</b>${s ? `<small class="g">${s}</small>` : ''}</div>`).join('') +
-  (D.liked.length ? `<div class="shuf"><span class="g">Shuffle · 抽一首</span><button id="shuf" class="cap">从 ${fmt(D.liked.length)} 颗红心里随机抽一首 <i aria-hidden="true">⟳</i></button></div>` : '');
+  .map(([k, v, s]) => `<div><span class="g">${k}</span><b class="tnum">${v}</b>${s ? `<small class="g">${s}</small>` : ''}</div>`).join('');
 const pick = () => {
   const s = D.liked[Math.floor(Math.random() * D.liked.length)], r = rankOf[s.id];
   const facts = [s.y ? `${s.y} 年发行` : '', r !== undefined ? `Top 100 第 ${r + 1} 名，放了 ${fmt(D.allTime[r].pc)} 遍` : '', mmss(s.dt)].filter(Boolean).join(' · ');
@@ -472,17 +452,10 @@ const pick = () => {
   el.classList.remove('in'); void el.offsetWidth; el.classList.add('in');
   window.mjCount && mjCount('event/shuffle', '随机抽一首');
 };
-if ($('#shuf')) { $('#shuf').onclick = pick; $('#pick').addEventListener('click', e => { if (e.target.closest('[data-again]')) pick(); }); }
-// On Repeat：播放最多的封面围成圆筒，滚动时转
-{
-  const R = D.allTime.length >= 8 ? D.allTime : [...new Map([...D.allTime, ...D.liked].filter(s => s.pic).map(s => [s.pic, s])).values()];
-  mountReel({ el: $('#reel'), songs: R,
-    card: (s, i) => `<a class="rc" href="#songs" ${note('song', s.id)} title="${s.n} — ${s.a.join(' / ')}"><img src="${img(s.pic, 400)}" alt="" crossorigin="anonymous" draggable="false"></a>`,
-    caption: (s, i) => `<span class="cap g">No. ${pad2(i + 1)}${s.y ? ` · ${s.y}` : ''}</span><b>${s.n}</b><span class="by">${s.a.join(' / ')}</span>${s.pc ? `<span class="cap tnum">${fmt(s.pc)} plays</span>` : ''}` });
-}
+if (D.liked.length) { $('#shuf').innerHTML = `从 ${fmt(D.liked.length)} 颗红心里随机抽一首 <i aria-hidden="true">⟳</i>`; $('#shuf').onclick = pick; $('#pick').addEventListener('click', e => { if (e.target.closest('[data-again]')) pick(); }); } else $('#shuf-w').remove();
 
 /* ---------- Part I 画像：艺人 + 年代 ---------- */
-sect('portrait', () => {
+sect('artists-sec', () => {
   if (!arts.length) throw new Error('排行未公开');
   const [a0, o0] = arts[0], t3 = arts.slice(0, 3);
   $('#p-lede').textContent = `${a0}一个人占了 Top 100 播放的 ${pct(o0.v, topSum)}%` +
@@ -501,17 +474,6 @@ sect('portrait', () => {
   $('#artists').innerHTML = arts.slice(0, 10).map(([a, o], i) => `<li ${note('artist', a)}><span class="cap tnum">${pad2(i + 1)}</span>${art(o.pic, 112)}
     <span class="nm">${a}${L && L.noted('artist', a) ? '<span class="has-note">Notes</span>' : ''}<small class="cap g">${o.n} 首在榜</small></span><span class="bar-w"><span class="bar" style="width:${o.v / amax * 100}%"></span></span>
     <span class="v tnum"><b>${pct(o.v, topSum)}%</b><small class="g">${fmt(o.v)}</small></span></li>`).join('');
-  try {
-    if (!decs.length) throw 0;
-    const dsum = decs.reduce((s, d) => s + d[1], 0);
-    // 占比不到 5% 的早期年代合成一格，不留没有标签的细条
-    const firstBig = decs.findIndex(([, v]) => v / dsum >= .05), early = decs.slice(0, firstBig);
-    const dshow = early.length > 1 ? [[`${early[0][0]}–${early[early.length - 1][0].slice(2)}s`, early.reduce((t, d) => t + d[1], 0), true], ...decs.slice(firstBig)] : decs;
-    $('#dec').innerHTML = dshow.map(([k, v, merged]) => { const p = v / dsum, lab = merged ? k : k + 's';
-      return `<div class="${k === dpk ? 'pk' : ''}" style="flex:${Math.max(v, dsum * .06)}" title="${lab} · ${v} 首"><span class="cap">${lab}</span><b class="tnum">${p < .01 ? '<1' : Math.round(p * 100)}%</b></div>`; }).join('');
-    const ys = D.liked.filter(s => s.y > 1900), avg = Math.round(ys.reduce((s, x) => s + x.y, 0) / ys.length);
-    $('#dec-note').textContent = `${Math.round(dc[dpk] / dsum * 100)}% 的红心来自 ${dpk} 年代，平均发行年份是 ${avg} 年。`;
-  } catch (e) { $('#dec-w').remove(); }
 });
 
 /* ---------- Part II 歌：第一名特写 + 可筛选的 Top 100 ---------- */
@@ -520,17 +482,11 @@ sect('songs', () => {
   const no1 = D.allTime[0], max = no1.pc || 1;
   const top10 = D.allTime.slice(0, 10).reduce((t, s) => t + (s.pc || 0), 0);
   $('#s-lede').textContent = `《${no1.n}》放了 ${fmt(no1.pc)} 遍。前 10 首占了 Top 100 播放的 ${pct(top10, topSum)}%` + (arts.length ? `；整张榜上，${arts[0][0]}一个人就有 ${arts[0][1].n} 首。` : '。');
-  $('#no1').innerHTML = `${art(no1.pic, 900)}
-    <div class="info"><span class="cap">No. 01 · ${no1.y || ''}</span>
-      <div class="big xl tnum">${fmt(no1.pc)}</div><span class="cap g">plays</span>
-      <h3>${no1.n}</h3><p class="by">${no1.a.join(' / ')} — ${no1.al}</p>
-      ${note('song', no1.id) ? `<a class="go-note" ${note('song', no1.id)} href="#">Liner notes · 唱片内页 →</a>` : ''}
-      <p class="time">一首 ${mmss(no1.dt)} 的歌，${fmt(no1.pc)} 遍，加起来你在里面待了 ${Math.round(no1.dt * no1.pc / 3600)} 个小时。</p></div>`;
 
   // 唱片箱：前 20 首
   mountCrate({ el: $('#crate'), songs: D.allTime.slice(0, 20), cover: (s, z) => img(s.pic, z),
     info: (s, i) => `<span class="cap g">No. ${pad2(i + 1)}${s.y ? ` · ${s.y}` : ''}</span><b>${s.n}${L && L.noted('song', s.id) ? '<span class="has-note">Notes</span>' : ''}</b>
-      <span class="by">${s.a.join(' / ')} — ${s.al}</span><span class="cap tnum">${fmt(s.pc)} plays · ${mmss(s.dt)}</span>
+      <span class="by">${s.a.join(' / ')} — ${s.al}</span><span class="cap tnum">${fmt(s.pc)} plays · ${mmss(s.dt)} · 加起来 ${hrs(s.dt * s.pc)}</span>
       <span class="ci-go"><button class="cap" data-pull>抽出黑胶 ◐</button>${note('song', s.id) ? `<button class="cap" ${note('song', s.id)}>唱片内页 →</button>` : ''}</span>` });
 
   // 筛选：全部 / 有故事的 / 前几位艺人 / 年代
@@ -548,7 +504,7 @@ sect('songs', () => {
     <span class="b"><i style="width:${(s.pc || 0) / max * 100}%"></i></span><span class="p tnum">${fmt(s.pc)}</span></li>`;
   const render = () => {
     const rows = D.allTime.map((s, i) => [s, i]).filter(([s]) => cur.f(s));
-    const list = cur.k === 'all' ? rows.slice(1, shown) : rows;
+    const list = cur.k === 'all' ? rows.slice(0, shown) : rows;
     $('#list').innerHTML = list.map(([s, i]) => row(s, i)).join('');
     $('#more').hidden = cur.k !== 'all';
     $('#more').textContent = shown >= D.allTime.length ? 'Collapse · 收起' : `Show all ${D.allTime.length} · 展开全部`;
@@ -610,6 +566,17 @@ sect('years', () => {
     const n = bs[Math.max(0, Math.min(bs.length - 1, i + (e.key === 'ArrowRight' ? 1 : -1)))]; if (n) { n.focus(); n.click(); } };
   select(peakY);
 
+  try {
+    if (!decs.length) throw 0;
+    const dsum = decs.reduce((s, d) => s + d[1], 0);
+    // 占比不到 5% 的早期年代合成一格，不留没有标签的细条
+    const firstBig = decs.findIndex(([, v]) => v / dsum >= .05), early = decs.slice(0, firstBig);
+    const dshow = early.length > 1 ? [[`${early[0][0]}–${early[early.length - 1][0].slice(2)}s`, early.reduce((t, d) => t + d[1], 0), true], ...decs.slice(firstBig)] : decs;
+    $('#dec').innerHTML = dshow.map(([k, v, merged]) => { const p = v / dsum, lab = merged ? k : k + 's';
+      return `<div class="${k === dpk ? 'pk' : ''}" style="flex:${Math.max(v, dsum * .06)}" title="${lab} · ${v} 首"><span class="cap">${lab}</span><b class="tnum">${p < .01 ? '<1' : Math.round(p * 100)}%</b></div>`; }).join('');
+    const ys = D.liked.filter(s => s.y > 1900), avg = Math.round(ys.reduce((s, x) => s + x.y, 0) / ys.length);
+    $('#dec-note').textContent = `${Math.round(dc[dpk] / dsum * 100)}% 的红心来自 ${dpk} 年代，平均发行年份是 ${avg} 年。`;
+  } catch (e) { $('#dec-w').remove(); }
   // 年度歌单已经挂在各自的年份上，这里只放其余的
   try {
     const rest = mine.filter(p => !/年度歌单/.test(p.n)), subs = D.playlists.filter(p => !p.mine);
@@ -631,10 +598,26 @@ sect('now', () => {
 
 $('#f1').textContent = `Data · ${day(D.fetchedAt)}`;
 
+// 每部分结尾的“下一部分”：说清楚接下来看什么，点一下滚过去
+{
+  const NEXT = {
+    'artists-sec': ['II · 人', '你反复回到的人', arts.length ? `这 ${D.allTime.length} 首歌来自 ${arts.length} 位艺人` : ''],
+    years: ['III · 这些年', '你一路收下的歌', D.liked.length ? `${YRS.length} 年里，你点下了 ${fmt(D.liked.length)} 颗红心` : ''],
+    now: ['IV · 此刻', '这一周你在听什么', '最后，是最近这七天'] };
+  document.querySelectorAll('.bridge').forEach(b => { const id = b.dataset.next, t = document.getElementById(id), n = NEXT[id];
+    // 下一部分没有数据被隐藏时，接到再往后的那一部分
+    let to = t; while (to && to.style.display === 'none') { to = to.nextElementSibling; }
+    if (!to || !n || to.id !== id) { const k = to && NEXT[to.id]; if (!k) { b.remove(); return; } b.dataset.next = to.id; b.href = '#' + to.id; return fill(b, k); }
+    fill(b, n); });
+  function fill(b, [no, zh, fact]) { b.innerHTML = `<span class="cap g">Next · ${no}</span><b>${fact || zh}</b><i aria-hidden="true">↓</i>`; }
+  document.addEventListener('click', e => { const b = e.target.closest('.bridge'); if (!b) return; e.preventDefault();
+    const t = document.getElementById(b.dataset.next); if (t) (window.mjScrollTo || (y => scrollTo({ top: y, behavior: 'smooth' })))(t.getBoundingClientRect().top + scrollY - 40); });
+}
+
 // 导航：滚到哪一部分，就点亮哪一项
 const spy = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return;
   document.querySelectorAll('#nav a').forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id)); }), { rootMargin: '-40% 0px -55% 0px' });
-['portrait', 'songs', 'years', 'now'].forEach(id => { const el = document.getElementById(id); if (el) spy.observe(el); });
+['songs', 'artists-sec', 'years', 'now'].forEach(id => { const el = document.getElementById(id); if (el) spy.observe(el); });
 
 const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && (e.target.classList.add('in'), io.unobserve(e.target))), { threshold: .1 });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));

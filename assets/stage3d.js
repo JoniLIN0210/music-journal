@@ -1,10 +1,9 @@
-/* 主页的滚动动效，只用浏览器自带的 3D 变换，不引入外部库。
+/* 主页的滚动动效（第一部分“歌”），只用浏览器自带的 3D 变换，不引入外部库。
    参考 premotio 这类动效网站的做法：
    - 全局平滑滚动：滚轮的每一下都被缓动成连续的滚动（只在电脑上，触屏保留系统自带的惯性）。
    - 一屏一个场景：场景固定在屏幕上，用一长段滚动距离来“播放”它，画面里只放这一件事。
    1. 平滑滚动。
-   2. mountReel：「On Repeat」场景。封面围成一个大圆筒，镜头从上往下落，滚动时圆筒慢慢转，正对你的那首歌写在下面。
-   3. mountCrate：唱片箱场景。滚轮一格翻一张；停下来，黑胶自己从封套里滑出来转。也可以拖动、点、用 ← →。
+   2. mountCrate：唱片箱场景。滚轮一格翻一张；停下来，黑胶自己从封套里滑出来转。也可以拖动、点、用 ← →。
    系统开了“减少动态效果”时，平滑滚动关闭，场景直接停在最终状态。 */
 (() => {
   const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -54,56 +53,7 @@
     return kick;
   };
 
-  /* ---------- 2. On Repeat：封面圆筒 ---------- */
-  window.mountReel = ({ el, songs, card, caption }) => {
-    const narrow = innerWidth < 720, n = Math.min(songs.length, narrow ? 16 : 26);
-    if (n < 8) { el.remove(); return; }
-    const ring = el.querySelector('.reel-ring'), cap = el.querySelector('.reel-cap'), cnt = el.querySelector('.reel-n');
-    ring.innerHTML = songs.slice(0, n).map((s, i) => card(s, i)).join('');
-    const cards = [...ring.children];
-    let cw = 200, R = 600, top = 0, len = 1;
-    const measure = () => {
-      cw = cards[0].offsetWidth; R = n * cw * 1.16 / TAU;        // 圆周刚好排下 n 张，留一点缝
-      top = docTop(el); len = Math.max(1, el.offsetHeight - innerHeight);
-    };
-    const TURN = 1.15, P0 = .08;
-    let p = REDUCE ? 1 : 0, front = -1;
-    // 停下来时，对齐到最近的一张，让它正对你
-    const scrollFor = k => top + len * (P0 + (1 - P0) * (k / n - .06) / TURN);   // 第 k 张正对你时的滚动位置
-    let idle = null;
-    addEventListener('scroll', () => { clearTimeout(idle); idle = setTimeout(() => {
-      const q = (scrollY - top) / len; if (q < P0 + .02 || q > .985) return;
-      const k = Math.round(((q - P0) / (1 - P0) * TURN + .06) * n), y = scrollFor(k);
-      if (Math.abs(y - scrollY) > 2 && y < top + len) mjScrollTo(y); }, 200); }, { passive: true });
-    const frame = dt => {
-      const pt = REDUCE ? 1 : clamp((scrollY - top) / len, 0, 1);
-      p += (pt - p) * (REDUCE ? 1 : damp(.16, dt)); if (Math.abs(pt - p) < .0004) p = pt;
-      // 入场：镜头从正上方落下来，圆筒从中心张开；之后滚动让它转一圈多一点
-      const intro = ease(clamp(p / .22, 0, 1));
-      const r = lerp(R * .18, R, intro);
-      const tilt = lerp(-62, -9, intro);
-      const lift = lerp(-.06, 0, intro) * innerHeight;
-      const rot = -TAU * TURN * clamp((p - P0) / (1 - P0), 0, 1) - TAU * .06;
-      ring.style.transform = `translate3d(0,${lift.toFixed(1)}px,${(-r).toFixed(1)}px) rotateX(${tilt.toFixed(2)}deg) rotateY(${rot.toFixed(4)}rad)`;
-      cards.forEach((c, i) => {
-        const a = TAU * i / n, rel = Math.cos(a + rot);                // 1 = 正对你，-1 = 在背面
-        c.style.transform = `rotateY(${a.toFixed(4)}rad) translateZ(${r.toFixed(1)}px)`;
-        c.style.opacity = (lerp(.16, 1, (rel + 1) / 2) * lerp(.4, 1, intro)).toFixed(3);
-      });
-      // 正对你的那张，写在下面
-      const f = ((Math.round(-rot / (TAU / n)) % n) + n) % n;
-      if (f !== front) { front = f; cap.classList.remove('in'); void cap.offsetWidth; cap.innerHTML = caption(songs[f], f); cap.classList.add('in');
-        cnt.textContent = `${String(f + 1).padStart(2, '0')} / ${n}`; cards.forEach((c, i) => c.classList.toggle('on', i === f)); }
-      return p !== pt;
-    };
-    measure();
-    const kick = loop(el, frame); frame(16);
-    addEventListener('resize', () => { measure(); kick(); });
-    addEventListener('load', () => { measure(); kick(); });
-    new ResizeObserver(() => { measure(); kick(); }).observe(document.body);
-  };
-
-  /* ---------- 3. 唱片箱 ---------- */
+  /* ---------- 2. 唱片箱 ---------- */
   window.mountCrate = ({ el, songs, cover, info }) => {
     const n = songs.length; if (n < 3) { el.remove(); return; }
     const stage = el.querySelector('.crate-stage'), bar = el.querySelector('.crate-track i'), cnt = el.querySelector('.crate-n'), box = el.querySelector('.crate-info');
