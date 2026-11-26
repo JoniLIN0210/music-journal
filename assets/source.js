@@ -43,7 +43,7 @@
     let html = await get(location.pathname);
     const css = await get(ROOT + 'assets/base.css');
     html = html.replace(/<link rel="stylesheet" href="[^"]*base\.css">/, `<style>${css}</style>`);
-    for (const f of ['cjk.js', 'record.js']) {
+    for (const f of ['cjk.js', 'record.js', 'stage3d.js']) {
       const js = await get(ROOT + 'assets/' + f);
       html = html.replace(new RegExp(`<script src="[^"]*${f.replace('.', '\\.')}"></script>`), `<script>${inline(js)}</script>`);
     }

@@ -28,10 +28,54 @@
 .stats div:last-child { border-right: 0; }
 .stats b { display: block; font-size: 40px; font-stretch: 75%; font-weight: 700; line-height: 1; margin-top: 10px; }
 .wall { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); margin-top: 40px; }
-.wall a { position: relative; display: block; }
-.wall a::after { content: attr(data-r); position: absolute; left: 6px; top: 5px; color: #fff; font-size: 10px; font-weight: 700; mix-blend-mode: difference; opacity: 0; transition: opacity .2s; }
-.wall a:hover::after { opacity: 1; }
-.wall a:hover img { filter: brightness(.85); }
+.wall i { display: block; aspect-ratio: 1; }
+
+/* ---------- 首屏星环：封面在大数字后面转，往下滚落成封面墙 ---------- */
+.opening { position: relative; overflow-x: clip; }
+.has-orbit .hero { position: relative; z-index: 2; pointer-events: none; }
+.has-orbit.ring .hero h1 { margin-bottom: clamp(48px, 9vw, 130px); }
+.has-orbit .hero .stats, .has-orbit .hero .pick { pointer-events: auto; position: relative; background: var(--bg); }
+/* 飞散中的封面从这几块后面穿过，不压在字上 */
+.has-orbit .hero .thesis { position: relative; background: var(--bg); pointer-events: auto; }
+.orbit { position: absolute; inset: 0; z-index: 1; perspective: 1500px; pointer-events: none; }
+.oc { position: absolute; left: 0; top: 0; display: block; transform-origin: 50% 50%; will-change: transform, opacity; pointer-events: auto; }
+.oc img { width: 100%; height: 100%; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,.18); }
+.orbit.flat .oc { will-change: auto; } .orbit.flat .oc img { box-shadow: none; }
+.oc::after { content: attr(data-r); position: absolute; left: 6px; top: 5px; color: #fff; font-size: 10px; font-weight: 700; mix-blend-mode: difference; opacity: 0; transition: opacity .2s; }
+.orbit.flat .oc:hover::after { opacity: 1; }
+.oc:hover img { filter: brightness(.85); }
+
+/* ---------- 唱片箱 ---------- */
+#songs { overflow-x: clip; }   /* 两侧的唱片会伸出屏幕，不能把页面撑宽 */
+.crate { margin-top: 96px; border-top: 1px solid var(--line); padding-top: 14px; }
+.crate-h { display: flex; justify-content: space-between; gap: 16px; }
+.crate-stage { --s: clamp(190px, 24vw, 340px); position: relative; height: calc(var(--s) * 1.28); margin-top: 24px; perspective: 1400px; perspective-origin: 50% 40%;
+  display: flex; align-items: center; justify-content: center; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; outline: none; }
+.crate-stage:active { cursor: grabbing; }
+.crate-stage:focus-visible { box-shadow: inset 0 0 0 2px var(--fg); }
+.rk { position: absolute; width: var(--s); aspect-ratio: 1; transform-style: preserve-3d; will-change: transform; }
+.rk .slv { position: relative; width: 100%; height: 100%; object-fit: cover; background: var(--g1); box-shadow: 0 24px 50px rgba(0,0,0,.28); transform: translateZ(1px); -webkit-box-reflect: below 2px linear-gradient(transparent 72%, rgba(255,255,255,.22)); }
+.rk:not(.front) .slv { filter: brightness(.9); }
+.rk .vin { position: absolute; top: 3%; left: 3%; width: 94%; aspect-ratio: 1; border-radius: 50%; transform: translateZ(0); transition: transform 1s cubic-bezier(.2,.7,.2,1); box-shadow: 0 20px 40px rgba(0,0,0,.35); }
+.rk .vin .spin { position: absolute; inset: 0; border-radius: 50%; animation: spin 1.8s linear infinite; animation-play-state: paused; }
+.rk .vin .lbl { position: absolute; inset: 34%; border-radius: 50%; background: center / cover; }
+.rk .vin .lbl::after { content: ''; position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; margin: -3.5px; border-radius: 50%; background: var(--bg); }
+.rk.out .vin { transform: translateX(58%) translateZ(0); }
+.rk.out .vin .spin { animation-play-state: running; }
+.crate-bar { display: flex; align-items: center; gap: 14px; max-width: 560px; margin: 40px auto 0; }
+.crate-bar button { background: none; border: 1px solid var(--g2); width: 36px; height: 36px; cursor: pointer; color: inherit; font-size: 14px; }
+.crate-bar button:hover { border-color: var(--fg); }
+.crate-track { flex: 1; height: 2px; background: var(--g1); position: relative; cursor: pointer; padding: 8px 0; background-clip: content-box; }
+.crate-track i { position: absolute; left: 0; top: 8px; height: 2px; background: var(--fg); transition: width .4s cubic-bezier(.2,.7,.2,1); }
+.crate-n { min-width: 54px; text-align: center; }
+.crate-info { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; margin-top: 28px; min-height: 150px; }
+.crate-info b { font-family: var(--cjk); font-size: clamp(24px, 2.6vw, 36px); line-height: 1.2; }
+.crate-info .by { font-family: var(--cjk); color: var(--g3); }
+.ci-go { display: flex; gap: 8px; margin-top: 10px; }
+.ci-go button { background: none; border: 1px solid var(--fg); color: inherit; padding: 9px 14px; cursor: pointer; font-family: var(--sans); }
+.ci-go button:hover { background: var(--fg); color: var(--bg); }
+.is-out .ci-go [data-pull] { background: var(--fg); color: var(--bg); }
+@media (prefers-reduced-motion: reduce) { .rk .vin { transition: none; } .rk .vin .spin { animation: none; } }
 
 /* ---------- 章节 ---------- */
 .sec { padding-top: 120px; }
@@ -240,6 +284,8 @@
   .stats .shuf { grid-column: 1 / 3; }
   .stats b { font-size: 30px; }
   .wall { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .crate-tip { display: none; }
+  .crate-stage { --s: 58vw; }
   .hero .unit .zh { white-space: nowrap; }
   .thesis .cap, .thesis p, .lede p, .now-h .cap, .now-h p { grid-column: 1 / 13; }
   .thesis p { margin-top: 8px; font-size: 19px; }
@@ -288,6 +334,7 @@
 </header>
 
 <main>
+  <div class="opening" id="opening">
   <section class="hero pad">
     <div class="hero-meta cap"><span id="m1">—</span><span id="m2" class="g">—</span></div>
     <h1 class="xl tnum reveal"><span id="h-num">—</span><span class="unit">Plays<span class="zh">累计听歌</span></span></h1>
@@ -296,6 +343,7 @@
     <div class="pick" id="pick" hidden></div>
   </section>
   <div class="wall" id="wall"></div>
+  </div>
 
   <section class="sec pad" id="portrait">
     <div class="sec-h"><span class="n cap">Part I</span><h2 class="xl">Portrait<small>你是怎样的听众</small></h2><p class="how">艺人按 Top 100 的累计播放相加；年代按“我喜欢的音乐”里每首歌的发行年份。</p></div>
@@ -309,6 +357,12 @@
     <div class="sec-h"><span class="n cap">Part II</span><h2 class="xl">Songs<small>反复按下的那些</small></h2><p class="how">网易云“所有时间”排行，数字是累计播放次数。带 Notes 标记的歌写了背景，点任意一行都能打开唱片内页。</p></div>
     <div class="lede"><p id="s-lede"></p></div>
     <div class="no1 reveal" id="no1"></div>
+    <div class="crate" id="crate">
+      <div class="crate-h"><span class="cap">Crate · 唱片箱</span><span class="cap g crate-tip">拖动或用 ← → 翻唱片，点正中那张抽出黑胶</span></div>
+      <div class="crate-stage" tabindex="0" role="listbox" aria-label="唱片箱：播放最多的 20 首，左右方向键翻动，回车抽出黑胶"></div>
+      <div class="crate-bar"><button class="cap" data-prev aria-label="上一张">←</button><div class="crate-track"><i></i></div><span class="cap tnum crate-n"></span><button class="cap" data-next aria-label="下一张">→</button></div>
+      <div class="crate-info" aria-live="polite"></div>
+    </div>
     <div class="filt" id="filt" role="toolbar" aria-label="筛选"></div>
     <ol class="list cap-none" id="list"></ol>
     <button class="btn cap" id="more">Show all 100</button>
@@ -345,6 +399,7 @@
 <script src="data/notes.js"></script>
 <script src="assets/cjk.js"></script>
 <script src="assets/record.js"></script>
+<script src="assets/stage3d.js"></script>
 <script src="assets/music.js"></script>
 <script src="assets/liner.js"></script>
 <script>
@@ -412,7 +467,9 @@ const pick = () => {
   window.mjCount && mjCount('event/shuffle', '随机抽一首');
 };
 if ($('#shuf')) { $('#shuf').onclick = pick; $('#pick').addEventListener('click', e => { if (e.target.closest('[data-again]')) pick(); }); }
-$('#wall').innerHTML = (D.allTime.length ? D.allTime : D.liked).slice(0, 36).map((s, i) => `<a data-r="${pad2(i + 1)}" title="${s.n} — ${s.a.join(' / ')}" href="#songs">${art(s.pic, 240)}</a>`).join('');
+// 首屏：封面星环，往下滚落成封面墙
+mountOrbit({ root: $('#opening'), title: $('.hero h1'), wall: $('#wall'),
+  cards: [...new Map([...D.allTime, ...D.liked, ...D.week].filter(s => s.pic).map(s => [s.pic, s])).values()].slice(0, 36).map((s, i) => `<a class="oc" data-r="${pad2(i + 1)}" title="${s.n} — ${s.a.join(' / ')}" href="#songs" ${note('song', s.id)}>${art(s.pic, 240)}</a>`) });
 
 /* ---------- Part I 画像：艺人 + 年代 ---------- */
 sect('portrait', () => {
@@ -459,6 +516,12 @@ sect('songs', () => {
       <h3>${no1.n}</h3><p class="by">${no1.a.join(' / ')} — ${no1.al}</p>
       ${note('song', no1.id) ? `<a class="go-note" ${note('song', no1.id)} href="#">Liner notes · 唱片内页 →</a>` : ''}
       <p class="time">一首 ${mmss(no1.dt)} 的歌，${fmt(no1.pc)} 遍，加起来你在里面待了 ${Math.round(no1.dt * no1.pc / 3600)} 个小时。</p></div>`;
+
+  // 唱片箱：前 20 首
+  mountCrate({ el: $('#crate'), songs: D.allTime.slice(0, 20), cover: (s, z) => img(s.pic, z),
+    info: (s, i) => `<span class="cap g">No. ${pad2(i + 1)}${s.y ? ` · ${s.y}` : ''}</span><b>${s.n}${L && L.noted('song', s.id) ? '<span class="has-note">Notes</span>' : ''}</b>
+      <span class="by">${s.a.join(' / ')} — ${s.al}</span><span class="cap tnum">${fmt(s.pc)} plays · ${mmss(s.dt)}</span>
+      <span class="ci-go"><button class="cap" data-pull>抽出黑胶 ◐</button>${note('song', s.id) ? `<button class="cap" ${note('song', s.id)}>唱片内页 →</button>` : ''}</span>` });
 
   // 筛选：全部 / 有故事的 / 前几位艺人 / 年代
   const F = [{ k: 'all', t: 'All · 全部', f: () => true }];
