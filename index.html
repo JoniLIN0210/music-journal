@@ -37,10 +37,18 @@
 .has-orbit .hero .stats, .has-orbit .hero .pick { pointer-events: auto; position: relative; background: var(--bg); }
 /* 飞散中的封面从这几块后面穿过，不压在字上 */
 .has-orbit .hero .thesis { position: relative; background: var(--bg); pointer-events: auto; }
-.orbit { position: absolute; inset: 0; z-index: 1; perspective: 1500px; pointer-events: none; }
+.orbit { position: fixed; inset: 0; z-index: 1; perspective: 1400px; pointer-events: none; }
+.orbit-3d { position: absolute; inset: 0; transform-style: preserve-3d; }   /* 前后遮挡由浏览器按 3D 深度排 */
 .oc { position: absolute; left: 0; top: 0; display: block; transform-origin: 50% 50%; will-change: transform, opacity; pointer-events: auto; }
-.oc img { width: 100%; height: 100%; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,.18); }
-.orbit.flat .oc { will-change: auto; } .orbit.flat .oc img { box-shadow: none; }
+.oc.ex { pointer-events: none; }
+.oc img { width: 100%; height: 100%; object-fit: cover; background: var(--g1); }
+.wall.static .oc { position: relative; width: auto; height: auto; aspect-ratio: 1; }
+/* 滚动场景：螺旋塔在这一段里转，中间是一行大字 */
+.scene { position: relative; z-index: 2; height: 170vh; pointer-events: none; mix-blend-mode: difference; color: #fff; }   /* 大字压在封面上，重叠处反色 */
+.scene .g { color: #fff; opacity: .6; }
+.scene-in { position: sticky; top: calc(50vh - 90px); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.scene-in .xl { font-size: clamp(72px, 13vw, 220px); }
+.scene-in .zh { font-size: 18px; font-weight: 600; }
 .oc::after { content: attr(data-r); position: absolute; left: 6px; top: 5px; color: #fff; font-size: 10px; font-weight: 700; mix-blend-mode: difference; opacity: 0; transition: opacity .2s; }
 .orbit.flat .oc:hover::after { opacity: 1; }
 .oc:hover img { filter: brightness(.85); }
@@ -285,6 +293,7 @@
   .stats b { font-size: 30px; }
   .wall { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .crate-tip { display: none; }
+  .scene { height: 130vh; }
   .crate-stage { --s: 58vw; }
   .hero .unit .zh { white-space: nowrap; }
   .thesis .cap, .thesis p, .lede p, .now-h .cap, .now-h p { grid-column: 1 / 13; }
@@ -342,6 +351,7 @@
     <div class="stats cap" id="stats"></div>
     <div class="pick" id="pick" hidden></div>
   </section>
+  <div class="scene" id="scene" aria-hidden="true"><div class="scene-in"><span class="cap g">Scroll · 往下滚</span><p class="xl">On Repeat</p><p class="zh" id="scene-zh">这些年反复按下的唱片</p></div></div>
   <div class="wall" id="wall"></div>
   </div>
 
@@ -468,8 +478,11 @@ const pick = () => {
 };
 if ($('#shuf')) { $('#shuf').onclick = pick; $('#pick').addEventListener('click', e => { if (e.target.closest('[data-again]')) pick(); }); }
 // 首屏：封面星环，往下滚落成封面墙
-mountOrbit({ root: $('#opening'), title: $('.hero h1'), wall: $('#wall'),
-  cards: [...new Map([...D.allTime, ...D.liked, ...D.week].filter(s => s.pic).map(s => [s.pic, s])).values()].slice(0, 36).map((s, i) => `<a class="oc" data-r="${pad2(i + 1)}" title="${s.n} — ${s.a.join(' / ')}" href="#songs" ${note('song', s.id)}>${art(s.pic, 240)}</a>`) });
+const COVERS = [...new Map([...D.allTime, ...D.liked, ...D.week].filter(s => s.pic).map(s => [s.pic, s])).values()];
+$('#scene-zh').textContent = `这些年反复按下的 ${Math.min(36, COVERS.length)} 张唱片`;
+mountOrbit({ root: $('#opening'), title: $('.hero h1'), wall: $('#wall'), scene: $('#scene'),
+  extra: COVERS.slice(36, 76).map(s => `<a class="oc">${art(s.pic, 160)}</a>`),
+  cards: COVERS.slice(0, 36).map((s, i) => `<a class="oc" data-r="${pad2(i + 1)}" title="${s.n} — ${s.a.join(' / ')}" href="#songs" ${note('song', s.id)}>${art(s.pic, 240)}</a>`) });
 
 /* ---------- Part I 画像：艺人 + 年代 ---------- */
 sect('portrait', () => {
