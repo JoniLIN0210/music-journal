@@ -27,6 +27,44 @@
 .stats div + div { padding-left: 16px; }
 .stats div:last-child { border-right: 0; }
 .stats b { display: block; font-size: 40px; font-stretch: 75%; font-weight: 700; line-height: 1; margin-top: 10px; }
+/* ---------- 首屏：数字像机械计数器一样滚到位，一句话逐句浮现 ---------- */
+#h-num { display: inline-flex; }
+.od { display: inline-block; height: .84em; overflow: hidden; }
+.od > span { display: flex; flex-direction: column; transition: transform 1.9s cubic-bezier(.16,.84,.2,1) calc(var(--i) * 90ms); }
+.od i { display: block; height: .84em; line-height: .84em; font-style: normal; }
+.go .od > span { transform: translateY(calc(var(--d) * -.84em)); }
+.thesis .cl { opacity: 0; transform: translateY(12px); animation: cl-in .9s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: calc(.9s + var(--i) * 120ms); }
+@keyframes cl-in { to { opacity: 1; transform: none; } }
+.lede .cl { transition: opacity .35s linear; }
+/* 艺人占比条依次长出来 */
+.artists .bar { transform-origin: left; transform: scaleX(0); transition: transform 1.1s cubic-bezier(.2,.7,.2,1) calc(var(--i) * 70ms); }
+.artists.in .bar { transform: none; }
+@media (prefers-reduced-motion: reduce) { .thesis .cl { opacity: 1; transform: none; animation: none; } .artists .bar { transform: none; } }
+
+/* ---------- 时间隧道：钉住的一屏，滚动穿过每一年 ---------- */
+.tunnel { position: relative; margin: 24px calc(-1 * var(--pad)) 96px; }
+.tn-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #0A0A0A; color: #fff; }
+.tn-stage { position: absolute; inset: 0; perspective: 900px; perspective-origin: 50% 50%; }
+.tn-space { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; will-change: transform; }
+.tn-c { --w: clamp(84px, 9vw, 150px); position: absolute; width: var(--w); height: var(--w); left: calc(var(--w) / -2); top: calc(var(--w) / -2); display: block; }
+.tn-c img { width: 100%; height: 100%; object-fit: cover; background: #1a1a1a; }
+.tn-c:hover img { outline: 2px solid #fff; outline-offset: 3px; }
+.tn-label { background: radial-gradient(ellipse 34% 30% at 50% 50%, rgba(10,10,10,.78), rgba(10,10,10,0) 100%); }
+.tn-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; pointer-events: none; text-align: center; padding: 0 var(--pad); }
+.tn-label .tn-k { opacity: .55; }
+.tn-y { font-size: clamp(120px, 21vw, 340px); line-height: .84; }
+.tn-s { font-family: var(--cjk); font-size: clamp(14px, 1.4vw, 18px); opacity: .8; max-width: 30em; }
+.tn-label.in > * { animation: tn-in .7s cubic-bezier(.2,.7,.2,1) both; }
+.tn-label.in > :nth-child(2) { animation-delay: .04s; } .tn-label.in > :nth-child(3) { animation-delay: .1s; }
+@keyframes tn-in { from { opacity: 0; transform: translateY(16px) scale(.98); filter: blur(4px); } }
+.tn-foot { position: absolute; left: 0; right: 0; bottom: 22px; display: grid; grid-template-columns: 1fr; gap: 10px; }
+.tn-ticks { display: flex; justify-content: space-between; opacity: .5; }
+.tn-ticks span { transition: opacity .3s; } .tn-ticks span.on { opacity: 1; color: #fff; }
+.tn-ticks:has(.on) { opacity: 1; } .tn-ticks span:not(.on) { opacity: .4; }
+.tn-bar { height: 1px; background: rgba(255,255,255,.2); position: relative; }
+.tn-bar i { position: absolute; left: 0; top: 0; height: 1px; background: #fff; }
+.tn-hint { opacity: .45; text-align: right; }
+
 /* ---------- 每部分结尾：下一部分 ---------- */
 .bridge { display: grid; grid-template-columns: 2fr 10fr auto; align-items: baseline; gap: var(--pad); margin-top: 120px; padding: 22px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--hair); transition: padding .3s cubic-bezier(.2,.7,.2,1), background .2s; }
 .bridge b { font-family: var(--cjk); font-size: clamp(20px, 2vw, 28px); font-weight: 700; }
@@ -266,6 +304,8 @@
   .stats div:last-child { grid-column: 1 / 3; }
   .stats b { font-size: 30px; }
   .crate-tip { display: none; }
+  .tn-hint { display: none; }
+  .tn-ticks { font-size: 9px; letter-spacing: 0; }
   .bridge { grid-template-columns: 1fr auto; row-gap: 4px; margin-top: 88px; }
   .bridge .cap { grid-column: 1 / 3; }
   .crate-stage { --s: min(58vw, calc((100vh - 400px) / 1.2)); }
@@ -327,7 +367,7 @@
 
 
   <section class="sec pad" id="songs">
-    <div class="sec-h"><span class="n cap">Part I · 歌</span><h2 class="xl">Songs<small>你反复按下的歌</small></h2><p class="how">网易云“所有时间”排行，数字是累计播放次数。先在唱片箱里一张张翻前 20 首，下面是完整的 100 首。</p></div>
+    <div class="sec-h reveal"><span class="n cap">Part I · 歌</span><h2 class="xl">Songs<small>你反复按下的歌</small></h2><p class="how">网易云“所有时间”排行，数字是累计播放次数。先在唱片箱里一张张翻前 20 首，下面是完整的 100 首。</p></div>
     <div class="lede"><p id="s-lede"></p></div>
     <div class="crate" id="crate"><div class="crate-pin">
       <div class="crate-h"><span class="cap">Crate · 唱片箱</span><span class="cap g crate-tip">往下滚一张张翻，停下来黑胶会自己滑出来</span></div>
@@ -344,17 +384,24 @@
   </section>
 
   <section class="sec pad" id="artists-sec">
-    <div class="sec-h"><span class="n cap">Part II · 人</span><h2 class="xl">Artists<small>你反复回到的人</small></h2><p class="how">把 Top 100 里每首歌的播放次数按艺人相加。带 Notes 标记的艺人写了背景。</p></div>
+    <div class="sec-h reveal"><span class="n cap">Part II · 人</span><h2 class="xl">Artists<small>你反复回到的人</small></h2><p class="how">把 Top 100 里每首歌的播放次数按艺人相加。带 Notes 标记的艺人写了背景。</p></div>
     <div class="lede"><p id="p-lede"></p></div>
     <div class="feat" id="feat"></div>
-    <div class="sub"><span class="cap">Top 10 · 前十位艺人</span><ol class="artists" id="artists"></ol></div>
+    <div class="sub"><span class="cap">Top 10 · 前十位艺人</span><ol class="artists reveal" id="artists"></ol></div>
     <a class="bridge" href="#years" data-next="years"></a>
   </section>
 
   <section class="sec pad" id="years">
-    <div class="sec-h"><span class="n cap">Part III · 这些年</span><h2 class="xl">Years<small>你一路收下的歌</small></h2><p class="how">“我喜欢的音乐”里每首歌点红心的日期和发行年份。斜纹表示这一年还没过完。</p></div>
+    <div class="sec-h reveal"><span class="n cap">Part III · 这些年</span><h2 class="xl">Years<small>你一路收下的歌</small></h2><p class="how">“我喜欢的音乐”里每首歌点红心的日期和发行年份。斜纹表示这一年还没过完。</p></div>
     <div class="lede"><p id="y-lede"></p></div>
-    <div class="yrs-h cap g"><span>点一年，看那一年你收下了什么</span><span>↓</span></div>
+    <div class="tunnel" id="tunnel" aria-label="时间隧道：往下滚，穿过每一年点下的红心">
+      <div class="tn-pin">
+        <div class="tn-stage"><div class="tn-space"></div></div>
+        <div class="tn-label" aria-live="polite"><span class="cap tn-k">Year · 这一年</span><b class="xl tnum tn-y"></b><span class="tn-s"></span></div>
+        <div class="tn-foot pad"><div class="tn-ticks cap tnum"></div><div class="tn-bar"><i></i></div><span class="cap tn-hint">往下滚，穿过这些年 · 点封面看唱片内页</span></div>
+      </div>
+    </div>
+    <div class="yrs-h cap g"><span>细看：点一年，看那一年你收下了什么</span><span>↓</span></div>
     <div class="years reveal" id="yrs" role="tablist" aria-label="年份"></div>
     <div class="yr" id="yr" role="tabpanel"></div>
     <div class="sub" id="dec-w"><span class="cap">Decades · 这些歌来自哪个年代</span><div><p class="sub-say" id="dec-note"></p><div class="dec reveal" id="dec"></div></div></div>
@@ -365,7 +412,7 @@
   </section>
 
   <section class="sec pad now" id="now">
-    <div class="sec-h"><span class="n cap">Part IV · 此刻</span><h2 class="xl">Now<small>这一周你在听什么</small></h2><p class="how">网易云“最近一周”排行。今年的完整回顾在年度报告里。</p></div>
+    <div class="sec-h reveal"><span class="n cap">Part IV · 此刻</span><h2 class="xl">Now<small>这一周你在听什么</small></h2><p class="how">网易云“最近一周”排行。今年的完整回顾在年度报告里。</p></div>
     <div class="lede"><p id="week-note"></p></div>
     <div class="strip" id="week"></div>
   </section>
@@ -427,7 +474,12 @@ const shortName = p => p.n.replace(new RegExp(`^@?(${P.nick.replace(/[.*+?^${}()
 $('#t-left').textContent = `${NICK_T} — Listening since ${yearOf(P.created)}`;
 $('#m1').textContent = `${NICK_T} · Lv.${P.level} · UID ${P.uid}`;
 $('#m2').textContent = `Updated ${day(D.fetchedAt)}`;
-$('#h-num').textContent = fmt(P.listenSongs);
+{
+  const str = fmt(P.listenSongs), el = $('#h-num');
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) el.textContent = str;
+  else { el.innerHTML = [...str].map((ch, i) => /\d/.test(ch) ? `<span class="od"><span style="--d:${ch};--i:${i}">${[...'0123456789'].map(x => `<i>${x}</i>`).join('')}</span></span>` : `<span class="od-s">${ch}</span>`).join('');
+    el.setAttribute('aria-label', str); setTimeout(() => el.classList.add('go'), 250); }
+}
 {
   const yr = P.createDays / 365, no1 = D.allTime[0];
   let t = `${yr < 1 ? `${fmt(P.createDays)} 天` : yr % 1 > .5 ? `将近 ${Math.ceil(yr)} 年` : `${Math.floor(yr)} 年`}，累计听歌 ${fmt(P.listenSongs)} 首。`;
@@ -566,6 +618,12 @@ sect('years', () => {
     const n = bs[Math.max(0, Math.min(bs.length - 1, i + (e.key === 'ArrowRight' ? 1 : -1)))]; if (n) { n.focus(); n.click(); } };
   select(peakY);
 
+  // 时间隧道：每一年的红心封面，按点红心的先后排
+  mountTunnel({ el: $('#tunnel'),
+    years: YRS.map(y => { const S = (likedBy[y] || []).slice().sort((a, b) => a.at - b.at);
+      return { y, songs: S, say: S.length ? `${S.length} 颗红心 · 第一颗是《${S[0].n}》` : '这一年没有点红心' }; }),
+    card: s => `<a class="tn-c" href="#years" ${note('song', s.id)} title="${s.n} — ${s.a.join(' / ')}"><img src="${img(s.pic, 200)}" alt="" decoding="async" draggable="false"></a>` });
+
   try {
     if (!decs.length) throw 0;
     const dsum = decs.reduce((s, d) => s + d[1], 0);
@@ -622,6 +680,18 @@ const spy = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecti
 const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && (e.target.classList.add('in'), io.unobserve(e.target))), { threshold: .1 });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 ['#thesis', '#p-lede', '#s-lede', '#y-lede', '#dec-note', '#week-note'].forEach(s => $(s) && clauses($(s)));
+$('#thesis').querySelectorAll('.cl').forEach((c, i) => c.style.setProperty('--i', i));
+$('#artists').querySelectorAll('.bar').forEach((b, i) => b.style.setProperty('--i', i));
+
+// 每部分开头那句大字：随着滚动一句一句亮起来
+if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const ledes = [...document.querySelectorAll('.lede p')].map(p => ({ p, cls: [...p.querySelectorAll('.cl')] })).filter(x => x.cls.length);
+  let raf = 0;
+  const lit = () => { raf = 0; ledes.forEach(({ p, cls }) => { const r = p.getBoundingClientRect(); if (r.bottom < -100 || r.top > innerHeight + 100) return;
+    const prog = Math.max(0, Math.min(1, (innerHeight * .88 - r.top) / (r.height + innerHeight * .3)));
+    cls.forEach((c, i) => { const o = Math.max(0, Math.min(1, prog * (cls.length + 1) - i)); c.style.opacity = (.14 + .86 * o).toFixed(2); }); }); };
+  addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(lit); }, { passive: true }); lit();
+}
 mountRecord(img((D.allTime[0] || D.liked[0] || {}).pic, 120));
 </script>
 </body>

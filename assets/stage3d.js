@@ -3,6 +3,7 @@
    - 全局平滑滚动：滚轮的每一下都被缓动成连续的滚动（只在电脑上，触屏保留系统自带的惯性）。
    - 一屏一个场景：场景固定在屏幕上，用一长段滚动距离来“播放”它，画面里只放这一件事。
    1. 平滑滚动。
+   3. mountTunnel：第三部分的时间隧道，滚动时穿过每一年的红心封面。
    2. mountCrate：唱片箱场景。滚轮一格翻一张；停下来，黑胶自己从封套里滑出来转。也可以拖动、点、用 ← →。
    系统开了“减少动态效果”时，平滑滚动关闭，场景直接停在最终状态。 */
 (() => {
@@ -142,5 +143,55 @@
     addEventListener('load', () => { measure(); kick(); });
     // 页面上方的内容（比如 Top 100 展开、图片加载）会改变唱片箱的位置
     new ResizeObserver(() => { measure(); kick(); }).observe(document.body);
+  };
+
+  /* ---------- 3. 时间隧道（第三部分“这些年”）----------
+     整屏变黑并钉住；往下滚，镜头沿着时间往前走，每一年点下的红心封面从远处迎面飞过，中间是那一年的大字。
+     只移动“镜头”这一层（一个 transform），封面本身不动，所以很省。 */
+  window.mountTunnel = ({ el, years, card }) => {
+    const Y = years.length;
+    if (REDUCE || Y < 2) { el.remove(); return; }
+    const narrow = innerWidth < 720, per = narrow ? 9 : 20, D = 1500;     // 每一年在隧道里占的深度
+    const space = el.querySelector('.tn-space'), yEl = el.querySelector('.tn-y'), sEl = el.querySelector('.tn-s'), lab = el.querySelector('.tn-label'), bar = el.querySelector('.tn-bar i'), ticks = el.querySelector('.tn-ticks');
+    const rnd = (i, k) => { const a = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453; return a - Math.floor(a); };
+    const items = [];
+    years.forEach((yr, k) => yr.songs.slice(0, per).forEach((s, j, arr) => items.push({ s, k, z: -(k * D + D * .12 + (j / Math.max(1, arr.length)) * D * .76), i: items.length })));
+    space.innerHTML = items.map(t => card(t.s)).join('');
+    const els = [...space.children];
+    ticks.innerHTML = years.map(y => `<span>${y.y}</span>`).join('');
+    el.style.height = `calc(100vh + ${Y * (narrow ? 55 : 65)}vh)`;
+    let top = 0, len = 1, W = 0;
+    const place = () => {
+      W = Math.min(innerWidth, innerHeight * 1.7);
+      items.forEach((t, n) => { const a = rnd(t.i, 1) * Math.PI * 2, r = (narrow ? .36 : .32) * W + rnd(t.i, 2) * (narrow ? .22 : .22) * W;   // 中间留空给年份大字
+        t.x = Math.cos(a) * r; t.y = Math.sin(a) * r * (narrow ? 1.9 : .62);   // 竖屏把圈拉高，封面从字的上下方经过
+        els[n].style.transform = `translate3d(${t.x.toFixed(1)}px,${t.y.toFixed(1)}px,${t.z.toFixed(1)}px)`; });
+    };
+    const measure = () => { top = docTop(el); len = Math.max(1, el.offsetHeight - innerHeight); };
+    let cam = 0, mx = 0, my = 0, tmx = 0, tmy = 0, cur = -1;
+    const START = -700, END = Y * D - D * .55;
+    const frame = dt => {
+      const p = clamp((scrollY - top) / len, 0, 1), target = lerp(START, END, p);
+      cam += (target - cam) * damp(.12, dt); if (Math.abs(target - cam) < .5) cam = target;
+      mx += (tmx - mx) * damp(.06, dt); my += (tmy - my) * damp(.06, dt);
+      space.style.transform = `translateZ(${cam.toFixed(1)}px) rotateX(${(my * 5).toFixed(2)}deg) rotateY(${(mx * 7).toFixed(2)}deg)`;
+      // 近处的淡出（快贴到镜头时），远处的淡入
+      items.forEach((t, n) => { const d = t.z + cam;
+        const o = d > 520 || d < -5200 ? 0 : d > 60 ? 1 - (d - 60) / 460 : d < -3400 ? (d + 5200) / 1800 : 1;
+        if (t.o !== o) { const e = els[n]; e.style.opacity = o.toFixed(3); if ((t.o > 0) !== (o > 0)) e.style.visibility = o > 0 ? '' : 'hidden'; t.o = o; } });
+      // 现在走到哪一年
+      const k = clamp(Math.floor((cam + D * .55) / D), 0, Y - 1);
+      if (k !== cur) { cur = k; const yr = years[k]; lab.classList.remove('in'); void lab.offsetWidth;
+        yEl.textContent = yr.y; sEl.textContent = yr.say; lab.classList.add('in');
+        [...ticks.children].forEach((t, i) => t.classList.toggle('on', i === k)); }
+      bar.style.width = (p * 100).toFixed(2) + '%';
+      return cam !== target || Math.abs(tmx - mx) > .001 || Math.abs(tmy - my) > .001;
+    };
+    place(); measure();
+    const kick = loop(el, frame); frame(16);
+    addEventListener('resize', () => { place(); measure(); kick(); });
+    addEventListener('load', () => { measure(); kick(); });
+    new ResizeObserver(() => { measure(); kick(); }).observe(document.body);
+    if (FINE) el.addEventListener('pointermove', e => { tmx = e.clientX / innerWidth - .5; tmy = e.clientY / innerHeight - .5; kick(); });
   };
 })();
