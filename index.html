@@ -88,7 +88,10 @@
 #songs { overflow-x: clip; }   /* 两侧的唱片会伸出屏幕，不能把页面撑宽 */
 .crate { position: relative; margin-top: 24px; }
 .crate-pin { position: sticky; top: 40px; height: calc(100vh - 40px); display: flex; flex-direction: column; justify-content: center; }
-.crate-h { display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); padding-top: 14px; }
+.crate-h { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; border-top: 1px solid var(--line); padding-top: 14px; }
+.hd { display: flex; flex-direction: column; gap: 6px; }
+.hd b { font-family: var(--cjk); font-size: clamp(22px, 2.2vw, 30px); font-weight: 700; line-height: 1.2; }
+.hd .src { font-family: var(--cjk); font-size: 12px; color: var(--g3); max-width: 46em; line-height: 1.6; }
 .crate-stage { --s: min(clamp(190px, 24vw, 340px), calc((100vh - 380px) / 1.2)); position: relative; height: calc(var(--s) * 1.2); margin-top: 16px; perspective: 1400px; perspective-origin: 50% 40%;
   display: flex; align-items: center; justify-content: center; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; outline: none; }
 .crate-stage:active { cursor: grabbing; }
@@ -246,7 +249,9 @@
 .artists .v small { font-size: 11px; }
 
 /* ---------- 筛选 ---------- */
-.filt { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 64px; padding-bottom: 14px; }
+.filt { display: flex; flex-direction: column; gap: 10px; margin-top: 64px; padding-bottom: 18px; }
+.fg { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.fg > .fl { min-width: 170px; margin-right: 6px; }
 .filt > .cap { margin-right: 10px; }
 .chip { display: inline-flex; gap: 8px; align-items: baseline; padding: 8px 12px; border: 1px solid var(--g2); background: none; color: inherit; cursor: pointer; font-family: var(--cjk); letter-spacing: .02em; text-transform: none; font-size: 12px; font-weight: 600; transition: border-color .2s, background .2s; }
 .chip:hover { border-color: var(--fg); }
@@ -331,7 +336,8 @@
   .row .a, .row .b, .row .d { display: none; }
   .artists li { grid-template-columns: 32px 44px minmax(0, 1fr) 60px; }
   .artists .bar-w { display: none; }
-  .filt { flex-wrap: nowrap; overflow-x: auto; margin-left: calc(-1 * var(--pad)); margin-right: calc(-1 * var(--pad)); padding-left: var(--pad); padding-right: var(--pad); scrollbar-width: none; }
+  .fg { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } .fg > .fl { min-width: auto; flex: none; }
+  .filt { flex-wrap: nowrap; margin-left: calc(-1 * var(--pad)); margin-right: calc(-1 * var(--pad)); padding-left: var(--pad); padding-right: var(--pad); scrollbar-width: none; }
   .filt .chip { flex: none; }
   #yrs { gap: 3px !important; height: 260px; }
   #yrs .c b { font-size: 14px; }
@@ -380,12 +386,12 @@
     <div class="sec-h reveal"><span class="n cap">Part I · 歌</span><h2 class="xl">Songs<small>你反复按下的歌</small></h2><p class="how">网易云“所有时间”排行，数字是累计播放次数。先在唱片箱里一张张翻前 20 首，下面是完整的 100 首。</p></div>
     <div class="lede"><p id="s-lede"></p></div>
     <div class="crate" id="crate"><div class="crate-pin">
-      <div class="crate-h"><span class="cap">Crate · 唱片箱</span><span class="cap g crate-tip">往下滚一张张翻，停下来黑胶会自己滑出来</span></div>
+      <div class="crate-h"><div class="hd"><span class="cap g">Crate · 唱片箱</span><b>播放次数最多的 20 首</b><span class="src">按网易云“听歌排行 · 所有时间”的累计播放次数，从第 1 名排到第 20 名</span></div><span class="cap g crate-tip">往下滚一张张翻 · 停下来黑胶会滑出来</span></div>
       <div class="crate-stage" tabindex="0" role="listbox" aria-label="唱片箱：播放最多的 20 首，左右方向键翻动，回车抽出黑胶"></div>
       <div class="crate-bar"><button class="cap" data-prev aria-label="上一张">←</button><div class="crate-track"><i></i></div><span class="cap tnum crate-n"></span><button class="cap" data-next aria-label="下一张">→</button></div>
       <div class="crate-info" aria-live="polite"></div>
     </div></div>
-    <div class="sub-h"><span class="cap">Tracklist · 完整的 100 首</span><span class="cap g">可以按艺人、年代筛选</span></div>
+    <div class="sub-h"><div class="hd"><span class="cap g">Tracklist · 完整榜单</span><b>播放次数前 <span id="tl-n">100</span> 首</b><span class="src">网易云的“听歌排行 · 所有时间”只公开播放次数最多的前 100 首，所以这里最多是 100 首；顺序和右边的数字都是网易云记录的累计播放次数。</span></div></div>
     <div class="filt" id="filt" role="toolbar" aria-label="筛选"></div>
     <ol class="list cap-none" id="list"></ol>
     <button class="btn cap" id="more">Show all 100</button>
@@ -553,15 +559,18 @@ sect('songs', () => {
       <span class="by">${s.a.join(' / ')} — ${s.al}</span><span class="cap tnum">${fmt(s.pc)} plays · ${mmss(s.dt)} · 加起来 ${hrs(s.dt * s.pc)}</span>
       <span class="ci-go"><button class="cap" data-pull>抽出黑胶 ◐</button>${note('song', s.id) ? `<button class="cap" ${note('song', s.id)}>唱片内页 →</button>` : ''}</span>` });
 
-  // 筛选：全部 / 有故事的 / 前几位艺人 / 年代
-  const F = [{ k: 'all', t: 'All · 全部', f: () => true }];
-  if (L) F.push({ k: 'notes', t: 'Notes · 有故事的', f: s => L.noted('song', s.id) });
-  arts.slice(0, 5).filter(([, o]) => o.n >= 2).forEach(([a]) => F.push({ k: 'a:' + a, t: a, f: s => s.a.includes(a) }));
+  // 筛选分三组，每组的依据写在组名上：
+  //   艺人 = 在这 100 首里有 2 首及以上的艺人；发行年代 = 歌曲的发行年份，至少 3 首的年代才列出；内页 = 写了背景资料的歌
+  const F = [{ k: 'all', g: '', t: '全部', f: () => true }];
+  arts.filter(([, o]) => o.n >= 2).forEach(([a]) => F.push({ k: 'a:' + a, g: 'artist', t: a, f: s => s.a.includes(a) }));
   const dd = {}; D.allTime.forEach(s => { if (s.y > 1900) { const k = Math.floor(s.y / 10) * 10; dd[k] = (dd[k] || 0) + 1; } });
-  Object.keys(dd).filter(k => dd[k] >= 3).sort().forEach(k => F.push({ k: 'd:' + k, t: `${k}s`, f: s => Math.floor(s.y / 10) * 10 == k }));
+  Object.keys(dd).filter(k => dd[k] >= 3).sort().forEach(k => F.push({ k: 'd:' + k, g: 'decade', t: `${k} 年代`, f: s => Math.floor(s.y / 10) * 10 == k }));
+  if (L) F.push({ k: 'notes', g: 'notes', t: '有唱片内页的', f: s => L.noted('song', s.id) });
   F.forEach(x => x.n = D.allTime.filter(x.f).length);
   let cur = F[0], shown = 10;
-  $('#filt').innerHTML = `<span class="cap g">Filter</span>` + F.filter(x => x.n).map((x, i) => `<button class="chip cap ${i ? '' : 'on'}" data-k="${x.k}" aria-pressed="${!i}">${x.t}<span class="g tnum">${x.n}</span></button>`).join('');
+  const G = [['', ''], ['artist', '按艺人 · 榜上 2 首及以上'], ['decade', '按发行年代'], ['notes', '其他']];
+  const chip = x => `<button class="chip cap ${x.k === 'all' ? 'on' : ''}" data-k="${x.k}" aria-pressed="${x.k === 'all'}">${x.t}<span class="g tnum">${x.n}</span></button>`;
+  $('#filt').innerHTML = G.map(([g, label]) => { const xs = F.filter(x => x.g === g && x.n); return xs.length ? `<div class="fg">${label ? `<span class="fl cap g">${label}</span>` : ''}${xs.map(chip).join('')}</div>` : ''; }).join('');
   const row = (s, i) => `<li class="row" ${note('song', s.id)} ${L ? 'title="点开唱片内页"' : ''}>
     <span class="r tnum">${pad2(i + 1)}</span>${art(s.pic, 104)}
     <span class="t">${s.n}${L && L.noted('song', s.id) ? '<span class="has-note">Notes</span>' : ''}</span><span class="a">${s.a.join(' / ')}</span><span class="d tnum">${mmss(s.dt)}</span>
@@ -570,6 +579,7 @@ sect('songs', () => {
     const rows = D.allTime.map((s, i) => [s, i]).filter(([s]) => cur.f(s));
     const list = cur.k === 'all' ? rows.slice(0, shown) : rows;
     $('#list').innerHTML = list.map(([s, i]) => row(s, i)).join('');
+    $('#tl-n').textContent = D.allTime.length;
     $('#more').hidden = cur.k !== 'all';
     $('#more').textContent = shown >= D.allTime.length ? 'Collapse · 收起' : `Show all ${D.allTime.length} · 展开全部`;
   };
