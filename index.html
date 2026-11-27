@@ -81,7 +81,32 @@
 .bridge i { font-style: normal; font-size: 22px; transition: transform .3s; }
 .bridge:hover { padding-left: 12px; padding-right: 12px; background: var(--g1); }
 .bridge:hover i { transform: translateY(4px); }
-.sub-h { display: flex; justify-content: space-between; gap: 16px; margin-top: 96px; border-top: 1px solid var(--line); padding-top: 14px; }
+.sub-h { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-top: 96px; border-top: 1px solid var(--line); padding-top: 14px; }
+/* 时间范围切换 */
+.tabs { display: inline-flex; border: 1px solid var(--fg); flex: none; }
+.tabs button { background: none; border: 0; padding: 10px 16px; cursor: pointer; color: inherit; font-family: var(--cjk); letter-spacing: .02em; text-transform: none; font-size: 12px; font-weight: 600; transition: background .2s, color .2s; }
+.tabs button + button { border-left: 1px solid var(--fg); }
+.tabs button.on { background: var(--fg); color: var(--bg); }
+.tabs button:not(.on):hover { background: var(--g1); }
+/* 每部分标题右边：统一的口径说明 */
+.sec-h .scope { grid-column: 9 / 13; display: flex; flex-direction: column; gap: 6px; padding-top: 6px; }
+.scope div { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 8px; font-size: 12px; line-height: 1.5; }
+.scope dt { color: var(--g3); font-family: var(--cjk); }
+.scope dd { font-family: var(--cjk); }
+/* 2026 每个月最常听的艺人 */
+.mart { display: grid; gap: 8px; align-items: end; margin-top: 8px; }
+.mart li { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; cursor: default; min-width: 0; }
+.mart li[data-note] { cursor: pointer; }
+.mart .mb { width: 100%; height: 120px; display: flex; align-items: flex-end; justify-content: center; }
+.mart .mb i { width: 10px; height: var(--h); background: var(--g2); transform-origin: bottom; transform: scaleY(0); transition: transform 1s cubic-bezier(.2,.7,.2,1); }
+.mart.in .mb i { transform: none; }
+.mart li.hl .mb i { background: var(--fg); }
+.mart .art.round { width: 100%; max-width: 72px; border-radius: 50%; }
+.mart li.hl .art.round { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--fg); }
+.mart b { font-family: var(--cjk); font-size: 13px; font-weight: 700; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mart .cap { font-size: 10px; letter-spacing: .02em; }
+.sub > .cap small { display: block; margin-top: 4px; font-size: 10px; }
+.week5 { margin-top: 0; }
 .sub-h + .filt { margin-top: 20px; }
 
 /* ---------- 唱片箱 ---------- */
@@ -300,16 +325,15 @@
 .subs-d { margin-top: 48px; border-top: 1px solid var(--line); }
 
 /* ---------- 此刻 ---------- */
-.strip { display: grid; grid-template-columns: repeat(14, minmax(0, 1fr)); }
-.strip .w { position: relative; display: block; }
-.strip .w.first { grid-column: span 2; grid-row: span 2; }
-.strip .tip { position: absolute; inset: auto 0 0 0; background: var(--fg); color: var(--bg); padding: 8px 10px; font-family: var(--cjk); font-size: 11px; line-height: 1.4; }
-.strip .tip b { display: block; font-size: 13px; }
 .foot { margin-top: 120px; }
 
 @media (max-width: 1000px) { .top nav { display: none; } }
 @media (max-width: 720px) {
   .crate-tip { display: none; }
+  .sec-h .scope { grid-column: 1 / 13; margin-top: 14px; }
+  .sub-h { flex-direction: column; align-items: stretch; }
+  .tabs { width: 100%; } .tabs button { flex: 1; padding: 10px 6px; }
+  .mart { overflow-x: auto; grid-template-columns: repeat(var(--n, 10), 78px) !important; scrollbar-width: none; }
   .hero { height: auto; min-height: calc(100svh - 40px); }
   .hero-art { position: relative; right: auto; top: auto; transform: none; width: 64vw; margin: 28px 0 0 auto; margin-right: calc(var(--pad) + 4vw); }
   .hero-main { margin-bottom: 24px; margin-top: 8px; }
@@ -350,8 +374,6 @@
   .yr-r { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 28px; }
   .pls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .subs { columns: 1; }
-  .strip { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-  .strip .w:nth-child(n+16) { display: none; }
   .feat-lead .pt { grid-column: 3 / 11; margin-bottom: 32px; }
   .feat-lead .tx, .toc3 { grid-column: 1 / 13; }
   .toc3 { grid-template-columns: 1fr; row-gap: 36px; }
@@ -383,7 +405,7 @@
 
 
   <section class="sec pad" id="songs">
-    <div class="sec-h reveal"><span class="n cap">Part I · 歌</span><h2 class="xl">Songs<small>你反复按下的歌</small></h2><p class="how">网易云“所有时间”排行，数字是累计播放次数。先在唱片箱里一张张翻前 20 首，下面是完整的 100 首。</p></div>
+    <div class="sec-h reveal"><span class="n cap">Part I · 歌</span><h2 class="xl">Songs<small>你反复按下的歌</small></h2><dl class="scope"><div><dt>时间</dt><dd>所有时间；榜单可切到最近一周、2026 每月</dd></div><div><dt>来源</dt><dd>网易云听歌排行、听歌月报</dd></div><div><dt>算法</dt><dd>按播放次数从高到低</dd></div></dl></div>
     <div class="lede"><p id="s-lede"></p></div>
     <div class="crate" id="crate"><div class="crate-pin">
       <div class="crate-h"><div class="hd"><span class="cap g">Crate · 唱片箱</span><b>播放次数最多的 20 首</b><span class="src">按网易云“听歌排行 · 所有时间”的累计播放次数，从第 1 名排到第 20 名</span></div><span class="cap g crate-tip">往下滚一张张翻 · 停下来黑胶会滑出来</span></div>
@@ -391,7 +413,7 @@
       <div class="crate-bar"><button class="cap" data-prev aria-label="上一张">←</button><div class="crate-track"><i></i></div><span class="cap tnum crate-n"></span><button class="cap" data-next aria-label="下一张">→</button></div>
       <div class="crate-info" aria-live="polite"></div>
     </div></div>
-    <div class="sub-h"><div class="hd"><span class="cap g">Tracklist · 完整榜单</span><b>播放次数前 <span id="tl-n">100</span> 首</b><span class="src">网易云的“听歌排行 · 所有时间”只公开播放次数最多的前 100 首，所以这里最多是 100 首；顺序和右边的数字都是网易云记录的累计播放次数。</span></div></div>
+    <div class="sub-h"><div class="hd"><span class="cap g">Tracklist · 完整榜单</span><b id="tl-title"></b><span class="src" id="tl-src"></span></div><div class="tabs" id="tl-tabs" role="tablist" aria-label="时间范围"></div></div>
     <div class="filt" id="filt" role="toolbar" aria-label="筛选"></div>
     <ol class="list cap-none" id="list"></ol>
     <button class="btn cap" id="more">Show all 100</button>
@@ -400,15 +422,16 @@
   </section>
 
   <section class="sec pad" id="artists-sec">
-    <div class="sec-h reveal"><span class="n cap">Part II · 人</span><h2 class="xl">Artists<small>你反复回到的人</small></h2><p class="how">把 Top 100 里每首歌的播放次数按艺人相加。带 Notes 标记的艺人写了背景。</p></div>
+    <div class="sec-h reveal"><span class="n cap">Part II · 人</span><h2 class="xl">Artists<small>你反复回到的人</small></h2><dl class="scope"><div><dt>时间</dt><dd>所有时间；月度艺人为 2026 年</dd></div><div><dt>来源</dt><dd>播放次数前 100 首；2026 听歌月报</dd></div><div><dt>算法</dt><dd>每位艺人名下歌曲的播放次数相加</dd></div></dl></div>
     <div class="lede"><p id="p-lede"></p></div>
     <div class="feat" id="feat"></div>
-    <div class="sub"><span class="cap">Top 10 · 前十位艺人</span><ol class="artists reveal" id="artists"></ol></div>
+    <div class="sub"><span class="cap">Top 10 · 前十位艺人<small class="g">所有时间</small></span><ol class="artists reveal" id="artists"></ol></div>
+    <div class="sub" id="mart-w"><span class="cap">Monthly · 2026 每个月最常听的艺人</span><div><p class="sub-say" id="mart-say"></p><ol class="mart reveal" id="mart"></ol></div></div>
     <a class="bridge" href="#years" data-next="years"></a>
   </section>
 
   <section class="sec pad" id="years">
-    <div class="sec-h reveal"><span class="n cap">Part III · 这些年</span><h2 class="xl">Years<small>你一路收下的歌</small></h2><p class="how">“我喜欢的音乐”里每首歌点红心的日期和发行年份。斜纹表示这一年还没过完。</p></div>
+    <div class="sec-h reveal"><span class="n cap">Part III · 这些年</span><h2 class="xl">Years<small>你一路收下的歌</small></h2><dl class="scope"><div><dt>时间</dt><dd>从注册到现在</dd></div><div><dt>来源</dt><dd>“我喜欢的音乐”</dd></div><div><dt>算法</dt><dd>按点红心的日期分年；年代按歌曲发行年份</dd></div></dl></div>
     <div class="lede"><p id="y-lede"></p></div>
     <div class="tunnel" id="tunnel" aria-label="时间隧道：往下滚，穿过每一年点下的红心">
       <div class="tn-pin">
@@ -428,9 +451,10 @@
   </section>
 
   <section class="sec pad now" id="now">
-    <div class="sec-h reveal"><span class="n cap">Part IV · 此刻</span><h2 class="xl">Now<small>这一周你在听什么</small></h2><p class="how">网易云“最近一周”排行。今年的完整回顾在年度报告里。</p></div>
+    <div class="sec-h reveal"><span class="n cap">Part IV · 此刻</span><h2 class="xl">Now<small>这一周你在听什么</small></h2><dl class="scope"><div><dt>时间</dt><dd>最近 7 天</dd></div><div><dt>来源</dt><dd>网易云听歌排行“最近一周”</dd></div><div><dt>算法</dt><dd>按播放次数从高到低</dd></div></dl></div>
     <div class="lede"><p id="week-note"></p></div>
-    <div class="strip" id="week"></div>
+    <ol class="list cap-none week5" id="week"></ol>
+    <button class="btn cap" id="week-all">看最近一周的完整榜单 ↑</button>
   </section>
 </main>
 
@@ -527,6 +551,17 @@ if (D.liked.length) { $('#shuf').innerHTML = `从 ${fmt(D.liked.length)} 颗红�
 /* ---------- Part I 画像：艺人 + 年代 ---------- */
 sect('artists-sec', () => {
   if (!arts.length) throw new Error('排行未公开');
+  // 2026 每个月最常听的艺人（听歌月报），柱子高度 = 那个月听 TA 的分钟数
+  try {
+    const M = (window.LISTEN && LISTEN.months || []).map((m, i) => m.topArtist ? { i, a: m.topArtist, min: parseInt((m.topArtist.items && m.topArtist.items[1] || [])[1]) || 0 } : null).filter(Boolean);
+    if (M.length < 3) throw 0;
+    const cnt = {}; M.forEach(x => cnt[x.a.n] = (cnt[x.a.n] || 0) + 1);
+    const [ta, tn] = Object.entries(cnt).sort((a, b) => b[1] - a[1])[0], mmx = Math.max(1, ...M.map(x => x.min));
+    $('#mart-say').textContent = tn > 1 ? `${ta}是 ${tn} 个月的月度艺人；${M.length} 个月里一共换了 ${Object.keys(cnt).length} 位。` : `${M.length} 个月，每个月都是不同的人。`;
+    $('#mart').style.gridTemplateColumns = `repeat(${M.length}, minmax(0, 1fr))`;
+    $('#mart').innerHTML = M.map(x => `<li class="${x.a.n === ta && tn > 1 ? 'hl' : ''}" ${note('artist', x.a.n)} style="--h:${(x.min / mmx * 100).toFixed(1)}%">
+      <span class="mb"><i></i></span>${art(x.a.pic, 160, 'round')}<b>${x.a.n}</b><span class="cap g tnum">${x.i + 1} 月${x.min ? ` · ${fmt(x.min)} 分钟` : ''}</span></li>`).join('');
+  } catch (e) { $('#mart-w').remove(); }
   const [a0, o0] = arts[0], t3 = arts.slice(0, 3);
   $('#p-lede').textContent = `${a0}一个人占了 Top 100 播放的 ${pct(o0.v, topSum)}%` +
     (t3.length === 3 ? `，前三位（${t3.map(x => x[0]).join('、')}）加起来是 ${pct(t3.reduce((t, [, o]) => t + o.v, 0), topSum)}%。` : '。') +
@@ -559,37 +594,47 @@ sect('songs', () => {
       <span class="by">${s.a.join(' / ')} — ${s.al}</span><span class="cap tnum">${fmt(s.pc)} plays · ${mmss(s.dt)} · 加起来 ${hrs(s.dt * s.pc)}</span>
       <span class="ci-go"><button class="cap" data-pull>抽出黑胶 ◐</button>${note('song', s.id) ? `<button class="cap" ${note('song', s.id)}>唱片内页 →</button>` : ''}</span>` });
 
-  // 筛选分三组，每组的依据写在组名上：
-  //   艺人 = 在这 100 首里有 2 首及以上的艺人；发行年代 = 歌曲的发行年份，至少 3 首的年代才列出；内页 = 写了背景资料的歌
-  const F = [{ k: 'all', g: '', t: '全部', f: () => true }];
-  arts.filter(([, o]) => o.n >= 2).forEach(([a]) => F.push({ k: 'a:' + a, g: 'artist', t: a, f: s => s.a.includes(a) }));
-  const dd = {}; D.allTime.forEach(s => { if (s.y > 1900) { const k = Math.floor(s.y / 10) * 10; dd[k] = (dd[k] || 0) + 1; } });
-  Object.keys(dd).filter(k => dd[k] >= 3).sort().forEach(k => F.push({ k: 'd:' + k, g: 'decade', t: `${k} 年代`, f: s => Math.floor(s.y / 10) * 10 == k }));
-  if (L) F.push({ k: 'notes', g: 'notes', t: '有唱片内页的', f: s => L.noted('song', s.id) });
-  F.forEach(x => x.n = D.allTime.filter(x.f).length);
-  let cur = F[0], shown = 10;
-  const G = [['', ''], ['artist', '按艺人 · 榜上 2 首及以上'], ['decade', '按发行年代'], ['notes', '其他']];
-  const chip = x => `<button class="chip cap ${x.k === 'all' ? 'on' : ''}" data-k="${x.k}" aria-pressed="${x.k === 'all'}">${x.t}<span class="g tnum">${x.n}</span></button>`;
-  $('#filt').innerHTML = G.map(([g, label]) => { const xs = F.filter(x => x.g === g && x.n); return xs.length ? `<div class="fg">${label ? `<span class="fl cap g">${label}</span>` : ''}${xs.map(chip).join('')}</div>` : ''; }).join('');
-  const row = (s, i) => `<li class="row" ${note('song', s.id)} ${L ? 'title="点开唱片内页"' : ''}>
-    <span class="r tnum">${pad2(i + 1)}</span>${art(s.pic, 104)}
-    <span class="t">${s.n}${L && L.noted('song', s.id) ? '<span class="has-note">Notes</span>' : ''}</span><span class="a">${s.a.join(' / ')}</span><span class="d tnum">${mmss(s.dt)}</span>
-    <span class="b"><i style="width:${(s.pc || 0) / max * 100}%"></i></span><span class="p tnum">${fmt(s.pc)}</span></li>`;
+  // 完整榜单：按时间范围切换（网易云能给的三种口径），再按艺人细分
+  const LSN = window.LISTEN, MZ = i => `${i + 1} 月`;
+  const monthly = LSN && LSN.months ? LSN.months.map((m, i) => m.topSong ? { ...m.topSong, a: m.topSong.a || [], mo: i } : null).filter(Boolean) : [];
+  const SETS = [
+    { k: 'all', tab: '所有时间', list: D.allTime, title: n => `播放次数前 ${n} 首`,
+      src: '网易云“听歌排行 · 所有时间”只公开播放次数最多的前 100 首，所以这里最多 100 首。顺序和右边的数字都是累计播放次数。' },
+    { k: 'week', tab: '最近一周', list: D.week, title: n => `最近一周播放次数前 ${n} 首`,
+      src: '网易云“听歌排行 · 最近一周”，同样最多 100 首。右边的数字是这 7 天里的播放次数。' },
+    { k: 'month', tab: '2026 每月', list: monthly, title: () => '2026 年每个月循环最多的歌',
+      src: '来自网易云每个月的听歌月报：每个月只取播放次数第一的那首，右边的数字是它在那个月里的播放次数。' }
+  ].filter(x => x.list.length);
+  let set = SETS[0], fa = null, shown = 10;
+  const row = (s, i, mx) => `<li class="row" ${note('song', s.id)} ${L && s.id ? 'title="点开唱片内页"' : ''}>
+    <span class="r tnum">${s.mo !== undefined ? MZ(s.mo) : pad2(i + 1)}</span>${art(s.pic, 104)}
+    <span class="t">${s.n}${L && L.noted('song', s.id) ? '<span class="has-note">Notes</span>' : ''}</span><span class="a">${(s.a || []).join(' / ')}</span><span class="d tnum">${mmss(s.dt)}</span>
+    <span class="b"><i style="width:${(s.pc || 0) / mx * 100}%"></i></span><span class="p tnum">${fmt(s.pc)}</span></li>`;
   const render = () => {
-    const rows = D.allTime.map((s, i) => [s, i]).filter(([s]) => cur.f(s));
-    const list = cur.k === 'all' ? rows.slice(0, shown) : rows;
-    $('#list').innerHTML = list.map(([s, i]) => row(s, i)).join('');
-    $('#tl-n').textContent = D.allTime.length;
-    $('#more').hidden = cur.k !== 'all';
-    $('#more').textContent = shown >= D.allTime.length ? 'Collapse · 收起' : `Show all ${D.allTime.length} · 展开全部`;
+    const mx = Math.max(1, ...set.list.map(s => s.pc || 0));
+    const rows = set.list.map((s, i) => [s, i]).filter(([s]) => !fa || (s.a || []).includes(fa));
+    const list = fa || set.k === 'month' ? rows : rows.slice(0, shown);
+    $('#list').innerHTML = list.map(([s, i]) => row(s, i, mx)).join('');
+    $('#tl-title').textContent = set.title(set.list.length); $('#tl-src').textContent = set.src;
+    const long = !fa && set.k !== 'month' && set.list.length > 10;
+    $('#more').hidden = !long;
+    $('#more').textContent = shown >= set.list.length ? '收起 · Collapse' : `展开全部 ${set.list.length} 首 · Show all`;
+    // 第二层：这个榜上有 2 首及以上的艺人
+    if (set.k === 'month') { $('#filt').innerHTML = ''; return; }
+    const A = {}; set.list.forEach(s => (s.a || []).forEach(a => A[a] = (A[a] || 0) + 1));
+    const xs = Object.entries(A).filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1]).slice(0, 8);   // 最多列 8 位，按在榜上的首数
+    $('#filt').innerHTML = xs.length ? `<div class="fg"><span class="fl cap g">按艺人 · 这个榜上 2 首及以上（最多 8 位）</span>
+      <button class="chip cap ${fa ? '' : 'on'}" data-a="" aria-pressed="${!fa}">全部<span class="g tnum">${set.list.length}</span></button>
+      ${xs.map(([a, n]) => `<button class="chip cap ${fa === a ? 'on' : ''}" data-a="${a}" aria-pressed="${fa === a}">${a}<span class="g tnum">${n}</span></button>`).join('')}</div>` : '';
   };
-  $('#filt').onclick = e => { const b = e.target.closest('.chip'); if (!b) return;
-    cur = F.find(x => x.k === b.dataset.k);
-    $('#filt').querySelectorAll('.chip').forEach(c => { c.classList.toggle('on', c === b); c.setAttribute('aria-pressed', c === b); });
-    render(); };
-  $('#more').onclick = () => { const was = shown; shown = shown >= D.allTime.length ? 10 : D.allTime.length; render();
-    if (was > shown) $('#filt').scrollIntoView({ block: 'start' }); };
-  render();
+  if (SETS.length < 2) $('#tl-tabs').hidden = true;   // 只有一种时间范围时不需要切换
+  const tabs = () => $('#tl-tabs').innerHTML = SETS.map(x => `<button role="tab" class="cap ${x === set ? 'on' : ''}" aria-selected="${x === set}" data-k="${x.k}">${x.tab}</button>`).join('');
+  $('#tl-tabs').onclick = e => { const b = e.target.closest('[data-k]'); if (!b) return; set = SETS.find(x => x.k === b.dataset.k); fa = null; shown = 10; tabs(); render(); };
+  $('#filt').onclick = e => { const b = e.target.closest('.chip'); if (!b) return; fa = b.dataset.a || null; render(); };
+  $('#more').onclick = () => { const was = shown; shown = shown >= set.list.length ? 10 : set.list.length; render();
+    if (was > shown) $('#tl-tabs').scrollIntoView({ block: 'center' }); };
+  window.mjShowSet = k => { const x = SETS.find(y => y.k === k); if (!x) return; set = x; fa = null; shown = 10; tabs(); render(); };
+  tabs(); render();
 
   // 全部唱片内页的目录，收在折叠里
   try {
@@ -672,8 +717,11 @@ sect('now', () => {
   if (!D.week.length) throw new Error('本周排行未公开');
   const wa = {}; D.week.forEach(s => s.a.forEach(a => wa[a] = (wa[a] || 0) + 1));
   const [wt, wn] = Object.entries(wa).sort((a, b) => b[1] - a[1])[0];
-  $('#week-note').textContent = `这一周听了 ${D.week.length} 首，最常听的是《${D.week[0].n}》，${wt}出现了 ${wn} 次。`;
-  $('#week').innerHTML = D.week.slice(0, 25).map((s, i) => `<span class="w${i ? '' : ' first'}" title="${s.n} — ${s.a.join(' / ')}${s.pc ? ` · ${s.pc}×` : ''}">${art(s.pic, i ? 160 : 400)}${i ? '' : `<span class="tip"><b>${s.n}</b>${s.a.join(' / ')}</span>`}</span>`).join('');
+  $('#week-note').textContent = `最近 7 天播放最多的是《${D.week[0].n}》${D.week[0].pc ? `，放了 ${D.week[0].pc} 遍` : ''}；这周的前 ${D.week.length} 首里，${wt}有 ${wn} 首。`;
+  const wmx = Math.max(1, ...D.week.map(s => s.pc || 0));
+  $('#week').innerHTML = D.week.slice(0, 5).map((s, i) => `<li class="row" ${note('song', s.id)}><span class="r tnum">${pad2(i + 1)}</span>${art(s.pic, 104)}
+    <span class="t">${s.n}</span><span class="a">${s.a.join(' / ')}</span><span class="d tnum">${mmss(s.dt)}</span><span class="b"><i style="width:${(s.pc || 0) / wmx * 100}%"></i></span><span class="p tnum">${s.pc ? fmt(s.pc) : ''}</span></li>`).join('');
+  $('#week-all').onclick = () => { if (window.mjShowSet) { mjShowSet('week'); const t = $('#tl-tabs'); (window.mjScrollTo || (y => scrollTo({ top: y, behavior: 'smooth' })))(t.getBoundingClientRect().top + scrollY - 160); } };
 });
 
 $('#f1').textContent = `Data · ${day(D.fetchedAt)}`;
