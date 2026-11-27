@@ -16,30 +16,39 @@
 .top .live { display: flex; align-items: center; gap: 10px; }
 
 /* ---------- 首屏 ---------- */
-.hero { padding-top: 28px; }
-.hero-meta { display: flex; justify-content: space-between; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
-.hero h1 { font-size: clamp(120px, 24vw, 380px); margin: 28px 0 0 -0.04em; }
-.hero h1 { display: flex; align-items: flex-start; gap: .12em; }
-.hero h1 .unit { font-size: .13em; font-stretch: 100%; line-height: 1.1; letter-spacing: 0; padding-top: .5em; }
-.hero h1 .unit .zh { display: block; font-weight: 700; margin-top: .3em; }
-.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); margin-top: 28px; }
-.stats div { padding: 14px 0 18px; border-right: 1px solid var(--hair); padding-right: 12px; }
-.stats div + div { padding-left: 16px; }
-.stats div:last-child { border-right: 0; }
-.stats b { display: block; font-size: 40px; font-stretch: 75%; font-weight: 700; line-height: 1; margin-top: 10px; }
+.hero { position: relative; height: calc(100vh - 40px); min-height: 620px; overflow: hidden; display: flex; flex-direction: column; }
+.hero-meta { display: flex; justify-content: space-between; padding-top: 24px; position: relative; z-index: 3; }
+/* 右边：第一名的封套，黑胶从左边滑出来 */
+.hero-art { position: absolute; right: calc(var(--pad) * 2); top: 47%; width: min(60vh, 40vw); aspect-ratio: 1; transform: translateY(-50%); perspective: 1400px; z-index: 1; }
+.ha-tilt { position: absolute; inset: 0; transform-style: preserve-3d; will-change: transform; }
+.ha-sleeve { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; background: var(--g1); box-shadow: 0 50px 90px -40px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.08); will-change: transform, opacity; opacity: 0; }
+.ha-vinyl { position: absolute; top: 2.5%; left: 2.5%; width: 95%; aspect-ratio: 1; border-radius: 50%; z-index: 1; opacity: 0; box-shadow: 0 30px 60px -20px rgba(0,0,0,.5); will-change: transform; }
+.ha-vinyl .spin { position: absolute; inset: 0; border-radius: 50%; will-change: transform; }
+.ha-vinyl .lbl { position: absolute; inset: 34%; border-radius: 50%; background: center / cover; }
+.ha-vinyl .lbl::after { content: ''; position: absolute; left: 50%; top: 50%; width: 9px; height: 9px; margin: -4.5px; border-radius: 50%; background: var(--bg); }
+/* 左边：大数字，压在黑胶上的部分反成白色 */
+.hero-main { position: relative; z-index: 2; margin-top: auto; margin-bottom: 196px; mix-blend-mode: difference; color: #fff; will-change: transform; }
+.hero-main h1 { font-size: clamp(110px, 19vw, 330px); margin-left: -0.05em; }
+.hero-sub { display: flex; gap: 28px; margin-top: 34px; }
+/* 底部：像唱片封底的署名 */
+.credits { position: absolute; left: 0; right: 0; bottom: 84px; z-index: 3; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--pad); }
+.credits > div { border-top: 1px solid var(--line); padding-top: 12px; opacity: 0; transform: translateY(14px); animation: cl-in .9s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: calc(1.3s + var(--i) * 110ms); }
+.credits dd { margin-top: 8px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.credits dd b { font-family: var(--cjk); font-size: clamp(16px, 1.35vw, 20px); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.credits dd span { font-family: var(--cjk); font-size: 12px; color: var(--g3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (prefers-reduced-motion: reduce) { .credits > div { opacity: 1; transform: none; animation: none; } .ha-sleeve, .ha-vinyl { opacity: 1; } }
 /* ---------- 首屏：数字像机械计数器一样滚到位，一句话逐句浮现 ---------- */
 #h-num { display: inline-flex; }
 .od { display: inline-block; height: .84em; overflow: hidden; }
 .od > span { display: flex; flex-direction: column; transition: transform 1.9s cubic-bezier(.16,.84,.2,1) calc(var(--i) * 90ms); }
 .od i { display: block; height: .84em; line-height: .84em; font-style: normal; }
 .go .od > span { transform: translateY(calc(var(--d) * -.84em)); }
-.thesis .cl { opacity: 0; transform: translateY(12px); animation: cl-in .9s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: calc(.9s + var(--i) * 120ms); }
 @keyframes cl-in { to { opacity: 1; transform: none; } }
 .lede .cl { transition: opacity .35s linear; }
 /* 艺人占比条依次长出来 */
 .artists .bar { transform-origin: left; transform: scaleX(0); transition: transform 1.1s cubic-bezier(.2,.7,.2,1) calc(var(--i) * 70ms); }
 .artists.in .bar { transform: none; }
-@media (prefers-reduced-motion: reduce) { .thesis .cl { opacity: 1; transform: none; animation: none; } .artists .bar { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .artists .bar { transform: none; } }
 
 /* ---------- 时间隧道：钉住的一屏，滚动穿过每一年 ---------- */
 .tunnel { position: relative; margin: 24px calc(-1 * var(--pad)) 96px; }
@@ -201,10 +210,6 @@
 .toc3 .tnum { font-size: 12px; }
 
 /* ---------- 首屏：一句话画像 + 抽一首 ---------- */
-.thesis { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--pad); margin-top: 36px; padding-top: 16px; border-top: 1px solid var(--line); }
-.thesis .cap { grid-column: 1 / 3; padding-top: 10px; }
-.thesis p { grid-column: 3 / 12; font-family: var(--cjk); font-size: clamp(22px, 2.5vw, 36px); font-weight: 700; line-height: 1.45; }
-.stats small { display: block; margin-top: 8px; }
 .shuf-b { max-width: 420px; } .shuf-b,
 .shuf button { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 12px 16px; width: 100%; justify-content: space-between; text-align: left;
   background: var(--fg); color: var(--bg); border: 0; cursor: pointer; font-family: var(--cjk); letter-spacing: 0; text-transform: none; font-size: 13px; font-weight: 600; line-height: 1.35; }
@@ -299,19 +304,18 @@
 
 @media (max-width: 1000px) { .top nav { display: none; } }
 @media (max-width: 720px) {
-  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .stats div, .stats div + div { padding-left: 0; border-right: 0; border-bottom: 1px solid var(--hair); }
-  .stats div:last-child { grid-column: 1 / 3; }
-  .stats b { font-size: 30px; }
   .crate-tip { display: none; }
+  .hero { height: auto; min-height: calc(100svh - 40px); }
+  .hero-art { position: relative; right: auto; top: auto; transform: none; width: 64vw; margin: 28px 0 0 auto; margin-right: calc(var(--pad) + 4vw); }
+  .hero-main { margin-bottom: 24px; margin-top: 8px; }
+  .hero-main h1 { font-size: 27vw; }
+  .hero-sub { flex-direction: column; gap: 4px; }
+  .credits { position: relative; bottom: auto; grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 18px; padding-bottom: 24px; }
   .tn-hint { display: none; }
   .tn-ticks { font-size: 9px; letter-spacing: 0; }
   .bridge { grid-template-columns: 1fr auto; row-gap: 4px; margin-top: 88px; }
   .bridge .cap { grid-column: 1 / 3; }
   .crate-stage { --s: min(58vw, calc((100vh - 400px) / 1.2)); }
-  .hero .unit .zh { white-space: nowrap; }
-  .thesis .cap, .thesis p, .lede p { grid-column: 1 / 13; }
-  .thesis p { margin-top: 8px; font-size: 19px; }
   .lede p { font-size: 20px; }
   .pk-in { grid-template-columns: 88px minmax(0, 1fr); gap: 16px; }
   .pk-t { padding-left: 14px; }
@@ -357,11 +361,17 @@
 </header>
 
 <main>
-  <section class="hero pad">
-    <div class="hero-meta cap"><span id="m1">—</span><span id="m2" class="g">—</span></div>
-    <h1 class="xl tnum reveal"><span id="h-num">—</span><span class="unit">Plays<span class="zh">累计听歌</span></span></h1>
-    <div class="thesis"><span class="cap">In one line · 一句话</span><p id="thesis"></p></div>
-    <div class="stats cap" id="stats"></div>
+  <section class="hero" id="hero">
+    <div class="hero-meta pad cap"><span id="m1">—</span><span id="m2" class="g">—</span></div>
+    <div class="hero-art" aria-hidden="true"><div class="ha-tilt">
+      <div class="ha-vinyl"><span class="spin vinyl-face"><span class="lbl" id="ha-lbl"></span></span><span class="sheen"></span></div>
+      <img class="ha-sleeve" id="ha-sleeve" alt="" crossorigin="anonymous">
+    </div></div>
+    <div class="hero-main pad">
+      <h1 class="xl tnum"><span id="h-num">—</span></h1>
+      <p class="hero-sub cap"><span>Plays · 累计听歌</span><span id="h-since"></span></p>
+    </div>
+    <dl class="credits pad" id="credits"></dl>
   </section>
 
 
@@ -478,22 +488,24 @@ $('#m2').textContent = `Updated ${day(D.fetchedAt)}`;
   const str = fmt(P.listenSongs), el = $('#h-num');
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) el.textContent = str;
   else { el.innerHTML = [...str].map((ch, i) => /\d/.test(ch) ? `<span class="od"><span style="--d:${ch};--i:${i}">${[...'0123456789'].map(x => `<i>${x}</i>`).join('')}</span></span>` : `<span class="od-s">${ch}</span>`).join('');
-    el.setAttribute('aria-label', str); setTimeout(() => el.classList.add('go'), 250); }
+    el.setAttribute('aria-label', str); setTimeout(() => el.classList.add('go'), 450); }
 }
+// 封底式署名：四行事实代替一长句
 {
-  const yr = P.createDays / 365, no1 = D.allTime[0];
-  let t = `${yr < 1 ? `${fmt(P.createDays)} 天` : yr % 1 > .5 ? `将近 ${Math.ceil(yr)} 年` : `${Math.floor(yr)} 年`}，累计听歌 ${fmt(P.listenSongs)} 首。`;
-  if (arts.length) t += `你最常回到的是${arts[0][0]}`;
-  if (no1) t += `${arts.length ? '，' : '你'}单曲循环最多的是《${no1.n}》`;
-  if (arts.length || no1) t += '；';
-  if (dpk) t += `红心里最多的是 ${dpk} 年代的歌`;
-  if (peakY && cnt(peakY) >= 20 && YRS.length > 1) t += `${dpk ? '，' : ''}而 ${peakY} 年你一口气点下了 ${cnt(peakY)} 颗红心`;
-  $('#thesis').textContent = t.replace(/[；。]$/, '') + '。';
+  const no1 = D.allTime[0], C = [];
+  if (no1) C.push(['Most played · 循环最多', `《${no1.n}》`, `${no1.a.join(' / ')} · ${fmt(no1.pc)} 次`]);
+  if (arts.length) C.push(['Returned to · 最常回到', arts[0][0], `Top 100 里有 ${arts[0][1].n} 首`]);
+  if (peakY && cnt(peakY)) C.push(['Peak year · 红心最多', `${peakY}`, `点下 ${cnt(peakY)} 颗红心`]);
+  const h = window.LISTEN && LISTEN.total ? Math.round(LISTEN.total / 3600) : 0;
+  C.push(h ? ['Listened · 一共听了', `${fmt(h)} 小时`, `${fmt(P.createDays)} 天里`] : ['Liked · 红心', `${fmt(D.liked.length)} 首`, `${fmt(P.createDays)} 天里`]);
+  $('#credits').innerHTML = C.map(([k, v, sub], i) => `<div style="--i:${i}"><dt class="cap g">${k}</dt><dd><b>${v}</b><span>${sub}</span></dd></div>`).join('');
+  $('#h-since').textContent = `Since ${day(P.created)}`;
+  // 右边的唱片：第一名的封套，黑胶从里面滑出来转
+  const cov = (no1 || D.liked[0] || D.week[0] || {}).pic;
+  if (cov) { $('#ha-sleeve').src = img(cov, 900); $('#ha-lbl').style.backgroundImage = `url('${img(cov, 240)}')`;
+    mountHero({ el: $('#hero'), art: $('.hero-art'), tilt: $('.ha-tilt'), vinyl: $('.ha-vinyl'), spin: $('.ha-vinyl .spin'), sleeve: $('#ha-sleeve'), main: $('.hero-main') }); }
+  else $('.hero-art').remove();
 }
-const topHours = Math.round(D.allTime.reduce((s, x) => s + (x.pc || 0) * x.dt, 0) / 3600);
-const hours = window.LISTEN && LISTEN.total ? ['Hours listened', fmt(Math.round(LISTEN.total / 3600))] : topHours ? ['Hours in Top 100', fmt(topHours)] : ['Level', 'Lv.' + P.level];
-$('#stats').innerHTML = [['Since', day(P.created), `${fmt(P.createDays)} days`], hours, ['Liked', fmt(D.liked.length), 'songs']]
-  .map(([k, v, s]) => `<div><span class="g">${k}</span><b class="tnum">${v}</b>${s ? `<small class="g">${s}</small>` : ''}</div>`).join('');
 const pick = () => {
   const s = D.liked[Math.floor(Math.random() * D.liked.length)], r = rankOf[s.id];
   const facts = [s.y ? `${s.y} 年发行` : '', r !== undefined ? `Top 100 第 ${r + 1} 名，放了 ${fmt(D.allTime[r].pc)} 遍` : '', mmss(s.dt)].filter(Boolean).join(' · ');
@@ -679,8 +691,7 @@ const spy = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecti
 
 const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && (e.target.classList.add('in'), io.unobserve(e.target))), { threshold: .1 });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-['#thesis', '#p-lede', '#s-lede', '#y-lede', '#dec-note', '#week-note'].forEach(s => $(s) && clauses($(s)));
-$('#thesis').querySelectorAll('.cl').forEach((c, i) => c.style.setProperty('--i', i));
+['#p-lede', '#s-lede', '#y-lede', '#dec-note', '#week-note'].forEach(s => $(s) && clauses($(s)));
 $('#artists').querySelectorAll('.bar').forEach((b, i) => b.style.setProperty('--i', i));
 
 // 每部分开头那句大字：随着滚动一句一句亮起来

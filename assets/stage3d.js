@@ -4,6 +4,7 @@
    - 一屏一个场景：场景固定在屏幕上，用一长段滚动距离来“播放”它，画面里只放这一件事。
    1. 平滑滚动。
    3. mountTunnel：第三部分的时间隧道，滚动时穿过每一年的红心封面。
+   0. mountHero：首屏的封套和滑出来的黑胶。
    2. mountCrate：唱片箱场景。滚轮一格翻一张；停下来，黑胶自己从封套里滑出来转。也可以拖动、点、用 ← →。
    系统开了“减少动态效果”时，平滑滚动关闭，场景直接停在最终状态。 */
 (() => {
@@ -52,6 +53,43 @@
     new IntersectionObserver(es => { on = es[0].isIntersecting; kick(); }, { rootMargin: '100px 0px' }).observe(el);
     addEventListener('scroll', kick, { passive: true });
     return kick;
+  };
+
+
+  /* ---------- 0. 首屏：封套 + 滑出来的黑胶 ----------
+     入场：封套从右边滑进来，黑胶再从封套里滑出、慢慢转起来。
+     往下滚：黑胶转得更快、继续往外滑，整张唱片往上飘；鼠标移动时唱片轻轻偏转。 */
+  window.mountHero = ({ el, art, tilt, vinyl, spin, sleeve, main }) => {
+    if (REDUCE) { sleeve.style.opacity = 1; vinyl.style.transform = 'translateX(-44%)'; return; }
+    let t0 = 0, ang = 0, mx = 0, my = 0, tmx = 0, tmy = 0, sp = 0;
+    const narrow = () => innerWidth < 720;
+    const frame = dt => {
+      if (!t0) return false;
+      const t = (performance.now() - t0) / 1000;
+      const a = ease(clamp(t / 1.1, 0, 1)), b = inout(clamp((t - .55) / 1.5, 0, 1));
+      const p = clamp(scrollY / (el.offsetHeight || innerHeight), 0, 1);
+      sp += (p - sp) * damp(.14, dt);
+      mx += (tmx - mx) * damp(.06, dt); my += (tmy - my) * damp(.06, dt);
+      // 封套：滑进来，滚动时往上飘一点
+      sleeve.style.opacity = a.toFixed(3);
+      sleeve.style.transform = `translate3d(${((1 - a) * 22).toFixed(2)}%,0,0)`;
+      // 黑胶：先藏在封套后面，再滑出来；滚动时继续往外滑
+      const out = (narrow() ? 40 : 46) * b + sp * 20;
+      vinyl.style.transform = `translate3d(${(-out).toFixed(2)}%,0,0)`;
+      vinyl.style.opacity = a.toFixed(3);              // 封套还没进来时，黑胶也不出现
+      // 转速：入场时从 0 转起来，滚动越多转得越快
+      ang += dt / 1000 * (1.6 * b + sp * 9);
+      spin.style.transform = `rotate(${ang.toFixed(4)}rad)`;
+      tilt.style.transform = `translate3d(0,${(-sp * 18).toFixed(2)}vh,0) rotateY(${(-mx * 14 - sp * 10).toFixed(2)}deg) rotateX(${(my * 10).toFixed(2)}deg)`;
+      main.style.transform = `translate3d(0,${(-sp * 60).toFixed(1)}px,0)`;
+      return true;                                  // 黑胶一直在转，只要首屏在屏幕上就继续
+    };
+    const kick = loop(el, frame);
+    // 封套图片到了再开始入场（最多等 1.5 秒）
+    const begin = () => { if (!t0) { t0 = performance.now(); kick(); } };
+    if (sleeve.complete && sleeve.naturalWidth) requestAnimationFrame(begin); else { sleeve.addEventListener('load', begin, { once: true }); sleeve.addEventListener('error', begin, { once: true }); }
+    setTimeout(begin, 1500);
+    if (FINE) el.addEventListener('pointermove', e => { tmx = e.clientX / innerWidth - .5; tmy = e.clientY / innerHeight - .5; });
   };
 
   /* ---------- 2. 唱片箱 ---------- */
